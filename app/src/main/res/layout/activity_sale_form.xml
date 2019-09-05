@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+                name="viewModel"
+                type="br.com.suitesistemas.portsmobile.viewModel.form.SaleFormViewModel" />
+    </data>
+
+    <RelativeLayout
+            android:id="@+id/sale_form"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".view.activity.form.CustomerFormActivity">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            <ProgressBar
+                    android:id="@+id/sale_form_progressbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/progress_bar_height"
+                    style="@style/CustomProgressBar"/>
+
+            <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_opaque">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="@dimen/default_padding"
+                            android:orientation="vertical">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                <EditText
+                                        android:id="@+id/sale_form_date"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"
+                                        android:autofillHints="@string/data_emissao"
+                                        android:hint="@string/data_emissao"
+                                        android:imeOptions="actionNext"
+                                        android:inputType="textPersonName|textCapWords"
+                                        android:textSize="@dimen/medium_font"
+                                        android:enabled="false"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                <EditText
+                                        android:id="@+id/sale_form_hour"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"
+                                        android:autofillHints="@string/hora_emissao"
+                                        android:hint="@string/hora_emissao"
+                                        android:imeOptions="actionNext"
+                                        android:inputType="text"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                <EditText
+                                        android:id="@+id/sale_form_client"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"
+                                        android:autofillHints="@string/cliente"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:hint="@string/cliente"
+                                        android:imeOptions="actionNext"
+                                        android:inputType="textPersonName|textCapWords"
+                                        android:text="@={viewModel.sale.fky_cliente.dsc_nome_pessoa}"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                <EditText
+                                        android:id="@+id/sale_form_salesman"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"
+                                        android:autofillHints="@string/vendedor"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:hint="@string/vendedor"
+                                        android:imeOptions="actionNext"
+                                        android:inputType="text"
+                                        android:text="@={viewModel.sale.fky_vendedor.dsc_nome_pessoa}"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                            <EditText
+                                    android:id="@+id/sale_form_obs"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/tiny_margin"
+                                    android:autofillHints="@string/observacao"
+                                    android:hint="@string/observacao"
+                                    android:imeOptions="actionDone"
+                                    android:inputType="text"
+                                    android:text="@={viewModel.sale.dsc_observacao}"
+                                    android:textSize="@dimen/medium_font"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"
+                                        android:layout_marginStart="@dimen/tiny_margin"
+                                        android:layout_marginTop="@dimen/tiny_margin"
+                                        android:text="@string/empresa"
+                                        android:textSize="@dimen/medium_font"/>
+                                <Spinner
+                                        android:id="@+id/sale_form_company"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"
+                                        android:layout_marginStart="@dimen/tiny_margin"
+                                        android:layout_marginTop="@dimen/tiny_margin"
+                                        android:text="@string/condicao_pagamento"
+                                        android:textSize="@dimen/medium_font"/>
+                                <Spinner
+                                        android:id="@+id/sale_form_payment_condition"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/tiny_margin"
+                            app:cardCornerRadius="0dp">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/search_bar_search_input_left_margin"
+                                    android:gravity="center"
+                                    android:background="@color/colorPrimary">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/totais"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:baselineAligned="false"
+                                    android:orientation="horizontal">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1">
+
+                                    <EditText
+                                            android:id="@+id/sale_form_total_items"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginBottom="@dimen/tiny_margin"
+                                            android:autofillHints="@string/total_itens"
+                                            android:hint="@string/total_itens"
+                                            android:imeOptions="actionNext"
+                                            android:inputType="numberDecimal"
+                                            android:text="@{Double.toString(viewModel.sale.dbl_total_produtos)}"
+                                            android:textSize="@dimen/medium_font"
+                                            android:enabled="false"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1">
+
+                                    <EditText
+                                            android:id="@+id/sale_form_total_sale"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginBottom="@dimen/tiny_margin"
+                                            android:autofillHints="@string/total_venda"
+                                            android:enabled="false"
+                                            android:hint="@string/total_venda"
+                                            android:imeOptions="actionNext"
+                                            android:inputType="numberDecimal"
+                                            android:text="@{Double.toString(viewModel.sale.dbl_total_venda)}"
+                                            android:textSize="@dimen/medium_font"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1">
+
+                                    <EditText
+                                            android:id="@+id/sale_form_quantity"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginBottom="@dimen/tiny_margin"
+                                            android:autofillHints="@string/quantidade"
+                                            android:enabled="false"
+                                            android:hint="@string/quantidade"
+                                            android:imeOptions="actionNext"
+                                            android:inputType="numberDecimal"
+                                            android:textSize="@dimen/medium_font"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1">
+
+                                    <EditText
+                                            android:id="@+id/sale_form_change"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginBottom="@dimen/tiny_margin"
+                                            android:autofillHints="@string/troco"
+                                            android:enabled="false"
+                                            android:hint="@string/troco"
+                                            android:imeOptions="actionNext"
+                                            android:inputType="numberDecimal"
+                                            android:textSize="@dimen/medium_font"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:baselineAligned="false"
+                                    android:orientation="horizontal">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1">
+
+                                    <EditText
+                                            android:id="@+id/sale_form_payed_value"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:autofillHints="@string/valor_pago"
+                                            android:enabled="false"
+                                            android:hint="@string/valor_pago"
+                                            android:imeOptions="actionNext"
+                                            android:inputType="numberDecimal"
+                                            android:text="@{Double.toString(viewModel.sale.dbl_valor_pago)}"
+                                            android:textSize="@dimen/medium_font"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1">
+
+                                    <EditText
+                                            android:id="@+id/sale_form_addition"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:autofillHints="@string/acrescimo"
+                                            android:enabled="false"
+                                            android:hint="@string/acrescimo"
+                                            android:imeOptions="actionNext"
+                                            android:inputType="numberDecimal"
+                                            android:textSize="@dimen/medium_font"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1">
+
+                                    <EditText
+                                            android:id="@+id/sale_form_discount"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:autofillHints="@string/desconto"
+                                            android:enabled="false"
+                                            android:hint="@string/desconto"
+                                            android:imeOptions="actionNext"
+                                            android:inputType="numberDecimal"
+                                            android:textSize="@dimen/medium_font"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/sale_form_products"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbars="vertical"/>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/sale_form_btn_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="@dimen/default_margin"
+                android:src="@drawable/ic_check"
+                app:backgroundTint="@color/success"/>
+
+    </RelativeLayout>
+
+</layout>

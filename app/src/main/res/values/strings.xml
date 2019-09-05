@@ -1,0 +1,122 @@
+<resources>
+    <string name="app_name">Ports Mobile</string>
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
+    <string name="desfazer">Desfazer</string>
+    <string name="entrar">Entrar</string>
+    <string name="entrando">Entrando</string>
+    <string name="empresa">Empresa</string>
+    <string name="senha">Senha</string>
+    <string name="usuario">Usuário</string>
+    <string name="bem_vindo">Bem vindo ao Ports Mobile</string>
+    <string name="insira_credenciais">Insira suas credencias</string>
+    <string name="email_suite">suitesistemas@gmail.com</string>
+    <plurals name="numero_selecionados">
+        <item quantity="one">1 selecionado</item>
+        <item quantity="other">%d selecionados</item>
+    </plurals>
+
+    <!-- MENU -->
+    <string name="banco_dados">Banco de Dados</string>
+    <string name="contato">Contato</string>
+    <string name="crm">CRM</string>
+    <string name="logout">Logout</string>
+    <string name="relatar_problema">Relatar problema</string>
+    <string name="sair">Sair</string>
+    <string name="sincronizar">Sincronizar</string>
+    <string name="tarefas">Tarefas</string>
+    <string name="clientes">Clientes</string>
+    <string name="vendas">Vendas</string>
+    <string name="pedidos">Pedidos</string>
+    <string name="lancamentos">Lançamentos Financeiros</string>
+    <string name="gerencie_clientes">Gerencie todos os seus clientes</string>
+    <string name="gerencie_vendas">Controle suas vendas de qualquer lugar</string>
+    <string name="gerencie_lancamentos">Visualize todos os lançamentos financeiros</string>
+
+    <!-- LANCAMENTO FINANCEIRO VIEW HOLDER -->
+    <string name="lanc_adapter_ref">REF.: %s</string>
+    <string name="lanc_adapter_emissao">Data Emissão: %s</string>
+    <string name="lanc_adapter_vencimento">Data Vencimento: %s</string>
+    <string name="lanc_adapter_pagamento">Data Pagamento: %s</string>
+
+    <!-- SITUACAO PAGAMENTO -->
+    <string name="em_aberto">EM ABERTO</string>
+    <string name="cancelado">CANCELADO</string>
+    <string name="pago">PAGO</string>
+
+    <!-- PRICE ADAPTER -->
+    <string name="a_vista_adapter">À vista: R$ %s</string>
+    <string name="a_prazo_adapter">À prazo: R$ %s</string>
+    <string name="preco_adapter">R$ %s</string>
+
+    <!-- PRODUCT ADAPTER -->
+    <string name="produto_vista_adapter">Preço à vista: R$ %s</string>
+    <string name="produto_prazo_adapter">Preço à prazo: R$ %s</string>
+    <string name="produto_quantidade_adapter">Quantidade: %d</string>
+    <string name="em_parenteses">(%s)</string>
+
+    <!-- FORM TITLE -->
+    <string name="cadastro_cliente">Cadastro de Cliente</string>
+    <string name="cadastro_venda">Cadastro de Venda</string>
+
+    <!-- MISCELLANEOUS -->
+    <string name="nome">Nome</string>
+    <string name="telefone">Telefone</string>
+    <string name="celular">Celular</string>
+    <string name="email">Email</string>
+    <string name="cidade">Cidade</string>
+    <string name="situacao">Situação</string>
+    <string name="quantidades">Quantidades</string>
+    <string name="add_outras_informacoes">Add Outras Informações</string>
+    <string name="cpf_cnpj">CPF / CNPJ</string>
+    <string name="observacao">Observação</string>
+    <string name="salvar">Salvar</string>
+    <string name="excluir">Excluir</string>
+    <string name="aguarde_terminar">Aguarde a operação terminar</string>
+    <string name="acao_desfeita">Ação desfeita!</string>
+    <string name="falha_desfazer_acao">Não foi possível desfazer a ação</string>
+    <string name="numero_nao_aceito">Número não aceito</string>
+    <string name="obrigatorio">Campo obrigatório</string>
+    <string name="campo_obrigatorio">Campo <b>%s</b> é obrigatório</string>
+    <string name="data_emissao">Data Emissão</string>
+    <string name="hora_emissao">Hora Emissão</string>
+    <string name="cliente">Cliente</string>
+    <string name="vendedor">Vendedor</string>
+    <string name="condicao_pagamento">Cond Pagamento</string>
+    <string name="digite_nome_cliente">Digite o nome da pessoa</string>
+    <string name="procurar">Procurar</string>
+    <string name="digite_nome_produto">Digite o nome do produto</string>
+    <string name="totais">Totais</string>
+    <string name="total_itens">Itens</string>
+    <string name="total_venda">Venda</string>
+    <string name="quantidade">Quantidade</string>
+    <string name="troco">Troco</string>
+    <string name="valor_pago">Valor Pago</string>
+    <string name="acrescimo">Acréscimo</string>
+    <string name="desconto">Desconto</string>
+    <string name="adicionar">Adicionar</string>
+    <string name="add_produtos">Add Produtos</string>
+    <string name="cor">Cor</string>
+    <string name="nao_encontrado">Nenhum registro foi encontrado</string>
+    <string name="nenhuma_empresa">Nenhuma empresa foi encontrada</string>
+    <string name="nenhum_resultado">Nenhum resultado foi retornado</string>
+    <string name="registro_removido">Registro removido!</string>
+    <string name="nao_encontrou_empresas">Não foi possível obter os dados das empresas</string>
+    <string name="nao_encontrou_condicoes">Não foi possível obter os dados das condiçoes de pagamento</string>
+    <string name="nao_encontrou_itens_venda">Não foi possível obter os itens da venda</string>
+    <string name="falha_inserir_cliente">Falha ao inserir os dados do cliente</string>
+    <string name="falha_atualizar_cliente">Falha ao atualizar os dados do cliente</string>
+    <string name="falha_inserir_venda">Falha ao inserir os dados da venda</string>
+    <string name="falha_inserir_itens_venda">Falha ao inserir os itens da venda</string>
+    <string name="falha_atualizar_venda">Falha ao atualizar os dados da venda</string>
+    <string name="falha_atualizar_itens_venda">Falha ao atualizar os itens da venda</string>
+    <string name="falha_remover_itens_venda">Falha ao remover os itens da venda</string>
+    <string name="pressione_voltar_novamente">Pressione o botão <b>voltar</b> novamente para fechar!</string>
+    <string name="nao_encontrou_lancamentos">Não foi possível obter a lista de lançamentos</string>
+    <string name="nenhuma_condicao">Nenhuma condição de pagamento foi encontrada</string>
+    <string name="suite_sistemas">Suite Sistemas</string>
+    <string name="separador">_______________________</string>
+    <string name="voltar">Voltar</string>
+    <string name="pesquisar">Pesquisar</string>
+
+</resources>

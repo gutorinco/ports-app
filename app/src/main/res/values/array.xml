@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="customerSituations">
+        <item>Análise</item>
+        <item>Ativo</item>
+        <item>Pendência</item>
+        <item>Cancelado</item>
+    </array>
+</resources>

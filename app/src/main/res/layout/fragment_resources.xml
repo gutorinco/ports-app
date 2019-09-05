@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/white_opaque"
+             android:orientation="vertical"
+             tools:context=".view.fragment.ResourcesFragment">
+
+    <ListView
+            android:id="@+id/list_resources"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/tiny_margin"
+            android:background="@color/white_opaque"
+            android:divider="@null"
+            android:dividerHeight="@dimen/very_tiny_margin" />
+
+</LinearLayout>

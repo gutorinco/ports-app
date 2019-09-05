@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_padding">15dp</dimen>
+    <dimen name="default_margin">15dp</dimen>
+    <dimen name="small_margin">10dp</dimen>
+    <dimen name="tiny_margin">5dp</dimen>
+    <dimen name="very_tiny_margin">2.5dp</dimen>
+    <dimen name="large_margin">30dp</dimen>
+    <dimen name="very_large_margin">60dp</dimen>
+    <dimen name="large_font">16sp</dimen>
+    <dimen name="medium_font">13sp</dimen>
+    <dimen name="small_font">10sp</dimen>
+    <dimen name="btn_height">90px</dimen>
+    <dimen name="progress_bar_height">2dp</dimen>
+    <dimen name="elevation">5px</dimen>
+</resources>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ListView
+            android:id="@+id/product_dialog_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/large_margin"/>
+
+    <Button android:id="@+id/product_dialog_btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/success"
+            android:text="@string/adicionar"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"/>
+
+</RelativeLayout>

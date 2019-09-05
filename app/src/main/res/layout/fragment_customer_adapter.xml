@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/border_bottom"
+              android:padding="@dimen/small_margin">
+
+    <TextView android:id="@+id/customer_name"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:textSize="@dimen/medium_font"
+              android:textStyle="bold"/>
+
+    <TextView android:id="@+id/customer_email"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:textSize="@dimen/small_font"/>
+
+</LinearLayout>

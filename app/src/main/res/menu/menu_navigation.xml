@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/menu_customer"
+              android:icon="@drawable/ic_people"
+              android:title="@string/clientes" />
+
+        <item android:id="@+id/menu_sale"
+              android:icon="@drawable/ic_cart"
+              android:title="@string/vendas" />
+
+        <!--<item android:id="@+id/menu_order"-->
+              <!--android:icon="@drawable/ic_assigment"-->
+              <!--android:title="@string/pedidos" />-->
+
+        <item android:id="@+id/menu_financial"
+              android:icon="@drawable/ic_credit_card"
+              android:title="@string/lancamentos" />
+
+        <!--<item android:id="@+id/menu_task"-->
+              <!--android:icon="@drawable/ic_calendar_text"-->
+              <!--android:title="@string/tarefas" />-->
+
+        <!--<item android:id="@+id/menu_crm"-->
+              <!--android:icon="@drawable/ic_handshake"-->
+              <!--android:title="@string/crm" />-->
+    </group>
+
+    <!--<item android:title="@string/contato">-->
+        <!--<menu>-->
+            <!--<item android:id="@+id/menu_contact"-->
+                  <!--android:icon="@drawable/ic_email"-->
+                  <!--android:title="@string/contato" />-->
+
+            <!--<item android:id="@+id/menu_problem_reporting"-->
+                  <!--android:icon="@drawable/ic_alert"-->
+                  <!--android:title="@string/relatar_problema" />-->
+        <!--</menu>-->
+    <!--</item>-->
+
+    <!--<item android:title="@string/banco_dados">-->
+        <!--<menu>-->
+            <!--<item android:id="@+id/menu_sync"-->
+                  <!--android:icon="@drawable/ic_cloud_sync"-->
+                  <!--android:title="@string/sincronizar" />-->
+        <!--</menu>-->
+    <!--</item>-->
+
+    <item android:title="@string/logout">
+        <menu>
+            <item android:id="@+id/menu_logout"
+                  android:icon="@drawable/ic_logout"
+                  android:title="@string/sair" />
+        </menu>
+    </item>
+
+</menu>

@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+                name="viewModel"
+                type="br.com.suitesistemas.portsmobile.viewModel.form.CustomerFormViewModel" />
+    </data>
+
+    <RelativeLayout
+            android:id="@+id/customer_form"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".view.activity.form.CustomerFormActivity">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            <ProgressBar
+                    android:id="@+id/customer_form_progressbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/progress_bar_height"
+                    style="@style/CustomProgressBar"/>
+
+            <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_opaque">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/default_padding"
+                        android:orientation="vertical">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                            <EditText
+                                    android:id="@+id/customer_form_name"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/small_margin"
+                                    android:autofillHints="@string/nome"
+                                    android:hint="@string/nome"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="textPersonName|textCapWords"
+                                    android:text="@={viewModel.customer.dsc_nome_pessoa}"
+                                    android:textSize="@dimen/medium_font"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2">
+
+                            <EditText
+                                    android:id="@+id/customer_form_cpf_cnpj"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/small_margin"
+                                    android:autofillHints="@string/cpf_cnpj"
+                                    android:hint="@string/cpf_cnpj"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="text"
+                                    android:text="@={viewModel.customer.dsc_cpf_cnpj}"
+                                    android:textSize="@dimen/medium_font"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                            <com.santalu.maskedittext.MaskEditText
+                                    android:id="@+id/customer_form_phone"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/small_margin"
+                                    android:hint="@string/telefone"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="number"
+                                    android:maxLines="1"
+                                    android:text="@={viewModel.customer.dsc_fone_01}"
+                                    android:textSize="@dimen/medium_font"
+                                    app:met_mask="(##) ####-####"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                            <com.santalu.maskedittext.MaskEditText
+                                    android:id="@+id/customer_form_cell_phone"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/small_margin"
+                                    android:hint="@string/celular"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="number"
+                                    android:maxLines="1"
+                                    android:text="@={viewModel.customer.dsc_celular_01}"
+                                    android:textSize="@dimen/medium_font"
+                                    app:met_mask="(##) #####-####"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                        <EditText
+                                android:id="@+id/customer_form_email"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/small_margin"
+                                android:autofillHints="@string/email"
+                                android:hint="@string/email"
+                                android:imeOptions="actionNext"
+                                android:inputType="textEmailAddress"
+                                android:text="@={viewModel.customer.dsc_email}"
+                                android:textSize="@dimen/medium_font"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                        <EditText
+                                android:id="@+id/customer_form_city"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/small_margin"
+                                android:autofillHints="@string/cidade"
+                                android:hint="@string/cidade"
+                                android:imeOptions="actionNext"
+                                android:inputType="text|textCapWords"
+                                android:text="@={viewModel.customer.dsc_cidade}"
+                                android:textSize="@dimen/medium_font"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                        <EditText
+                                android:id="@+id/customer_form_obs"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/small_margin"
+                                android:autofillHints="@string/observacao"
+                                android:hint="@string/observacao"
+                                android:imeOptions="actionDone"
+                                android:inputType="text"
+                                android:text="@={viewModel.customer.dsc_observacao}"
+                                android:textSize="@dimen/medium_font"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/tiny_margin"
+                                    android:layout_marginStart="@dimen/tiny_margin"
+                                    android:layout_marginTop="@dimen/small_margin"
+                                    android:text="@string/empresa"
+                                    android:textSize="@dimen/medium_font"/>
+                            <Spinner
+                                    android:id="@+id/customer_form_company"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/default_margin"
+                                    android:textSize="@dimen/medium_font"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/tiny_margin"
+                                    android:layout_marginStart="@dimen/tiny_margin"
+                                    android:layout_marginTop="@dimen/small_margin"
+                                    android:text="@string/situacao"
+                                    android:textSize="@dimen/medium_font"/>
+                            <Spinner
+                                    android:id="@+id/customer_form_situation"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/default_margin"
+                                    android:textSize="@dimen/medium_font"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/customer_form_btn_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="@dimen/default_margin"
+                android:src="@drawable/ic_check"
+                app:backgroundTint="@color/success"/>
+
+    </RelativeLayout>
+
+</layout>
