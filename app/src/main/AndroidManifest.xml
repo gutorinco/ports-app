@@ -3,6 +3,7 @@
         package="br.com.suitesistemas.portsmobile">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -20,7 +21,6 @@
         <activity android:name="br.com.suitesistemas.portsmobile.view.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -28,7 +28,24 @@
                 android:configChanges="keyboardHidden|orientation"
                 android:label="@string/app_name"
                 android:launchMode="singleTop"
-                android:theme="@style/AppTheme.NoActionBar"/>
+                android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="br.com.suitesistemas.portsmobile_TARGET_CLIENTE"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="br.com.suitesistemas.portsmobile_TARGET_PEDIDO"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="br.com.suitesistemas.portsmobile_TARGET_TAREFA"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="br.com.suitesistemas.portsmobile_TARGET_VENDA"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+            </intent-filter>
+        </activity>
         <activity
                 android:name="br.com.suitesistemas.portsmobile.view.activity.form.CustomerFormActivity"
                 android:parentActivityName="br.com.suitesistemas.portsmobile.view.activity.MainActivity">
@@ -36,6 +53,22 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="br.com.suitesistemas.portsmobile.view.activity.MainActivity" />
         </activity>
+
+        <service
+                android:name="br.com.suitesistemas.portsmobile.firebase.MessagingService"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/logo" />
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_color"
+                android:resource="@color/colorPrimary" />
+
     </application>
 
 </manifest>

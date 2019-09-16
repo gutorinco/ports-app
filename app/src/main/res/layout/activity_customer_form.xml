@@ -10,7 +10,7 @@
                 type="br.com.suitesistemas.portsmobile.viewModel.form.CustomerFormViewModel" />
     </data>
 
-    <RelativeLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/customer_form"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -21,11 +21,17 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-            <ProgressBar
-                    android:id="@+id/customer_form_progressbar"
+            <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/progress_bar_height"
-                    style="@style/CustomProgressBar"/>
+                    android:layout_height="@dimen/progress_bar_height">
+
+                <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                        android:id="@+id/customer_form_progressbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/CustomProgressBar"/>
+
+            </FrameLayout>
 
             <ScrollView
                     android:layout_width="match_parent"
@@ -95,7 +101,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1">
 
-                            <com.santalu.maskedittext.MaskEditText
+                            <EditText
                                     android:id="@+id/customer_form_phone"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -105,8 +111,7 @@
                                     android:inputType="number"
                                     android:maxLines="1"
                                     android:text="@={viewModel.customer.dsc_fone_01}"
-                                    android:textSize="@dimen/medium_font"
-                                    app:met_mask="(##) ####-####"/>
+                                    android:textSize="@dimen/medium_font"/>
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -115,7 +120,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1">
 
-                            <com.santalu.maskedittext.MaskEditText
+                            <EditText
                                     android:id="@+id/customer_form_cell_phone"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -125,8 +130,7 @@
                                     android:inputType="number"
                                     android:maxLines="1"
                                     android:text="@={viewModel.customer.dsc_celular_01}"
-                                    android:textSize="@dimen/medium_font"
-                                    app:met_mask="(##) #####-####"/>
+                                    android:textSize="@dimen/medium_font"/>
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -202,7 +206,7 @@
                             <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/tiny_margin"
+                                    android:layout_marginBottom="@dimen/spinner_label_margin_bottom"
                                     android:layout_marginStart="@dimen/tiny_margin"
                                     android:layout_marginTop="@dimen/small_margin"
                                     android:text="@string/empresa"
@@ -225,7 +229,7 @@
                             <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="@dimen/tiny_margin"
+                                    android:layout_marginBottom="@dimen/very_tiny_margin"
                                     android:layout_marginStart="@dimen/tiny_margin"
                                     android:layout_marginTop="@dimen/small_margin"
                                     android:text="@string/situacao"
@@ -251,12 +255,11 @@
                 android:id="@+id/customer_form_btn_confirm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
+                android:layout_gravity="bottom|right"
                 android:layout_margin="@dimen/default_margin"
                 android:src="@drawable/ic_check"
                 app:backgroundTint="@color/success"/>
 
-    </RelativeLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

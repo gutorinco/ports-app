@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "463289469822",
+    "firebase_url": "https://ports-online.firebaseio.com",
+    "project_id": "ports-online",
+    "storage_bucket": "ports-online.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463289469822:android:6f98b7d5db770472ae812f",
+        "android_client_info": {
+          "package_name": "br.com.suitesistemas.portsmobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "463289469822-g7kio3r0iic3kuithaia1htsmrd6ttcs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApQ-7jAFFe6NVi8Idobl62uxjbIsdrYeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "463289469822-g7kio3r0iic3kuithaia1htsmrd6ttcs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -3,13 +3,13 @@ package br.com.suitesistemas.portsmobile.view.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.entity.FinancialRelease
 import br.com.suitesistemas.portsmobile.view.viewHolder.FinancialReleaseViewHolder
 
 class FinancialReleaseAdapter(private val context: Context,
-                              private val releases: MutableList<FinancialRelease>
-) : androidx.recyclerview.widget.RecyclerView.Adapter<FinancialReleaseViewHolder>() {
+                              private val releases: MutableList<FinancialRelease>) : RecyclerView.Adapter<FinancialReleaseViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): FinancialReleaseViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.fragment_financial_adapter, parent, false)

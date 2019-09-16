@@ -5,12 +5,13 @@
 
     <data>
         <import type="android.view.View"/>
+        <import type="android.text.InputType"/>
         <variable
                 name="viewModel"
                 type="br.com.suitesistemas.portsmobile.viewModel.form.SaleFormViewModel" />
     </data>
 
-    <RelativeLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/sale_form"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -21,11 +22,17 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-            <ProgressBar
-                    android:id="@+id/sale_form_progressbar"
+            <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/progress_bar_height"
-                    style="@style/CustomProgressBar"/>
+                    android:layout_height="@dimen/progress_bar_height">
+
+                <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                        android:id="@+id/sale_form_progressbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/CustomProgressBar"/>
+
+            </FrameLayout>
 
             <ScrollView
                     android:layout_width="match_parent"
@@ -109,7 +116,7 @@
                                         android:focusable="true"
                                         android:hint="@string/cliente"
                                         android:imeOptions="actionNext"
-                                        android:inputType="textPersonName|textCapWords"
+                                        android:inputType="@{InputType.TYPE_NULL}"
                                         android:text="@={viewModel.sale.fky_cliente.dsc_nome_pessoa}"
                                         android:textSize="@dimen/medium_font"/>
 
@@ -130,7 +137,7 @@
                                         android:focusable="true"
                                         android:hint="@string/vendedor"
                                         android:imeOptions="actionNext"
-                                        android:inputType="text"
+                                        android:inputType="@{InputType.TYPE_NULL}"
                                         android:text="@={viewModel.sale.fky_vendedor.dsc_nome_pessoa}"
                                         android:textSize="@dimen/medium_font"/>
 
@@ -171,7 +178,7 @@
                                 <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginBottom="@dimen/tiny_margin"
+                                        android:layout_marginBottom="@dimen/spinner_label_margin_bottom"
                                         android:layout_marginStart="@dimen/tiny_margin"
                                         android:layout_marginTop="@dimen/tiny_margin"
                                         android:text="@string/empresa"
@@ -193,7 +200,7 @@
                                 <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginBottom="@dimen/tiny_margin"
+                                        android:layout_marginBottom="@dimen/very_tiny_margin"
                                         android:layout_marginStart="@dimen/tiny_margin"
                                         android:layout_marginTop="@dimen/tiny_margin"
                                         android:text="@string/condicao_pagamento"
@@ -405,12 +412,11 @@
                 android:id="@+id/sale_form_btn_confirm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
+                android:layout_gravity="bottom|right"
                 android:layout_margin="@dimen/default_margin"
                 android:src="@drawable/ic_check"
                 app:backgroundTint="@color/success"/>
 
-    </RelativeLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

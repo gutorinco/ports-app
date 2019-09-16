@@ -5,6 +5,7 @@ import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
+import br.com.suitesistemas.portsmobile.custom.string.getPhoneNumber
 import br.com.suitesistemas.portsmobile.entity.Customer
 import br.com.suitesistemas.portsmobile.model.CustomerSituation
 import br.com.suitesistemas.portsmobile.service.company.CompanyRepository
@@ -55,45 +56,29 @@ class CustomerFormViewModel(application: Application) : FormViewModel<Customer>(
             throw InvalidValueException(getStringRes(R.string.campo_obrigatorio, "Situação"))
         }
 
-        var phone = customer.dsc_fone_01!!
-        phone = phone.replace("null", "")
-        if (phone.contains("-") && phone.length == 14) {
-            customer.dsc_ddd_01 = phone.substring(1, 3)
-            customer.dsc_fone_01 = phone.substring(5, 14).replace("-", "")
-        } else if (phone.length == 10) {
-            customer.dsc_ddd_01 = phone.substring(0, 2)
-            customer.dsc_fone_01 = phone.substring(2, 10)
-        } else if (phone.isNotEmpty())  {
-            throw InvalidValueException("Telefone", getStringRes(R.string.numero_nao_aceito))
-        }
+        val phone = customer.dsc_fone_01?.getPhoneNumber() ?: throw InvalidValueException("Telefone", getStringRes(R.string.numero_nao_aceito))
+        customer.dsc_ddd_01 = phone.ddd
+        customer.dsc_fone_01 = phone.number
 
-        var cellPhone = customer.dsc_celular_01!!
-        cellPhone = cellPhone.replace("null", "")
-        if (cellPhone.contains("-") && cellPhone.length == 15) {
-            customer.dsc_ddd_celular_01 = cellPhone.substring(1, 3)
-            customer.dsc_celular_01 = cellPhone.substring(5, 15).replace("-", "")
-        } else if (cellPhone.length == 11) {
-            customer.dsc_ddd_celular_01 = cellPhone.substring(0, 2)
-            customer.dsc_celular_01 = cellPhone.substring(2, 11)
-        } else if (cellPhone.isNotEmpty()) {
-            throw InvalidValueException("Celular", getStringRes(R.string.numero_nao_aceito))
-        }
+        val celPhone = customer.dsc_celular_01?.getPhoneNumber() ?: throw InvalidValueException("Celular", getStringRes(R.string.numero_nao_aceito))
+        customer.dsc_ddd_celular_01 = celPhone.ddd
+        customer.dsc_celular_01 = celPhone.number
 
         this.customer.value?.copy(customer)
     }
 
-    fun save() {
+    fun save(firebaseToken: String) {
         if (customer.value?.num_codigo_online.isNullOrEmpty())
-             insert()
-        else update()
+             insert(firebaseToken)
+        else update(firebaseToken)
     }
 
-    private fun insert() {
-        insertResponse = customerRepository.insert(getJsonRequest("pessoa", customer.value!!))
+    private fun insert(firebaseToken: String) {
+        insertResponse = customerRepository.insert(getJsonRequest("pessoa", customer.value!!, firebaseToken))
     }
 
-    private fun update() {
-        updateResponse = customerRepository.update(getJsonRequest("pessoa", customer.value!!))
+    private fun update(firebaseToken: String) {
+        updateResponse = customerRepository.update(getJsonRequest("pessoa", customer.value!!, firebaseToken))
     }
 
 }

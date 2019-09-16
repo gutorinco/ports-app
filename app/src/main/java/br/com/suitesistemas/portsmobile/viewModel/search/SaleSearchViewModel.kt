@@ -54,12 +54,12 @@ class SaleSearchViewModel : SearchViewModel<Sale>() {
         itemResponse = saleItemRepository.findAll(sale.num_codigo_online)
     }
 
-    fun deleteSale(position: Int, itemsBySale: List<SaleItem>) {
+    fun deleteSale(position: Int, itemsBySale: List<SaleItem>, firebaseToken: String) {
         val sale = getSaleBy(position)
         items.clear()
         items.addAll(itemsBySale)
 
-        saleRepository.delete(sale.num_codigo_online, {
+        saleRepository.delete(sale.num_codigo_online, firebaseToken, {
             removedObject = sale
             removedPosition = position
             sales.removeAt(position)

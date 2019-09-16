@@ -55,8 +55,8 @@ class CustomerRepository(private val companyName: String) {
         return apiResponse
     }
 
-    fun delete(id: String, success: () -> Unit, failure: (messageError: String?) -> Unit) {
-        val call = service.delete(id, companyName)
+    fun delete(id: String, firebaseToken: String, success: () -> Unit, failure: (messageError: String?) -> Unit) {
+        val call = service.delete(id, companyName, firebaseToken)
         call.responseHandle({
             success()
         }, {

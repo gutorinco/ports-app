@@ -1,20 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@drawable/border_bottom"
-              android:padding="@dimen/small_margin">
+<com.google.android.material.card.MaterialCardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/customer_adapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/very_tiny_margin"
+        android:elevation="@dimen/elevation">
 
-    <TextView android:id="@+id/customer_name"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:textSize="@dimen/medium_font"
-              android:textStyle="bold"/>
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
 
-    <TextView android:id="@+id/customer_email"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:textSize="@dimen/small_font"/>
+        <LinearLayout android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/small_margin"
+                android:layout_weight="1">
 
-</LinearLayout>
+            <TextView android:id="@+id/customer_adapter_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/medium_font"
+                    android:textStyle="bold"/>
+
+            <TextView android:id="@+id/customer_adapter_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/small_font"/>
+
+        </LinearLayout>
+
+        <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:paddingTop="@dimen/search_view_corner_radius">
+
+            <ImageButton
+                    android:id="@+id/customer_adapter_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/transparent"
+                    android:src="@drawable/ic_dots"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

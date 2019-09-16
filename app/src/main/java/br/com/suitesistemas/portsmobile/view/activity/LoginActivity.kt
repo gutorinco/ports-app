@@ -11,6 +11,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.edit_text.actionDoneClicked
+import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
 import br.com.suitesistemas.portsmobile.model.UserRequest
 import br.com.suitesistemas.portsmobile.model.UserResponse
 import br.com.suitesistemas.portsmobile.service.auth.AuthRepository
@@ -46,9 +48,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             }
             setOnClickListener(this@LoginActivity)
         }
+        login_password.actionDoneClicked { onClick(it) }
     }
 
     override fun onClick(v: View?) {
+        hideKeyboard()
         val user = UserRequest(
             login_company.text.toString(),
             login_user.text.toString(),
@@ -107,11 +111,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    private fun startMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-    }
-
     private fun saveSession(userResponse: UserResponse) {
         sharedPref?.let {
             with (it.edit()) {
@@ -123,6 +122,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 commit()
             }
         }
+    }
+
+    private fun startMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 
     @SuppressLint("CommitPrefEdits")

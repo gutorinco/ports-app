@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/menu_delete_action"
-        android:icon="@drawable/ic_trash"
+        android:icon="@drawable/ic_trash_white"
         android:title="@string/excluir"
         app:showAsAction="always"/>
 

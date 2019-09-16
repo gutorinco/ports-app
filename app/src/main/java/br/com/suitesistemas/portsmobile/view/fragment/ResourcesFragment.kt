@@ -22,7 +22,7 @@ class ResourcesFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_resources, container, false)
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Delegate)
             delegate = context
@@ -42,7 +42,7 @@ class ResourcesFragment : Fragment() {
         val resources = getResourceList()
         with (list_resources) {
             adapter = MainResourcesAdapter(context, resources)
-            setOnItemClickListener { _, _, position, _ -> delegate.onResourceSelected(getFragmentBy(position)) }
+            setOnItemClickListener { _, _, position, _ -> delegate.onResourceSelected(position) }
         }
     }
 
@@ -95,23 +95,11 @@ class ResourcesFragment : Fragment() {
         return resources
     }
 
-    private fun getFragmentBy(position: Int): Fragment {
-        return when (position) {
-            0 -> CustomerFragment()
-            1 -> SaleFragment()
-            2 -> FinancialFragment()
-            3 -> OrderFragment()
-            4 -> TaskFragment()
-            5 -> CRMFragment()
-            else -> CustomerFragment()
-        }
-    }
-
     private fun getDrawableBy(drawableResource: Int): Drawable? {
         return ContextCompat.getDrawable(context!!, drawableResource)
     }
 
     interface Delegate {
-        fun onResourceSelected(fragment: Fragment)
+        fun onResourceSelected(itemPosition: Int)
     }
 }

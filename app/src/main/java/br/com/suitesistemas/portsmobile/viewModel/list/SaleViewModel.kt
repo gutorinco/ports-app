@@ -40,12 +40,12 @@ class SaleViewModel : ListViewModel<Sale>() {
         response.value = ApiResponse(getSortingList(), EHttpOperation.PUT)
     }
 
-    fun deleteSale(position: Int, saleItems: List<SaleItem>) {
+    fun deleteSale(position: Int, saleItems: List<SaleItem>, firebaseToken: String) {
         val sale = getBy(position)
         items.clear()
         if (!saleItems.isNullOrEmpty())
             items.addAll(saleItems)
-        saleRepository.delete(sale.num_codigo_online, {
+        saleRepository.delete(sale.num_codigo_online, firebaseToken, {
             removedObject = sale
             removedPosition = position
             list.removeAt(position)

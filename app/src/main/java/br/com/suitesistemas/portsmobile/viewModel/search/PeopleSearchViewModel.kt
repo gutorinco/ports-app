@@ -42,9 +42,9 @@ class PeopleSearchViewModel : SearchViewModel<Customer>() {
 
     fun getCustomerBy(position: Int) = peoples[position]
 
-    fun delete(position: Int) {
+    fun delete(position: Int, firebaseToken: String) {
         val people = peoples[position]
-        repository.delete(people.num_codigo_online, {
+        repository.delete(people.num_codigo_online, firebaseToken, {
             removedObject = people
             removedPosition = position
             peoples.removeAt(position)

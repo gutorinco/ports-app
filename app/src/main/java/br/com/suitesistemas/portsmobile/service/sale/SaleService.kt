@@ -23,6 +23,6 @@ interface SaleService {
     fun update(@Path("apelido") apelido: String, @Body json: MutableList<HashMap<String, Any?>>): Call<VersionResponse>
 
     @DELETE("venda/{id}/{apelido}")
-    fun delete(@Path("id") id: String, @Path("apelido") apelido: String): Call<Unit>
+    fun delete(@Path("id") id: String, @Path("apelido") apelido: String, @Query("token") token: String): Call<Unit>
 
 }

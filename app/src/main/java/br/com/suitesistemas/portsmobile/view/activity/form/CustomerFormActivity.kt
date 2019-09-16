@@ -4,12 +4,19 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
+import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
+import br.com.suitesistemas.portsmobile.custom.edit_text.addCpfCnpjMask
+import br.com.suitesistemas.portsmobile.custom.edit_text.addPhoneMask
 import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
+import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
+import br.com.suitesistemas.portsmobile.custom.progress_bar.show
+import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
 import br.com.suitesistemas.portsmobile.custom.view.showMessage
 import br.com.suitesistemas.portsmobile.databinding.ActivityCustomerFormBinding
@@ -18,7 +25,9 @@ import br.com.suitesistemas.portsmobile.entity.Customer
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
 import br.com.suitesistemas.portsmobile.model.enums.ECustomerSituation
+import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
+import br.com.suitesistemas.portsmobile.view.adapter.SpinnerAdapter
 import br.com.suitesistemas.portsmobile.viewModel.form.CustomerFormViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_customer_form.*
@@ -35,6 +44,7 @@ class CustomerFormActivity : FormActivity() {
         initViewModel()
         configureObservers()
         configureDataBinding()
+        configureForm()
 
         val customerToEdit = intent.getSerializableExtra("customer")
         if (customerToEdit != null)
@@ -44,20 +54,21 @@ class CustomerFormActivity : FormActivity() {
         configureBtnConfirm()
     }
 
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        customer_form_btn_confirm.showFromBottom()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        customer_form_btn_confirm.hideToBottom()
+    }
+
     private fun initViewModel() {
         val companyName = SharedPreferencesUtils.getCompanyName(this)
         viewModel = ViewModelProviders.of(this).get(CustomerFormViewModel::class.java)
         viewModel.initRepositories(companyName)
         viewModel.fetchAllCompanies()
-    }
-
-    private fun configureDataBinding() {
-        DataBindingUtil
-            .setContentView<ActivityCustomerFormBinding>(this, R.layout.activity_customer_form)
-            .apply {
-                lifecycleOwner = this@CustomerFormActivity
-                viewModel = this@CustomerFormActivity.viewModel
-            }
     }
 
     private fun configureObservers() {
@@ -66,7 +77,7 @@ class CustomerFormActivity : FormActivity() {
 
     private fun getCompanyObserver(): Observer<ApiResponse<MutableList<Company>?>> {
         return Observer {
-            customer_form_progressbar.isIndeterminate = false
+            customer_form_progressbar.hide()
             if (it.messageError == null) {
                 configureCompanyAdapter(it)
             } else {
@@ -81,7 +92,7 @@ class CustomerFormActivity : FormActivity() {
             viewModel.addAllCompanies(companies)
             val companiesName = companies.map { company -> company.dsc_empresa }
 
-            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, companiesName)
+            val adapter = SpinnerAdapter(this, companiesName)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
             val index = companies.indexOfFirst { company ->
@@ -92,9 +103,24 @@ class CustomerFormActivity : FormActivity() {
         }
     }
 
+    private fun configureDataBinding() {
+        DataBindingUtil
+            .setContentView<ActivityCustomerFormBinding>(this, R.layout.activity_customer_form)
+            .apply {
+                lifecycleOwner = this@CustomerFormActivity
+                viewModel = this@CustomerFormActivity.viewModel
+            }
+    }
+
+    private fun configureForm() {
+        customer_form_cpf_cnpj.addCpfCnpjMask()
+        customer_form_cell_phone.addPhoneMask()
+        customer_form_phone.addPhoneMask()
+    }
+
     private fun initSituationsList() {
         val situations = resources.getStringArray(R.array.customerSituations)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, situations)
+        val adapter = SpinnerAdapter(this, situations.toList())
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         customer_form_situation.adapter = adapter
@@ -109,30 +135,28 @@ class CustomerFormActivity : FormActivity() {
 
     private fun configureBtnConfirm() {
         customer_form_btn_confirm.setOnClickListener {
-            when {
-                customer_form_progressbar.isIndeterminate -> showMessage(customer_form, getString(R.string.aguarde_terminar))
-                else -> {
-                    hideKeyboard()
-                    customer_form_name.error = null
-                    customer_form_phone.error = null
-                    customer_form_cell_phone.error = null
+            executeAfterLoaded(customer_form_progressbar.isIndeterminate, customer_form) {
+                hideKeyboard()
+                customer_form_name.error = null
+                customer_form_phone.error = null
+                customer_form_cell_phone.error = null
 
-                    try {
-                        val situation = customer_form_situation.selectedItem.toString()
-                        val companyPosition = customer_form_company.selectedItemPosition
+                try {
+                    val situation = customer_form_situation.selectedItem.toString()
+                    val companyPosition = customer_form_company.selectedItemPosition
 
-                        viewModel.validateForm(situation, companyPosition)
-                        customer_form_progressbar.isIndeterminate = true
-                        viewModel.save()
-                        viewModel.insertResponse.observe(this, getInsertObserver())
-                        viewModel.updateResponse.observe(this, getUpdateObserver())
-                    } catch (ex: InvalidValueException) {
-                        when (ex.field) {
-                            "Nome" -> customer_form_name.error = ex.message
-                            "Telefone" -> customer_form_phone.error = ex.message
-                            "Celular" -> customer_form_cell_phone.error = ex.message
-                            else -> showMessage(customer_form, ex.message!!)
-                        }
+                    viewModel.validateForm(situation, companyPosition)
+                    customer_form_progressbar.show()
+                    val firebaseToken = FirebaseUtils.getToken(this)
+                    viewModel.save(firebaseToken)
+                    viewModel.insertResponse.observe(this, getInsertObserver())
+                    viewModel.updateResponse.observe(this, getUpdateObserver())
+                } catch (ex: InvalidValueException) {
+                    when (ex.field) {
+                        "Nome" -> customer_form_name.error = ex.message
+                        "Telefone" -> customer_form_phone.error = ex.message
+                        "Celular" -> customer_form_cell_phone.error = ex.message
+                        else -> showMessage(customer_form, ex.message!!)
                     }
                 }
             }
@@ -141,29 +165,28 @@ class CustomerFormActivity : FormActivity() {
 
     private fun getInsertObserver(): Observer<ApiResponse<Customer?>> {
         return Observer {
-            customer_form_progressbar.isIndeterminate = false
+            customer_form_progressbar.hide()
             if (it.messageError == null) {
                 it?.data?.let { customer ->
                     viewModel.customer.value = customer
                     created(customer)
                 }
             } else {
-                Log.e("CUSTOMER INSERT ERROR:", it.messageError)
-                Snackbar.make(customer_form, getString(R.string.falha_inserir_cliente), Snackbar.LENGTH_LONG).show()
+                showMessage(customer_form, it.messageError, getString(R.string.falha_inserir_cliente))
             }
         }
     }
 
     private fun getUpdateObserver(): Observer<ApiResponse<VersionResponse?>> {
         return Observer {
-            customer_form_progressbar.isIndeterminate = false
+            customer_form_progressbar.hide()
             if (it.messageError == null) {
                 it?.data?.let { versionResponse ->
                     viewModel.customer.value?.version = versionResponse.version
                     created(viewModel.customer.value!!)
                 }
             } else {
-                Snackbar.make(customer_form, getString(R.string.falha_atualizar_cliente), Snackbar.LENGTH_LONG).show()
+                showMessage(customer_form, it.messageError, getString(R.string.falha_atualizar_cliente))
             }
         }
     }

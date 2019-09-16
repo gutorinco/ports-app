@@ -12,12 +12,15 @@ import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
+import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
 import br.com.suitesistemas.portsmobile.custom.view.onChangedFailure
+import br.com.suitesistemas.portsmobile.custom.view.showMessage
 import br.com.suitesistemas.portsmobile.databinding.ActivityPeopleSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Customer
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
+import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.adapter.CustomerAdapter
 import br.com.suitesistemas.portsmobile.viewModel.search.PeopleSearchViewModel
@@ -67,10 +70,8 @@ class PeopleSearchActivity : SearchActivity(), OnItemClickListener, Observer<Api
     }
 
     override fun onClick(v: View?) {
-        hideKeyboard()
-        if (viewModel.searching.value!!) {
-            Snackbar.make(people_search, getString(R.string.aguarde_terminar), Snackbar.LENGTH_LONG).show()
-        } else {
+        executeAfterLoaded(viewModel.searching.value!!, people_search) {
+            hideKeyboard()
             val search = people_search_bar_query.text.toString()
             viewModel.search(search)
             viewModel.response.observe(this, this)
@@ -82,8 +83,9 @@ class PeopleSearchActivity : SearchActivity(), OnItemClickListener, Observer<Api
         if (response.messageError == null) {
             onResponse(response.data, response.operation)
         } else {
-            onChangedFailure(people_search, response.messageError!!, response.operation)
-            configureList(viewModel.getList())
+            onChangedFailure(people_search, response.messageError!!, response.operation) {
+                configureList(viewModel.getList())
+            }
         }
     }
 
@@ -99,7 +101,19 @@ class PeopleSearchActivity : SearchActivity(), OnItemClickListener, Observer<Api
     private fun setAdapter(data: List<Customer>?) = data?.let { customerAdapter.setAdapter(it) }
 
     private fun configureList(customers: MutableList<Customer>) {
-        customerAdapter = CustomerAdapter(baseContext, customers)
+        customerAdapter = CustomerAdapter(baseContext, this, customers, {
+            startActivity(it)
+        }, {
+            showMessage(people_search, getString(it))
+        }, {
+            if (type == "C")
+                delete(it)
+            else showMessage(people_search, getString(R.string.acao_exclusao_clientes))
+        }, {
+            if (type == "C")
+                onItemClicked(it, people_search)
+            else showMessage(people_search, getString(R.string.acao_exclusao_clientes))
+        })
         if (type == "C")
             configureSwipe()
         with (people_search_recycler_view) {
@@ -110,16 +124,16 @@ class PeopleSearchActivity : SearchActivity(), OnItemClickListener, Observer<Api
 
     private fun configureSwipe() {
         people_search_recycler_view.addSwipe(SwipeToDeleteCallback(baseContext) { itemPosition ->
-            when (viewModel.searching.value) {
-                true  -> Snackbar.make(people_search, getString(R.string.aguarde_terminar), Snackbar.LENGTH_LONG).show()
-                false -> delete(itemPosition)
+            executeAfterLoaded(viewModel.searching.value!!, people_search) {
+                delete(itemPosition)
             }
         })
     }
 
     private fun delete(position: Int) {
+        val firebaseToken = FirebaseUtils.getToken(this)
         viewModel.searching.value = true
-        viewModel.delete(position)
+        viewModel.delete(position, firebaseToken)
     }
 
     override fun deleteRollback() {

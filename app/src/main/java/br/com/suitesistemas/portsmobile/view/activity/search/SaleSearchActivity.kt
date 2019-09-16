@@ -12,12 +12,15 @@ import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
+import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
+import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
 import br.com.suitesistemas.portsmobile.custom.view.onChangedFailure
 import br.com.suitesistemas.portsmobile.databinding.ActivitySaleSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Sale
 import br.com.suitesistemas.portsmobile.entity.SaleItem
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
+import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.adapter.SaleAdapter
 import br.com.suitesistemas.portsmobile.viewModel.search.SaleSearchViewModel
@@ -67,9 +70,8 @@ class SaleSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiRe
     }
 
     override fun onClick(v: View?) {
-        if (viewModel.searching.value!!) {
-            Snackbar.make(sale_search, getString(R.string.aguarde_terminar), Snackbar.LENGTH_LONG).show()
-        } else {
+        executeAfterLoaded(viewModel.searching.value!!, sale_search) {
+            hideKeyboard()
             val search = sale_search_bar_query.text.toString()
             viewModel.search(search)
             viewModel.response.observe(this, this)
@@ -81,8 +83,9 @@ class SaleSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiRe
         if (response.messageError == null) {
             onResponse(response.data, response.operation)
         } else {
-            onChangedFailure(sale_search, response.messageError!!, response.operation)
-            configureList(viewModel.getList())
+            onChangedFailure(sale_search, response.messageError!!, response.operation) {
+                configureList(viewModel.getList())
+            }
         }
     }
 
@@ -99,7 +102,11 @@ class SaleSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiRe
     private fun setAdapter(data: List<Sale>?) = data?.let { saleAdapter.setAdapter(it) }
 
     private fun configureList(sales: MutableList<Sale>) {
-        saleAdapter = SaleAdapter(baseContext, sales)
+        saleAdapter = SaleAdapter(baseContext, sales, {
+            delete(it)
+        }, {
+            onItemClicked(it, sale_search)
+        })
         with(sale_search_recycler_view) {
             adapter = saleAdapter
             addSwipe(configureSwipe())
@@ -110,17 +117,17 @@ class SaleSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiRe
 
     private fun configureSwipe(): SwipeToDeleteCallback {
         return SwipeToDeleteCallback(baseContext) { itemPosition ->
-            when (viewModel.searching.value) {
-                true  -> Snackbar.make(sale_search, getString(R.string.aguarde_terminar), Snackbar.LENGTH_LONG).show()
-                false -> delete(itemPosition)
+            executeAfterLoaded(viewModel.searching.value!!, sale_search) {
+                delete(itemPosition)
             }
         }
     }
 
     private fun delete(position: Int) {
+        val firebaseToken = FirebaseUtils.getToken(this)
         viewModel.searching.value = true
         viewModel.findAllItemsBySale(position)
-        viewModel.itemResponse.observe(this, Observer { viewModel.deleteSale(position, it.data!!) })
+        viewModel.itemResponse.observe(this, Observer { viewModel.deleteSale(position, it.data!!, firebaseToken) })
     }
 
     override fun deleteRollback() {
@@ -138,7 +145,9 @@ class SaleSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiRe
                     }
                 }
             } else {
-                onChangedFailure(sale_search, it.messageError!!, EHttpOperation.ROLLBACK)
+                onChangedFailure(sale_search, it.messageError!!, EHttpOperation.ROLLBACK) {
+                    configureList(viewModel.getList())
+                }
             }
         })
     }

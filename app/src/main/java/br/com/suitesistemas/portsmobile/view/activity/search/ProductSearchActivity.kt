@@ -11,8 +11,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
+import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
 import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
+import br.com.suitesistemas.portsmobile.custom.recycler_view.hideButtonOnScroll
 import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
 import br.com.suitesistemas.portsmobile.databinding.ActivityProductSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Product
@@ -46,6 +49,16 @@ class ProductSearchActivity : SearchActivity(), OnItemClickListener, Observer<Ap
 
         viewModel = ViewModelProviders.of(this).get(ProductSearchViewModel::class.java)
         viewModel.initRepository(companyName)
+        viewModel.onSelected {
+            with (product_search_button) {
+                if (it) {
+                    if (visibility == View.GONE)
+                        showFromBottom()
+                } else if (visibility == View.VISIBLE) {
+                    hideToBottom()
+                }
+            }
+        }
     }
 
     private fun configureDataBinding() {
@@ -107,6 +120,7 @@ class ProductSearchActivity : SearchActivity(), OnItemClickListener, Observer<Ap
         with (product_search_recycler_view) {
             adapter = selectProductAdapter
             addOnItemClickListener(this@ProductSearchActivity)
+            hideButtonOnScroll(product_search_button)
         }
     }
 

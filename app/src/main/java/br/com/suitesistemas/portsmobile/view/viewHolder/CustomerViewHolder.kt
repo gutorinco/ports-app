@@ -8,8 +8,9 @@ import kotlinx.android.synthetic.main.fragment_customer_adapter.view.*
 
 class CustomerViewHolder(adapterView: View) : ViewHolder(adapterView) {
 
-    val name = adapterView.customer_name
-    val email = adapterView.customer_email
+    val name = adapterView.customer_adapter_name
+    val email = adapterView.customer_adapter_email
+    val menu = adapterView.customer_adapter_menu
 
     fun bindView(customer: Customer) {
         name.text  = customer.dsc_nome_pessoa

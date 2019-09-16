@@ -27,9 +27,9 @@ class CustomerViewModel : ListViewModel<Customer>() {
         response.value = ApiResponse(getSortingList(), EHttpOperation.PUT)
     }
 
-    fun delete(position: Int) {
+    fun delete(position: Int, firebaseToken: String) {
         val customer = getBy(position)
-        repository.delete(customer.num_codigo_online, {
+        repository.delete(customer.num_codigo_online, firebaseToken, {
             removedObject = customer
             removedPosition = position
             list.removeAt(position)

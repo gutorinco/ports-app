@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/small_margin"
+        android:paddingLeft="@dimen/tiny_margin"
+        android:paddingRight="@dimen/tiny_margin"
+        android:paddingTop="@dimen/tiny_margin">
+
+    <TextView
+            android:id="@+id/spinner_adapter_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:minLines="1"
+            android:scrollHorizontally="true"
+            android:textColor="@color/dark"
+            android:textSize="@dimen/medium_font"/>
+
+</LinearLayout>

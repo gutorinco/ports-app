@@ -9,6 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
+import br.com.suitesistemas.portsmobile.custom.progress_bar.show
+import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.view.setTitle
 import br.com.suitesistemas.portsmobile.entity.FinancialRelease
 import br.com.suitesistemas.portsmobile.model.ApiResponse
@@ -40,14 +43,12 @@ class FinancialFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Obse
         setTitle(R.string.lancamentos)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.menu_search, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item == null)
-            return super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_search_action -> {
                 initSearchFinancialReleaseActivity()
@@ -62,9 +63,7 @@ class FinancialFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Obse
     }
 
     private fun initSearchFinancialReleaseActivity() {
-        if (financial_progressbar.isIndeterminate) {
-            Snackbar.make(financial_layout, getString(R.string.aguarde_terminar), Snackbar.LENGTH_LONG).show()
-        } else {
+        executeAfterLoaded(financial_progressbar.isIndeterminate, financial_layout) {
             val intent = Intent(activity, FinancialReleaseSearchActivity::class.java)
             startActivity(intent)
         }
@@ -78,7 +77,7 @@ class FinancialFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Obse
     }
 
     private fun refresh() {
-        financial_progressbar.isIndeterminate = true
+        financial_progressbar.show()
         viewModel.refresh()
         viewModel.refreshResponse.observe(this, this)
     }
@@ -90,7 +89,7 @@ class FinancialFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Obse
     }
 
     override fun onChanged(response: ApiResponse<MutableList<FinancialRelease>?>) {
-        financial_progressbar.isIndeterminate = false
+        financial_progressbar.hide()
         financial_refresh.isRefreshing = false
 
         if (response.messageError == null) {

@@ -9,9 +9,10 @@ import java.util.*
 
 class SaleViewHolder(private val adapterView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(adapterView) {
 
-    val clientName = adapterView.sale_client_name
-    val value = adapterView.sale_value
-    val date = adapterView.sale_date
+    val clientName = adapterView.sale_adapter_client_name
+    val value = adapterView.sale_adapter_value
+    val date = adapterView.sale_adapter_date
+    val menu = adapterView.sale_adapter_menu
 
     fun bindView(sale: Sale) {
         clientName.text = sale.fky_cliente.dsc_nome_pessoa

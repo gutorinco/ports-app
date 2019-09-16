@@ -25,13 +25,18 @@ abstract class FormViewModel<T>(application: Application) : AndroidViewModel(app
         this.companies.addAll(companies)
     }
 
-    protected fun getJsonRequest(objName: String, obj: T): MutableList<HashMap<String, Any?>> {
-        val map = HashMap<String, Any?>()
-        map[objName] = obj
-        map["token"] = null
-
+    protected fun getJsonRequest(objName: String, obj: T, firebaseToken: String): MutableList<HashMap<String, Any?>> {
         val jsonRequest: MutableList<HashMap<String, Any?>> = mutableListOf()
-        jsonRequest.add(map)
+
+        val objMap = HashMap<String, Any?>()
+        objMap[objName] = obj
+
+        jsonRequest.add(objMap)
+
+        val tokenMap = HashMap<String, Any?>()
+        tokenMap["token"] = firebaseToken
+
+        jsonRequest.add(tokenMap)
 
         return jsonRequest
     }

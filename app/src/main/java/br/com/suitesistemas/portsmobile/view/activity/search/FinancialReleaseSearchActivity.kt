@@ -1,19 +1,20 @@
 package br.com.suitesistemas.portsmobile.view.activity.search
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
+import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
+import br.com.suitesistemas.portsmobile.custom.view.showMessageError
 import br.com.suitesistemas.portsmobile.databinding.ActivityFinancialReleaseSearchBinding
 import br.com.suitesistemas.portsmobile.entity.FinancialRelease
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.adapter.FinancialReleaseAdapter
 import br.com.suitesistemas.portsmobile.viewModel.search.FinancialReleaseSearchViewModel
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_financial_release_search.*
 
 class FinancialReleaseSearchActivity : SearchActivity(), Observer<ApiResponse<MutableList<FinancialRelease>?>> {
@@ -57,9 +58,8 @@ class FinancialReleaseSearchActivity : SearchActivity(), Observer<ApiResponse<Mu
     }
 
     override fun onClick(v: View?) {
-        if (viewModel.searching.value!!) {
-            Snackbar.make(financial_search, getString(R.string.aguarde_terminar), Snackbar.LENGTH_LONG).show()
-        } else {
+        executeAfterLoaded(viewModel.searching.value!!, financial_search) {
+            hideKeyboard()
             val search = financial_search_bar_query.text.toString()
             viewModel.search(search)
             viewModel.response.observe(this, this)
@@ -73,8 +73,7 @@ class FinancialReleaseSearchActivity : SearchActivity(), Observer<ApiResponse<Mu
                 releaseAdapter.setAdapter(it)
             }
         } else {
-            Log.e("FINANCIAL SEARCH ERROR:", response.messageError)
-            Snackbar.make(financial_search, getString(R.string.nenhum_resultado), Snackbar.LENGTH_LONG).show()
+            showMessageError(financial_search, "FINANCIAL SEARCH ERROR:", response.messageError, getString(R.string.nenhum_resultado))
         }
 
         viewModel.searching.value = false

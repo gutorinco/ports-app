@@ -163,10 +163,10 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
         initRemovedItemsList(itemsBeforeClear)
     }
 
-    fun save() {
+    fun save(firebaseToken: String) {
         if (sale.value?.num_codigo_online.isNullOrEmpty())
-             insertResponse = saleRepository.insert(getJsonRequest("venda", sale.value!!))
-        else updateResponse = saleRepository.update(getJsonRequest("venda", sale.value!!))
+             insertResponse = saleRepository.insert(getJsonRequest("venda", sale.value!!, firebaseToken))
+        else updateResponse = saleRepository.update(getJsonRequest("venda", sale.value!!, firebaseToken))
     }
 
     fun insertItems() {

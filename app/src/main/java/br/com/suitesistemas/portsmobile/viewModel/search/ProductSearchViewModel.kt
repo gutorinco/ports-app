@@ -11,10 +11,15 @@ class ProductSearchViewModel : SearchViewModel<Product>() {
     val selected = MutableLiveData<Boolean>()
     private val products: MutableList<Product> = mutableListOf()
     private val productsSelected: MutableList<Product> = mutableListOf()
+    private lateinit var selectedResponse: (Boolean) -> Unit
     private lateinit var repository: ProductRepository
 
     init {
         selected.value = false
+    }
+
+    fun onSelected(selected: (Boolean) -> Unit) {
+        selectedResponse = selected
     }
 
     fun initRepository(companyName: String) {
@@ -45,6 +50,7 @@ class ProductSearchViewModel : SearchViewModel<Product>() {
             false -> productsSelected.remove(product)
         }
         selected.value = productsSelected.isNotEmpty()
+        selectedResponse.invoke(productsSelected.isNotEmpty())
     }
 
 }

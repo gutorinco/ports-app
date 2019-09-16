@@ -78,8 +78,8 @@
                 android:text="@string/nao_encontrado"
                 android:textSize="@dimen/medium_font"
                 android:visibility="@{viewModel.listIsEmpty &amp;&amp; viewModel.wasSearched ? View.VISIBLE : View.GONE}"/>
-    
-    
+
+
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/product_search_recycler_view"
                 android:layout_width="match_parent"
@@ -87,7 +87,7 @@
                 android:paddingTop="@dimen/very_large_margin"
                 android:visibility="@{!viewModel.wasSearched || !viewModel.listIsEmpty ? View.VISIBLE : View.GONE}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-    
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/product_search_button"
                 android:layout_width="wrap_content"

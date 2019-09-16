@@ -36,15 +36,13 @@ abstract class BasicFragment<T, K : CustomAdapter<T>> : Fragment() {
         },250)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.menu_search, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     abstract fun initSearchActivity()
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item == null)
-            return super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_search_action -> {
                 initSearchActivity()

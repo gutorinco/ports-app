@@ -1,44 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:baselineAligned="false"
-              android:background="@drawable/border_bottom"
-              android:padding="@dimen/small_margin">
+<com.google.android.material.card.MaterialCardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/sale_adapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/very_tiny_margin"
+        android:elevation="@dimen/elevation">
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
-
-        <TextView android:id="@+id/sale_client_name"
+    <LinearLayout android:orientation="horizontal"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:textSize="@dimen/medium_font"
-                  android:textStyle="bold"/>
+                  android:baselineAligned="false">
 
-        <TextView android:id="@+id/sale_value"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:textSize="@dimen/small_font"/>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/small_margin"
+                android:orientation="vertical">
+
+            <TextView android:id="@+id/sale_adapter_client_name"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textSize="@dimen/medium_font"
+                      android:textStyle="bold"/>
+
+            <TextView android:id="@+id/sale_adapter_date"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="@dimen/very_tiny_margin"
+                      android:textSize="@dimen/small_font"/>
+
+            <TextView android:id="@+id/sale_adapter_value"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="@dimen/very_tiny_margin"
+                      android:textSize="@dimen/small_font"/>
+
+        </LinearLayout>
+
+        <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="9">
+
+            <ImageButton
+                    android:id="@+id/sale_adapter_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/transparent"
+                    android:src="@drawable/ic_dots"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="4">
-
-        <TextView android:id="@+id/sale_date"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="end|top"
-                  android:textSize="@dimen/small_font"
-                  android:textStyle="bold"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

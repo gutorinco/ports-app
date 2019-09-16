@@ -10,17 +10,19 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
-import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
-import br.com.suitesistemas.portsmobile.custom.view.configure
+import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
+import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
+import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
+import br.com.suitesistemas.portsmobile.custom.progress_bar.show
+import br.com.suitesistemas.portsmobile.custom.recycler_view.*
+import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.view.onChangedFailure
 import br.com.suitesistemas.portsmobile.custom.view.setTitle
 import br.com.suitesistemas.portsmobile.custom.view.showMessage
 import br.com.suitesistemas.portsmobile.entity.Customer
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
+import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.activity.form.CustomerFormActivity
 import br.com.suitesistemas.portsmobile.view.activity.search.PeopleSearchActivity
@@ -50,15 +52,21 @@ class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        super.init(customer_layout, CustomerAdapter(context!!, viewModel.getSortingList()))
+        super.init(customer_layout, CustomerAdapter(context!!, activity!!, viewModel.getSortingList(), {
+            startActivity(it)
+        }, {
+            showMessage(customer_layout, getString(it))
+        }, {
+            delete(it)
+        }, {
+            edit(it)
+        }))
         setTitle(R.string.clientes)
     }
 
-    override fun initSearchActivity() {
-        val intent = Intent(activity, PeopleSearchActivity::class.java)
-        intent.putExtra("get", true)
-        intent.putExtra("type", "C")
-        startActivityForResult(intent, GET_REQUEST_CODE)
+    override fun onPause() {
+        super.onPause()
+        customer_button.hideToBottom()
     }
 
     override fun onRefresh() {
@@ -69,9 +77,18 @@ class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
     }
 
     private fun refresh() {
-        customer_progressbar.isIndeterminate = true
+        customer_progressbar.show()
         viewModel.refresh()
         viewModel.refreshResponse.observe(this, this)
+    }
+
+    override fun initSearchActivity() {
+        executeAfterLoaded(customer_progressbar.isIndeterminate, customer_layout) {
+            val intent = Intent(activity, PeopleSearchActivity::class.java)
+            intent.putExtra("get", true)
+            intent.putExtra("type", "C")
+            startActivityForResult(intent, GET_REQUEST_CODE)
+        }
     }
 
     private fun configureObserver() {
@@ -81,29 +98,35 @@ class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
     }
 
     override fun onChanged(response: ApiResponse<MutableList<Customer>?>) {
-        customer_progressbar.isIndeterminate = false
+        customer_progressbar.hide()
         customer_refresh.isRefreshing = false
 
         if (response.messageError == null) {
             onChangedResponse(response.data, response.operation) {
-                when (customer_progressbar.isIndeterminate) {
-                    true -> showMessage(customer_layout, getString(R.string.aguarde_terminar))
-                    false -> onButtonClicked(response)
+                executeAfterLoaded(customer_progressbar.isIndeterminate, customer_layout) {
+                    configureButton()
+                    response.data?.let { customers ->
+                        viewModel.addAll(customers)
+                        configureList(customers)
+                    }
                 }
             }
         } else {
-            onChangedFailure(customer_layout, response.messageError!!, response.operation)
+            onChangedFailure(customer_layout, response.messageError!!, response.operation) {
+                configureList(viewModel.getSortingList())
+            }
         }
     }
 
-    private fun onButtonClicked(response: ApiResponse<MutableList<Customer>?>) {
-        customer_button.configure {
-            val intent = Intent(activity, CustomerFormActivity::class.java)
-            startActivityForResult(intent, CREATE_REQUEST_CODE)
-        }
-        response.data?.let { customers ->
-            viewModel.addAll(customers)
-            configureList(customers)
+    private fun configureButton() {
+        with (customer_button) {
+            showFromBottom()
+            setOnClickListener {
+                executeAfterLoaded(customer_progressbar.isIndeterminate, customer_layout) {
+                    val intent = Intent(activity, CustomerFormActivity::class.java)
+                    startActivityForResult(intent, CREATE_REQUEST_CODE)
+                }
+            }
         }
     }
 
@@ -128,6 +151,7 @@ class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
         } else if (resultCode == Activity.BIND_IMPORTANT) { // Deleted on search
             refresh()
         }
+        customer_button.showFromBottom()
     }
 
     private fun editCustomerSelected(customer: Customer) {
@@ -137,6 +161,7 @@ class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
     }
 
     private fun configureList(customers: MutableList<Customer>) {
+        customer_refresh.setOnRefreshListener(this@CustomerFragment)
         configureEmptyView()
         configureSwipe()
         customAdapter.setAdapter(customers)
@@ -144,7 +169,7 @@ class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
         with (customer_recyclerview) {
             adapter = customAdapter
             addOnItemClickListener(this@CustomerFragment)
-            customer_refresh.setOnRefreshListener(this@CustomerFragment)
+            hideButtonOnScroll(customer_button)
         }
     }
 
@@ -160,23 +185,23 @@ class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
 
     private fun configureSwipe() {
         customer_recyclerview.addSwipe(SwipeToDeleteCallback(context!!) { itemPosition ->
-            when (customer_progressbar.isIndeterminate) {
-                true  -> Snackbar.make(customer_layout, getString(R.string.aguarde_terminar), Snackbar.LENGTH_LONG).show()
-                false -> delete(itemPosition)
+            executeAfterLoaded(customer_progressbar.isIndeterminate, customer_layout) {
+                delete(itemPosition)
             }
         })
     }
 
     private fun delete(position: Int) {
-        customer_progressbar.isIndeterminate = true
-        viewModel.delete(position)
+        val firebaseToken = FirebaseUtils.getToken(context!!)
+        customer_progressbar.show()
+        viewModel.delete(position, firebaseToken)
     }
 
     override fun deleteRollback() {
-        customer_progressbar.isIndeterminate = true
+        customer_progressbar.show()
         viewModel.deleteRollback()
         viewModel.rollbackResponse.observe(this, Observer {
-            customer_progressbar.isIndeterminate = true
+            customer_progressbar.show()
             if (it.messageError == null) {
                 it.data?.let { customer -> viewModel.add(customer, EHttpOperation.ROLLBACK) }
             } else {
@@ -186,9 +211,8 @@ class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
     }
 
     override fun onItemClicked(position: Int, view: View) {
-        when (customer_progressbar.isIndeterminate) {
-            true -> Snackbar.make(customer_layout, getString(R.string.aguarde_terminar), Snackbar.LENGTH_LONG).show()
-            false -> edit(position)
+        executeAfterLoaded(customer_progressbar.isIndeterminate, customer_layout) {
+            edit(position)
         }
     }
 

@@ -8,20 +8,25 @@ import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.TimePicker
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
+import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
 import br.com.suitesistemas.portsmobile.custom.calendar.toStringFormat
 import br.com.suitesistemas.portsmobile.custom.edit_text.afterTextChanged
 import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
+import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
+import br.com.suitesistemas.portsmobile.custom.progress_bar.show
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
+import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
 import br.com.suitesistemas.portsmobile.custom.view.showMessage
 import br.com.suitesistemas.portsmobile.custom.view.showMessageError
@@ -31,10 +36,12 @@ import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.ProductDetail
 import br.com.suitesistemas.portsmobile.model.VersionResponse
 import br.com.suitesistemas.portsmobile.model.enums.EYesNo
+import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.activity.search.PeopleSearchActivity
 import br.com.suitesistemas.portsmobile.view.activity.search.ProductSearchActivity
 import br.com.suitesistemas.portsmobile.view.adapter.ProductAdapter
+import br.com.suitesistemas.portsmobile.view.adapter.SpinnerAdapter
 import br.com.suitesistemas.portsmobile.view.dialog.ProductQuantityDialog
 import br.com.suitesistemas.portsmobile.viewModel.form.SaleFormViewModel
 import kotlinx.android.synthetic.main.activity_sale_form.*
@@ -63,9 +70,14 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
         initForm()
     }
 
-    override fun onResume() {
-        super.onResume()
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        sale_form_btn_confirm.showFromBottom()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sale_form_btn_confirm.hideToBottom()
     }
 
     private fun init() {
@@ -99,7 +111,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
 
     private fun getCompanyObserver(): Observer<ApiResponse<MutableList<Company>?>> {
         return Observer {
-            sale_form_progressbar.isIndeterminate = false
+            sale_form_progressbar.hide()
             when (it.messageError) {
                 null -> configureCompanyAdapter(it)
                 else -> showMessageError(sale_form, "COMPANY FINDALL ERROR:", it.messageError!!,
@@ -110,7 +122,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
 
     private fun getPaymentConditionsObserver(): Observer<ApiResponse<MutableList<PaymentConditions>?>> {
         return Observer {
-            sale_form_progressbar.isIndeterminate = false
+            sale_form_progressbar.hide()
             when (it.messageError) {
                 null -> configurePaymentConditionsAdapter(it)
                 else -> showMessageError(sale_form, "CONDITION FINDALL ERROR", it.messageError!!,
@@ -147,7 +159,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
     }
 
     private fun getSpinnerAdapter(names: List<String>): ArrayAdapter<String> {
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, names)
+        val adapter = SpinnerAdapter(this, names)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         return adapter
     }
@@ -155,7 +167,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
     private fun initForm() {
         val saleToEdit = intent.getSerializableExtra("sale")
         if (saleToEdit != null) {
-            sale_form_progressbar.isIndeterminate = true
+            sale_form_progressbar.show()
             viewModel.findItemBy(saleToEdit as Sale)
             viewModel.itemResponse.observe(this, getItemObserver(saleToEdit))
         } else {
@@ -165,7 +177,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
 
     private fun getItemObserver(saleToEdit: Sale): Observer<ApiResponse<MutableList<SaleItem>?>> {
         return Observer {
-            sale_form_progressbar.isIndeterminate = false
+            sale_form_progressbar.hide()
             if (it.messageError == null) {
                 it.data?.let { items ->
                     viewModel.allAllItems(items)
@@ -199,9 +211,8 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
     }
 
     private fun startProductSearchActivity() {
-        when (sale_form_progressbar.isIndeterminate) {
-            true -> showMessage(sale_form, getString(R.string.aguarde_terminar))
-            false -> startActivityForResult(Intent(this, ProductSearchActivity::class.java), PRODUCT_SELECTED_CODE)
+        executeAfterLoaded(sale_form_progressbar.isIndeterminate, sale_form) {
+            startActivityForResult(Intent(this, ProductSearchActivity::class.java), PRODUCT_SELECTED_CODE)
         }
     }
 
@@ -344,9 +355,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
 
     private fun configureButton() {
         sale_form_btn_confirm.setOnClickListener {
-            if (sale_form_progressbar.isIndeterminate) {
-                showMessage(sale_form, getString(R.string.aguarde_terminar))
-            } else {
+            executeAfterLoaded(sale_form_progressbar.isIndeterminate, sale_form) {
                 hideKeyboard()
                 sale_form_client.error = null
                 sale_form_salesman.error = null
@@ -356,11 +365,12 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
                     val companyPosition = sale_form_company.selectedItemPosition
 
                     viewModel.validateForm(conditionPosition, companyPosition)
-                    sale_form_progressbar.isIndeterminate = true
+                    sale_form_progressbar.show()
                     viewModel.sale.value?.dbl_total_produtos = getDoubleValueFrom(sale_form_total_items)
                     viewModel.sale.value?.dbl_total_venda = getDoubleValueFrom(sale_form_total_sale)
                     viewModel.sale.value?.dbl_valor_pago = getDoubleValueFrom(sale_form_payed_value)
-                    viewModel.save()
+                    val firebaseToken = FirebaseUtils.getToken(this)
+                    viewModel.save(firebaseToken)
                     viewModel.insertResponse.observe(this, getSaleInsertObserver())
                     viewModel.updateResponse.observe(this, getSaleUpdateObserver())
                 } catch (ex: InvalidValueException) {
@@ -382,25 +392,23 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
                     viewModel.insertItems()
                     viewModel.itemInsertResponse.observe(this, getItemsInsertObserver())
                 } else {
-                    sale_form_progressbar.isIndeterminate = false
+                    sale_form_progressbar.hide()
                     setSaleResult()
                 }
             } else {
-                showMessageError(sale_form, "SALE INSERT ERROR:", it.messageError!!,
-                    getString(R.string.falha_inserir_venda))
-                sale_form_progressbar.isIndeterminate = false
+                showMessage(sale_form, it.messageError, getString(R.string.falha_inserir_venda))
+                sale_form_progressbar.hide()
             }
         }
     }
 
     private fun getItemsInsertObserver(): Observer<ApiResponse<MutableList<SaleItem>?>> {
         return Observer {
-            sale_form_progressbar.isIndeterminate = false
+            sale_form_progressbar.hide()
             if (it.messageError == null) {
                 setSaleResult()
             } else {
-                showMessageError(sale_form, "SALEItem INSERT ERROR:", it.messageError!!,
-                    getString(R.string.falha_inserir_itens_venda))
+                showMessage(sale_form, it.messageError, getString(R.string.falha_inserir_itens_venda))
             }
         }
     }
@@ -413,38 +421,36 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
                     viewModel.updateItems()
                     viewModel.itemUpdateResponse.observe(this, getItemsUpdateObserver())
                 } else {
-                    sale_form_progressbar.isIndeterminate = false
+                    sale_form_progressbar.hide()
                     setSaleResult()
                 }
             } else {
-                showMessageError(sale_form, "SALE UPDATE ERROR:", it.messageError!!,
-                    getString(R.string.falha_atualizar_venda))
-                sale_form_progressbar.isIndeterminate = false
+                showMessage(sale_form, it.messageError, getString(R.string.falha_atualizar_venda))
+                sale_form_progressbar.hide()
             }
         }
     }
 
     private fun getItemsUpdateObserver(): Observer<ApiResponse<Any?>> {
         return Observer {
-            sale_form_progressbar.isIndeterminate = false
+            sale_form_progressbar.hide()
             if (it.messageError == null) {
                 if (viewModel.removedItemsIsFilled()) {
-                    sale_form_progressbar.isIndeterminate = true
+                    sale_form_progressbar.show()
                     viewModel.deleteItems()
                     viewModel.itemDeleteResponse.observe(this, getItemsDeleteObserver())
                 } else {
                     setSaleResult()
                 }
             } else {
-                showMessageError(sale_form, "SALEItem UPDATE ERROR:", it.messageError!!,
-                    getString(R.string.falha_atualizar_itens_venda))
+                showMessage(sale_form, it.messageError, getString(R.string.falha_atualizar_itens_venda))
             }
         }
     }
 
     private fun getItemsDeleteObserver(): Observer<ApiResponse<Any?>> {
         return Observer {
-            sale_form_progressbar.isIndeterminate = false
+            sale_form_progressbar.hide()
             if (it.messageError == null) {
                 viewModel.clearRemovedItem()
                 setSaleResult()
@@ -463,9 +469,11 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
     }
 
     private fun initSearchActivity(type: String) {
-        val intent = Intent(this, PeopleSearchActivity::class.java)
-        intent.putExtra("type", type)
-        startActivityForResult(intent, PEOPLE_SELECTED_CODE)
+        executeAfterLoaded(sale_form_progressbar.isIndeterminate, sale_form) {
+            val intent = Intent(this, PeopleSearchActivity::class.java)
+            intent.putExtra("type", type)
+            startActivityForResult(intent, PEOPLE_SELECTED_CODE)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -486,6 +494,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
             }
         }
         hideKeyboard()
+        sale_form_btn_confirm.showFromBottom()
     }
 
     override fun onPostResume() {
@@ -580,7 +589,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
 
         Handler().postDelayed({
             init()
-            sale_form_progressbar.isIndeterminate = false
+            sale_form_progressbar.hide()
         }, 250)
     }
 

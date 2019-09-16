@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.entity.Product
 import br.com.suitesistemas.portsmobile.entity.ProductColor
@@ -31,7 +32,7 @@ class ProductQuantityDialog : DialogFragment() {
         configureButton()
     }
 
-    fun show(fragmentManager: androidx.fragment.app.FragmentManager) {
+    fun show(fragmentManager: FragmentManager) {
         if (fragmentManager.findFragmentByTag(PRODUCT_DIALOG_TAG) == null)
             show(fragmentManager, PRODUCT_DIALOG_TAG)
     }

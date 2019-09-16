@@ -54,9 +54,10 @@ class SaleRepository(private val companyName: String) {
     }
 
     fun delete(id: String,
+               firebaseToken: String,
                success: () -> Unit,
                failure: (messageError: String?) -> Unit) {
-        val call = RetrofitConfig().saleService().delete(id, companyName)
+        val call = RetrofitConfig().saleService().delete(id, companyName, firebaseToken)
         call.responseHandle({
             success()
         }, {

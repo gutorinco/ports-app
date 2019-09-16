@@ -118,5 +118,11 @@
     <string name="separador">_______________________</string>
     <string name="voltar">Voltar</string>
     <string name="pesquisar">Pesquisar</string>
+    <string name="chamar">Chamar</string>
+    <string name="enviar_email">Enviar email</string>
+    <string name="nenhum_email">Nenhum email cadastrado para esse cliente</string>
+    <string name="nenhum_telefone">Nenhum telefone cadastrado para esse cliente</string>
+    <string name="acao_nao_suportada">Ação não suportada!</string>
+    <string name="acao_exclusao_clientes">Ação de exclusão pode ser feita apenas para clientes</string>
 
 </resources>
