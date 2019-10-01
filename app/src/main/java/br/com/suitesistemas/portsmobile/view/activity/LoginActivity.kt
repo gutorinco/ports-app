@@ -4,19 +4,20 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.button.hideProgressSpinner
+import br.com.suitesistemas.portsmobile.custom.button.showProgressSpinner
 import br.com.suitesistemas.portsmobile.custom.edit_text.actionDoneClicked
 import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
 import br.com.suitesistemas.portsmobile.model.UserRequest
 import br.com.suitesistemas.portsmobile.model.UserResponse
 import br.com.suitesistemas.portsmobile.service.auth.AuthRepository
-import com.github.razir.progressbutton.*
+import com.github.razir.progressbutton.attachTextChangeAnimator
+import com.github.razir.progressbutton.bindProgressButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -90,7 +91,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun signIn(userRequest: UserRequest) {
-        showProgress()
+        login_button.showProgressSpinner(R.string.entrando)
 
         AuthRepository().signIn(userRequest, {
             it?.let { userResponse ->
@@ -107,7 +108,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 Snackbar.make(login, messageError, Snackbar.LENGTH_LONG).show()
             }
         }, {
-            hideProgress()
+            login_button.hideProgressSpinner(R.string.entrar)
         })
     }
 
@@ -134,27 +135,4 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         sharedPref?.edit()?.clear()
     }
 
-    private fun showProgress() {
-        with (login_button) {
-            isEnabled = false
-            background.setColorFilter(getCustomColor(R.color.success_disabled), PorterDuff.Mode.MULTIPLY)
-            showProgress {
-                buttonTextRes = R.string.entrando
-                progressColorRes = android.R.color.white
-                gravity = DrawableButton.GRAVITY_TEXT_END
-            }
-        }
-    }
-
-    private fun hideProgress() {
-        with (login_button) {
-            isEnabled = true
-            background.setColorFilter(getCustomColor(R.color.success), PorterDuff.Mode.MULTIPLY)
-            hideProgress(R.string.entrar)
-        }
-    }
-
-    private fun getCustomColor(colorId: Int): Int {
-        return ContextCompat.getColor(this@LoginActivity, colorId)
-    }
 }

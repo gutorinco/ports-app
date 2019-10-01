@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/menu_sale_adapter_delete"
+    <item android:id="@+id/menu_basic_adapter_delete"
             android:icon="@drawable/ic_trash"
             android:title="Excluir"/>
 
-    <item android:id="@+id/menu_sale_adapter_edit"
+    <item android:id="@+id/menu_basic_adapter_edit"
             android:icon="@drawable/ic_edit"
             android:title="Editar"/>
 

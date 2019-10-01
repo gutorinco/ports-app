@@ -44,10 +44,10 @@ abstract class ListViewModel<T> : ViewModel() {
         return list
     }
 
-    protected fun getJsonRequest(objName: String): MutableList<HashMap<String, Any?>> {
+    protected fun getJsonRequest(objName: String, obj: T? = removedObject, token: String? = null): MutableList<HashMap<String, Any?>> {
         val map = HashMap<String, Any?>()
-        map[objName] = removedObject
-        map["token"] = null
+        map[objName] = obj
+        map["token"] = token
 
         val jsonRequest: MutableList<HashMap<String, Any?>> = mutableListOf()
         jsonRequest.add(map)

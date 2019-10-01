@@ -14,6 +14,7 @@ import br.com.suitesistemas.portsmobile.service.payment_condition.PaymentConditi
 import br.com.suitesistemas.portsmobile.service.product.color.ProductColorRepository
 import br.com.suitesistemas.portsmobile.service.sale.SaleRepository
 import br.com.suitesistemas.portsmobile.service.sale.item.SaleItemRepository
+import br.com.suitesistemas.portsmobile.service.user.UserRepository
 import java.util.*
 
 class SaleFormViewModel(application: Application) : FormViewModel<Sale>(application) {
@@ -25,12 +26,16 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
     private val productsColors: MutableList<ProductColor> = mutableListOf()
     private val productsSelected: MutableList<Product> = mutableListOf()
     private val conditions: MutableList<PaymentConditions> = mutableListOf()
+    private var userId: Int? = null
+    private lateinit var userRepository: UserRepository
     private lateinit var saleRepository: SaleRepository
     private lateinit var saleItemRepository: SaleItemRepository
     private lateinit var companyRepository: CompanyRepository
     private lateinit var paymentConditionRepository: PaymentConditionRepository
     private lateinit var productColorRepository: ProductColorRepository
+    var user: User = User()
     val products: LinkedHashMap<Product, ProductDetail> = linkedMapOf()
+    var userResponse = MutableLiveData<ApiResponse<User?>>()
     var itemResponse = MutableLiveData<ApiResponse<MutableList<SaleItem>?>>()
     var itemInsertResponse = MutableLiveData<ApiResponse<MutableList<SaleItem>?>>()
     var itemUpdateResponse = MutableLiveData<ApiResponse<Any?>>()
@@ -41,12 +46,14 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
         sale.value = Sale()
     }
 
-    fun initRepositories(companyName: String) {
+    fun initRepositories(companyName: String, userId: Int) {
+        userRepository = UserRepository(companyName)
         saleRepository = SaleRepository(companyName)
         saleItemRepository = SaleItemRepository(companyName)
         companyRepository = CompanyRepository(companyName)
         paymentConditionRepository = PaymentConditionRepository(companyName)
         productColorRepository = ProductColorRepository(companyName)
+        this.userId = userId
     }
 
     fun fetchAllCompanies() {
@@ -54,6 +61,10 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
             true -> companyRepository.findAll()
             false -> getApiResponseFromExistList(companies)
         }
+    }
+
+    fun findLoggedUser() {
+        userResponse = userRepository.find(userId!!)
     }
 
     fun getCompanyIndexBySale(): Int {

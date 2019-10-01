@@ -16,10 +16,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
-import br.com.suitesistemas.portsmobile.view.fragment.CustomerFragment
-import br.com.suitesistemas.portsmobile.view.fragment.FinancialFragment
-import br.com.suitesistemas.portsmobile.view.fragment.ResourcesFragment
-import br.com.suitesistemas.portsmobile.view.fragment.SaleFragment
+import br.com.suitesistemas.portsmobile.utils.IconUtils
+import br.com.suitesistemas.portsmobile.view.fragment.*
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.iid.FirebaseInstanceId
@@ -75,7 +73,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.putInt("menuItem", selectedMenuId)
+        outState.putInt("menuItem", selectedMenuId)
     }
 
     private fun configureToolbar() {
@@ -95,6 +93,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.drawerArrowDrawable.color = getColorBy(android.R.color.white)
         toggle.syncState()
+        val productItem = nav_view.menu.findItem(R.id.menu_product)
+        val boxesIcon = IconUtils.get(this, R.string.fa_boxes_solid, R.color.icons)
+        boxesIcon.alpha = 0.8.toInt()
+        productItem.icon = boxesIcon
     }
 
     private fun configureNavigationView() {
@@ -137,19 +139,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
         when (intent?.action) {
-            "br.com.suitesistemas.portsmobile_TARGET_CLIENTE" -> Handler().postDelayed({onResourceSelected(0)}, 1000)
-            "br.com.suitesistemas.portsmobile_TARGET_VENDA" -> Handler().postDelayed({onResourceSelected(1)}, 1000)
+            "br.com.suitesistemas.portsmobile_TARGET_CLIENTE" -> Handler().postDelayed({onResourceSelected(0)}, 1250)
+            "br.com.suitesistemas.portsmobile_TARGET_VENDA" -> Handler().postDelayed({onResourceSelected(1)}, 1250)
         }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.menu_home -> closeAllFragments(item)
             R.id.menu_customer -> closeAllFragmentsAndReplaceTo(item, CustomerFragment())
             R.id.menu_sale -> closeAllFragmentsAndReplaceTo(item, SaleFragment())
-//            R.id.menu_order -> closeAllFragmentsAndReplaceTo(OrderFragment())
+            R.id.menu_product -> closeAllFragmentsAndReplaceTo(item, ProductFragment())
+            R.id.menu_color -> closeAllFragmentsAndReplaceTo(item, ColorFragment())
             R.id.menu_financial -> closeAllFragmentsAndReplaceTo(item, FinancialFragment())
-//            R.id.menu_task -> closeAllFragmentsAndReplaceTo(TaskFragment())
+//            R.id.menu_order -> closeAllFragmentsAndReplaceTo(OrderFragment())
+//            R.id.menu_task -> closeAllFragmentsAndReplaceTo(item, TaskFragment())
 //            R.id.menu_crm -> closeAllFragmentsAndReplaceTo(CRMFragment())
             R.id.menu_logout -> logout()
         }
@@ -157,11 +163,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    private fun closeAllFragmentsAndReplaceTo(item: MenuItem, fragment: Fragment) {
+    private fun closeAllFragments(item: MenuItem) {
         supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         selectedMenuId = item.itemId
         item.isChecked = true
         addRootFragment()
+    }
+
+    private fun closeAllFragmentsAndReplaceTo(item: MenuItem, fragment: Fragment) {
+        closeAllFragments(item)
         replaceFragment(fragment)
     }
 
@@ -169,9 +179,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return when (itemPosition) {
             0 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_customer), CustomerFragment())
             1 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_sale), SaleFragment())
-            2 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_financial), FinancialFragment())
+            2 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_product), ProductFragment())
+            3 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_color), ColorFragment())
+            4 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_financial), FinancialFragment())
 //            3 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_customer), OrderFragment())
-//            4 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_customer), TaskFragment())
+//            3 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_customer), TaskFragment())
 //            5 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_customer), CRMFragment())
             else -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_customer), CustomerFragment())
         }

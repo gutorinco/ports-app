@@ -12,6 +12,7 @@ class Customer : Serializable {
     var dsc_nome_pessoa: String = ""
     var dsc_nome_contato: String? = ""
     var dsc_cpf_cnpj: String? = ""
+    var dsc_rg_insc_estadual: String? = ""
     var dsc_ddd_01: String? = ""
     var dsc_fone_01: String? = ""
     var dsc_ddd_celular_01: String? = ""
@@ -39,6 +40,7 @@ class Customer : Serializable {
         dsc_nome_pessoa = customer.dsc_nome_pessoa
         dsc_nome_contato = customer.dsc_nome_contato
         dsc_cpf_cnpj = customer.dsc_cpf_cnpj
+        dsc_rg_insc_estadual = customer.dsc_rg_insc_estadual
         dsc_ddd_01 = customer.dsc_ddd_01
         dsc_fone_01 = customer.dsc_fone_01
         dsc_ddd_celular_01 = customer.dsc_ddd_celular_01

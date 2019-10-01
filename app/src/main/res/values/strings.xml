@@ -28,16 +28,24 @@
     <string name="clientes">Clientes</string>
     <string name="vendas">Vendas</string>
     <string name="pedidos">Pedidos</string>
-    <string name="lancamentos">Lançamentos Financeiros</string>
+    <string name="lancamentos">Lançamentos</string>
+    <string name="lancamentos_financeiros">Lançamentos Financeiros</string>
     <string name="gerencie_clientes">Gerencie todos os seus clientes</string>
     <string name="gerencie_vendas">Controle suas vendas de qualquer lugar</string>
     <string name="gerencie_lancamentos">Visualize todos os lançamentos financeiros</string>
+    <string name="cadastre_cores">Cadastre novas cores</string>
 
     <!-- LANCAMENTO FINANCEIRO VIEW HOLDER -->
     <string name="lanc_adapter_ref">REF.: %s</string>
     <string name="lanc_adapter_emissao">Data Emissão: %s</string>
     <string name="lanc_adapter_vencimento">Data Vencimento: %s</string>
     <string name="lanc_adapter_pagamento">Data Pagamento: %s</string>
+
+    <!-- TAREFA VIEW HOLDER -->
+    <string name="task_adapter_inicio">Início: %s</string>
+    <string name="task_adapter_termino">Término: %s</string>
+    <string name="task_adapter_prev_inicio">Prev. Início: %s</string>
+    <string name="task_adapter_prev_termino">Prev. Término: %s</string>
 
     <!-- SITUACAO PAGAMENTO -->
     <string name="em_aberto">EM ABERTO</string>
@@ -97,10 +105,12 @@
     <string name="adicionar">Adicionar</string>
     <string name="add_produtos">Add Produtos</string>
     <string name="cor">Cor</string>
+    <string name="cores">Cores</string>
     <string name="nao_encontrado">Nenhum registro foi encontrado</string>
     <string name="nenhuma_empresa">Nenhuma empresa foi encontrada</string>
     <string name="nenhum_resultado">Nenhum resultado foi retornado</string>
     <string name="registro_removido">Registro removido!</string>
+    <string name="nao_encontrou_usuario">Não foi possível obter os dados do usuário logado</string>
     <string name="nao_encontrou_empresas">Não foi possível obter os dados das empresas</string>
     <string name="nao_encontrou_condicoes">Não foi possível obter os dados das condiçoes de pagamento</string>
     <string name="nao_encontrou_itens_venda">Não foi possível obter os itens da venda</string>
@@ -111,6 +121,8 @@
     <string name="falha_atualizar_venda">Falha ao atualizar os dados da venda</string>
     <string name="falha_atualizar_itens_venda">Falha ao atualizar os itens da venda</string>
     <string name="falha_remover_itens_venda">Falha ao remover os itens da venda</string>
+    <string name="falha_inserir_cor">Falha ao inserir os dados da cor</string>
+    <string name="falha_atualizar_cor">Falha ao atualizar os dados da cor</string>
     <string name="pressione_voltar_novamente">Pressione o botão <b>voltar</b> novamente para fechar!</string>
     <string name="nao_encontrou_lancamentos">Não foi possível obter a lista de lançamentos</string>
     <string name="nenhuma_condicao">Nenhuma condição de pagamento foi encontrada</string>
@@ -124,5 +136,13 @@
     <string name="nenhum_telefone">Nenhum telefone cadastrado para esse cliente</string>
     <string name="acao_nao_suportada">Ação não suportada!</string>
     <string name="acao_exclusao_clientes">Ação de exclusão pode ser feita apenas para clientes</string>
+    <string name="tipo_pessoa">Tipo Pessoa</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="insira_nome">Insira um nome para continuar</string>
+    <string name="salvando">Salvando</string>
+    <string name="produtos">Produtos</string>
+    <string name="home">Home</string>
 
 </resources>

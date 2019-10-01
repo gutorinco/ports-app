@@ -16,5 +16,6 @@
     <color name="success_disabled">#68a357</color>
     <color name="danger">#92140c</color>
     <color name="icons">#454545</color>
+    <color name="icons_accent">#F0C808</color>
     <color name="white_opaque">#f2f4f3</color>
 </resources>

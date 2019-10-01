@@ -46,6 +46,25 @@
 
                     <LinearLayout
                             android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/spinner_label_margin_bottom"
+                                android:text="@string/tipo_pessoa"
+                                android:textSize="@dimen/medium_font"/>
+                        <Spinner
+                                android:id="@+id/customer_form_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/medium_font"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:baselineAligned="false"
                             android:orientation="horizontal">
@@ -53,18 +72,101 @@
                         <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1">
+                                android:layout_weight="1"
+                                android:hint="@{viewModel.labelCpfCnpj}">
 
-                            <EditText
-                                    android:id="@+id/customer_form_name"
+                            <br.com.suitesistemas.portsmobile.custom.edit_text.DynamicMaskEditText
+                                    android:id="@+id/customer_form_cpf_cnpj"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="@dimen/small_margin"
-                                    android:autofillHints="@string/nome"
-                                    android:hint="@string/nome"
                                     android:imeOptions="actionNext"
-                                    android:inputType="textPersonName|textCapWords"
-                                    android:text="@={viewModel.customer.dsc_nome_pessoa}"
+                                    android:inputType="text"
+                                    android:text="@={viewModel.customer.dsc_cpf_cnpj}"
+                                    android:textSize="@dimen/medium_font"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="horizontal">
+
+                            <AutoCompleteTextView
+                                    android:id="@+id/customer_form_state"
+                                    android:layout_width="45dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/tiny_margin"
+                                    android:layout_marginTop="11dp"
+                                    android:completionThreshold="1"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="text"
+                                    android:text="@={viewModel.uf}"
+                                    android:textSize="@dimen/medium_font"/>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@{viewModel.labelInscEstadual}">
+
+                                <AutoCompleteTextView
+                                        android:id="@+id/customer_form_insc_estadual"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/small_margin"
+                                        android:completionThreshold="1"
+                                        android:imeOptions="actionNext"
+                                        android:inputType="text"
+                                        android:text="@={viewModel.customer.dsc_rg_insc_estadual}"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="@{viewModel.labelName}">
+
+                        <EditText
+                                android:id="@+id/customer_form_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/small_margin"
+                                android:imeOptions="actionNext"
+                                android:inputType="textPersonName|textCapWords"
+                                android:text="@={viewModel.customer.dsc_nome_pessoa}"
+                                android:textSize="@dimen/medium_font"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal">
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                            <EditText
+                                    android:id="@+id/customer_form_email"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/small_margin"
+                                    android:autofillHints="@string/email"
+                                    android:hint="@string/email"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="textEmailAddress"
+                                    android:text="@={viewModel.customer.dsc_email}"
                                     android:textSize="@dimen/medium_font"/>
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -72,18 +174,18 @@
                         <com.google.android.material.textfield.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="2">
+                                android:layout_weight="1">
 
                             <EditText
-                                    android:id="@+id/customer_form_cpf_cnpj"
+                                    android:id="@+id/customer_form_city"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginBottom="@dimen/small_margin"
-                                    android:autofillHints="@string/cpf_cnpj"
-                                    android:hint="@string/cpf_cnpj"
+                                    android:autofillHints="@string/cidade"
+                                    android:hint="@string/cidade"
                                     android:imeOptions="actionNext"
-                                    android:inputType="text"
-                                    android:text="@={viewModel.customer.dsc_cpf_cnpj}"
+                                    android:inputType="text|textCapWords"
+                                    android:text="@={viewModel.customer.dsc_cidade}"
                                     android:textSize="@dimen/medium_font"/>
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -135,43 +237,6 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                        <EditText
-                                android:id="@+id/customer_form_email"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/small_margin"
-                                android:autofillHints="@string/email"
-                                android:hint="@string/email"
-                                android:imeOptions="actionNext"
-                                android:inputType="textEmailAddress"
-                                android:text="@={viewModel.customer.dsc_email}"
-                                android:textSize="@dimen/medium_font"/>
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1">
-
-                        <EditText
-                                android:id="@+id/customer_form_city"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/small_margin"
-                                android:autofillHints="@string/cidade"
-                                android:hint="@string/cidade"
-                                android:imeOptions="actionNext"
-                                android:inputType="text|textCapWords"
-                                android:text="@={viewModel.customer.dsc_cidade}"
-                                android:textSize="@dimen/medium_font"/>
-
-                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"

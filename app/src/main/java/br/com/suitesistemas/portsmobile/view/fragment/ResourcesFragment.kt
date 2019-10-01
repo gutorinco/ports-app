@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.model.MainResources
-import br.com.suitesistemas.portsmobile.view.adapter.MainResourcesAdapter
+import br.com.suitesistemas.portsmobile.utils.IconUtils
 import kotlinx.android.synthetic.main.fragment_resources.*
+import kotlinx.android.synthetic.main.fragment_resources_adapter.view.*
 
 class ResourcesFragment : Fragment() {
 
@@ -39,60 +39,32 @@ class ResourcesFragment : Fragment() {
     }
 
     private fun configureList() {
-        val resources = getResourceList()
-        with (list_resources) {
-            adapter = MainResourcesAdapter(context, resources)
-            setOnItemClickListener { _, _, position, _ -> delegate.onResourceSelected(position) }
+        with (fragment_res_people) {
+            main_resources_img.setImageDrawable(getDrawableBy(R.drawable.ic_people_accent))
+            main_resources_title.text = getString(R.string.clientes)
+            setOnClickListener { delegate.onResourceSelected(0) }
         }
-    }
-
-    private fun getResourceList(): List<MainResources> {
-        val resources: MutableList<MainResources> = mutableListOf()
-        with (resources) {
-            add(
-                MainResources(
-                    getDrawableBy(R.drawable.ic_people_accent),
-                    getString(R.string.clientes),
-                    getString(R.string.gerencie_clientes)
-                )
-            )
-            add(
-                MainResources(
-                    getDrawableBy(R.drawable.ic_cart_accent),
-                    getString(R.string.vendas),
-                    getString(R.string.gerencie_vendas)
-                )
-            )
-//            add(
-//                MainResources(
-//                    getDrawableBy(R.drawable.ic_assigment),
-//                    "Pedidos",
-//                    "Cadastre novos pedidos"
-//                )
-//            )
-            add(
-                MainResources(
-                    getDrawableBy(R.drawable.ic_credit_card_accent),
-                    getString(R.string.lancamentos),
-                    getString(R.string.gerencie_lancamentos)
-                )
-            )
-//            add(
-//                MainResources(
-//                    getDrawableBy(R.drawable.ic_calendar_text),
-//                    "Tarefas",
-//                    "Controle de tarefas"
-//                )
-//            )
-//            add(
-//                MainResources(
-//                    getDrawableBy(R.drawable.ic_handshake),
-//                    "CRM",
-//                    "Gestão de relacionamentos com o cliente"
-//                )
-//            )
+        with (fragment_res_sale) {
+            main_resources_img.setImageDrawable(getDrawableBy(R.drawable.ic_cart_accent))
+            main_resources_title.text = getString(R.string.vendas)
+            setOnClickListener { delegate.onResourceSelected(1) }
         }
-        return resources
+        with (fragment_res_product) {
+            val boxesIcon = IconUtils.get(context!!, R.string.fa_boxes_solid, R.color.icons_accent, 32F)
+            main_resources_img.setImageDrawable(boxesIcon)
+            main_resources_title.text = getString(R.string.produtos)
+            setOnClickListener { delegate.onResourceSelected(2) }
+        }
+        with (fragment_res_color) {
+            main_resources_img.setImageDrawable(getDrawableBy(R.drawable.ic_color_accent))
+            main_resources_title.text = getString(R.string.cores)
+            setOnClickListener { delegate.onResourceSelected(3) }
+        }
+        with (fragment_res_financial_release) {
+            main_resources_img.setImageDrawable(getDrawableBy(R.drawable.ic_credit_card_accent))
+            main_resources_title.text = getString(R.string.lancamentos)
+            setOnClickListener { delegate.onResourceSelected(4) }
+        }
     }
 
     private fun getDrawableBy(drawableResource: Int): Drawable? {

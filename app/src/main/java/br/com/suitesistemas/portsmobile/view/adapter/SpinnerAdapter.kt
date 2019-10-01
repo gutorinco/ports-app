@@ -8,8 +8,11 @@ import android.widget.ArrayAdapter
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.view.viewHolder.SpinnerViewHolder
 
-class SpinnerAdapter(context: Context,
-                     private val items: List<String>) : ArrayAdapter<String>(context, 0, items) {
+class SpinnerAdapter(context: Context, private var items: List<String>) : ArrayAdapter<String>(context, 0, items) {
+
+    init {
+        setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+    }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         return initView(position, convertView, parent)

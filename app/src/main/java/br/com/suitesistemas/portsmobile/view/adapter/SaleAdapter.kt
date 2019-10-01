@@ -28,18 +28,18 @@ class SaleAdapter(private val context: Context,
             val popupMenu = PopupMenu(context, it)
             popupMenu.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
-                    R.id.menu_sale_adapter_delete -> {
+                    R.id.menu_basic_adapter_delete -> {
                         delete(position)
                         true
                     }
-                    R.id.menu_sale_adapter_edit -> {
+                    R.id.menu_basic_adapter_edit -> {
                         edit(position)
                         true
                     }
                     else -> false
                 }
             }
-            popupMenu.inflate(R.menu.menu_sale_adapter)
+            popupMenu.inflate(R.menu.menu_basic_adapter)
 
             try {
                 val popupField = PopupMenu::class.java.getDeclaredField("mPopup")

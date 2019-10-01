@@ -13,49 +13,57 @@
             android:roundIcon="@mipmap/ports"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name="br.com.suitesistemas.portsmobile.view.activity.search.FinancialReleaseSearchActivity"/>
-        <activity android:name="br.com.suitesistemas.portsmobile.view.activity.search.ProductSearchActivity" />
-        <activity android:name="br.com.suitesistemas.portsmobile.view.activity.search.PeopleSearchActivity" />
-        <activity android:name="br.com.suitesistemas.portsmobile.view.activity.search.SaleSearchActivity" />
-        <activity android:name="br.com.suitesistemas.portsmobile.view.activity.form.SaleFormActivity" />
-        <activity android:name="br.com.suitesistemas.portsmobile.view.activity.LoginActivity">
+        <activity android:name=".view.activity.search.ColorSearchActivity"></activity>
+        <activity android:name=".view.activity.form.ColorFormActivity" />
+        <activity android:name=".view.activity.search.FinancialReleaseSearchActivity" />
+        <activity android:name=".view.activity.search.ProductSearchActivity" />
+        <activity android:name=".view.activity.search.PeopleSearchActivity" />
+        <activity android:name=".view.activity.search.SaleSearchActivity" />
+        <activity android:name=".view.activity.form.SaleFormActivity" />
+        <activity android:name=".view.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="br.com.suitesistemas.portsmobile.view.activity.MainActivity"
+        <activity
+                android:name=".view.activity.MainActivity"
                 android:configChanges="keyboardHidden|orientation"
                 android:label="@string/app_name"
                 android:launchMode="singleTop"
                 android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="br.com.suitesistemas.portsmobile_TARGET_CLIENTE"></action>
-                <category android:name="android.intent.category.DEFAULT"></category>
+                <action android:name="br.com.suitesistemas.portsmobile_TARGET_CLIENTE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="br.com.suitesistemas.portsmobile_TARGET_PEDIDO"></action>
-                <category android:name="android.intent.category.DEFAULT"></category>
+                <action android:name="br.com.suitesistemas.portsmobile_TARGET_PEDIDO" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="br.com.suitesistemas.portsmobile_TARGET_TAREFA"></action>
-                <category android:name="android.intent.category.DEFAULT"></category>
+                <action android:name="br.com.suitesistemas.portsmobile_TARGET_TAREFA" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="br.com.suitesistemas.portsmobile_TARGET_VENDA"></action>
-                <category android:name="android.intent.category.DEFAULT"></category>
+                <action android:name="br.com.suitesistemas.portsmobile_TARGET_VENDA" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-                android:name="br.com.suitesistemas.portsmobile.view.activity.form.CustomerFormActivity"
-                android:parentActivityName="br.com.suitesistemas.portsmobile.view.activity.MainActivity">
+                android:name=".view.activity.form.CustomerFormActivity"
+                android:parentActivityName=".view.activity.MainActivity">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="br.com.suitesistemas.portsmobile.view.activity.MainActivity" />
         </activity>
 
         <service
-                android:name="br.com.suitesistemas.portsmobile.firebase.MessagingService"
+                android:name=".firebase.MessagingService"
                 android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -68,7 +76,6 @@
         <meta-data
                 android:name="com.google.firebase.messaging.default_notification_color"
                 android:resource="@color/colorPrimary" />
-
     </application>
 
 </manifest>

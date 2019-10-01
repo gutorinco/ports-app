@@ -4,11 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.EditText
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.spinner.onItemSelected
 import br.com.suitesistemas.portsmobile.entity.Product
 import br.com.suitesistemas.portsmobile.entity.ProductColor
 import br.com.suitesistemas.portsmobile.model.ProductDetail
@@ -52,15 +52,12 @@ class ProductQuantityAdapter(private val context: Context,
                 }
             }
         }
-        holder.color.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, itemPosition: Int, id: Long) {
-                var quantity = 0
-                val quantityText = holder.quantity.text.toString()
-                if (!quantityText.isEmpty())
-                    quantity = quantityText.toInt()
-                onChange(quantity, productColors[itemPosition], product)
-            }
+        holder.color.onItemSelected {
+            var quantity = 0
+            val quantityText = holder.quantity.text.toString()
+            if (!quantityText.isEmpty())
+                quantity = quantityText.toInt()
+            onChange(quantity, productColors[it], product)
         }
 
         return view

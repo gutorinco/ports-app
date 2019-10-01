@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
+
+        <item android:id="@+id/menu_home"
+              android:icon="@drawable/ic_home"
+              android:title="@string/home" />
+
         <item android:id="@+id/menu_customer"
               android:icon="@drawable/ic_people"
               android:title="@string/clientes" />
@@ -10,17 +15,24 @@
               android:icon="@drawable/ic_cart"
               android:title="@string/vendas" />
 
-        <!--<item android:id="@+id/menu_order"-->
-              <!--android:icon="@drawable/ic_assigment"-->
-              <!--android:title="@string/pedidos" />-->
+        <item android:id="@+id/menu_color"
+                android:icon="@drawable/ic_color"
+                android:title="@string/cores" />
+
+        <item android:id="@+id/menu_product"
+              android:title="@string/produtos" />
 
         <item android:id="@+id/menu_financial"
-              android:icon="@drawable/ic_credit_card"
-              android:title="@string/lancamentos" />
+            android:icon="@drawable/ic_credit_card"
+            android:title="@string/lancamentos" />
 
-        <!--<item android:id="@+id/menu_task"-->
-              <!--android:icon="@drawable/ic_calendar_text"-->
-              <!--android:title="@string/tarefas" />-->
+        <!--<item android:id="@+id/menu_order"-->
+        <!--android:icon="@drawable/ic_assigment"-->
+        <!--android:title="@string/pedidos" />-->
+
+<!--        <item android:id="@+id/menu_task"-->
+<!--              android:icon="@drawable/ic_event_note"-->
+<!--              android:title="@string/tarefas" />-->
 
         <!--<item android:id="@+id/menu_crm"-->
               <!--android:icon="@drawable/ic_handshake"-->

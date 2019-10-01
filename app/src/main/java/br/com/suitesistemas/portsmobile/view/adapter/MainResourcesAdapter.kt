@@ -19,7 +19,7 @@ class MainResourcesAdapter(private val context: Context,
         with (inflate) {
             main_resources_img.setImageDrawable(resource.drawable)
             main_resources_title.text = resource.title
-            main_resources_description.text = resource.description
+//            main_resources_description.text = resource.description
         }
 
         return inflate

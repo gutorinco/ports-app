@@ -11,11 +11,13 @@ import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
 import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
-import br.com.suitesistemas.portsmobile.custom.edit_text.addCpfCnpjMask
+import br.com.suitesistemas.portsmobile.custom.edit_text.addCnpjMask
+import br.com.suitesistemas.portsmobile.custom.edit_text.addCpfMask
 import br.com.suitesistemas.portsmobile.custom.edit_text.addPhoneMask
 import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
 import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
 import br.com.suitesistemas.portsmobile.custom.progress_bar.show
+import br.com.suitesistemas.portsmobile.custom.spinner.onItemSelected
 import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
 import br.com.suitesistemas.portsmobile.custom.view.showMessage
@@ -27,6 +29,7 @@ import br.com.suitesistemas.portsmobile.model.VersionResponse
 import br.com.suitesistemas.portsmobile.model.enums.ECustomerSituation
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
+import br.com.suitesistemas.portsmobile.view.adapter.AutoCompleteAdapter
 import br.com.suitesistemas.portsmobile.view.adapter.SpinnerAdapter
 import br.com.suitesistemas.portsmobile.viewModel.form.CustomerFormViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -45,11 +48,6 @@ class CustomerFormActivity : FormActivity() {
         configureObservers()
         configureDataBinding()
         configureForm()
-
-        val customerToEdit = intent.getSerializableExtra("customer")
-        if (customerToEdit != null)
-            viewModel.concat(customerToEdit as Customer)
-
         initSituationsList()
         configureBtnConfirm()
     }
@@ -73,6 +71,9 @@ class CustomerFormActivity : FormActivity() {
 
     private fun configureObservers() {
         viewModel.companiesResponse.observe(this, getCompanyObserver())
+        viewModel.selectedType.observe(this, Observer<String> {
+            it?.let { type -> viewModel.peopleTypeSelected(type)}
+        })
     }
 
     private fun getCompanyObserver(): Observer<ApiResponse<MutableList<Company>?>> {
@@ -113,9 +114,43 @@ class CustomerFormActivity : FormActivity() {
     }
 
     private fun configureForm() {
-        customer_form_cpf_cnpj.addCpfCnpjMask()
+        val customerToEdit = intent.getSerializableExtra("customer")
+        if (customerToEdit != null)
+            viewModel.concat(customerToEdit as Customer)
+        configureTypeAdapter()
+        configureUFAdapter()
+        configureStateInscs()
         customer_form_cell_phone.addPhoneMask()
         customer_form_phone.addPhoneMask()
+    }
+
+    private fun configureTypeAdapter() {
+        with (customer_form_type) {
+            adapter = SpinnerAdapter(this@CustomerFormActivity, viewModel.types)
+            setSelection(viewModel.getTypeIndex())
+            onItemSelected {
+                configureStateInscs()
+                customer_form_cpf_cnpj.setText(viewModel.onTypeSelected(it))
+                when (viewModel.selectedType.value) {
+                    "JURÍDICA" -> customer_form_cpf_cnpj.addCnpjMask()
+                    else -> customer_form_cpf_cnpj.addCpfMask()
+                }
+            }
+        }
+    }
+
+    private fun configureUFAdapter() {
+        val adapter = AutoCompleteAdapter(this, android.R.layout.simple_dropdown_item_1line, viewModel.ufs)
+        customer_form_state.setAdapter(adapter)
+    }
+    
+    private fun configureStateInscs() {
+        if (viewModel.selectedType.value == "JURÍDICA") {
+            val adapter = AutoCompleteAdapter(this, android.R.layout.simple_dropdown_item_1line, viewModel.inscs)
+            customer_form_insc_estadual.setAdapter(adapter)
+        } else {
+            customer_form_insc_estadual.setAdapter(null)
+        }
     }
 
     private fun initSituationsList() {
@@ -156,6 +191,8 @@ class CustomerFormActivity : FormActivity() {
                         "Nome" -> customer_form_name.error = ex.message
                         "Telefone" -> customer_form_phone.error = ex.message
                         "Celular" -> customer_form_cell_phone.error = ex.message
+                        "Insc" -> customer_form_insc_estadual.error = ex.message
+                        "UF" -> customer_form_state.error = ex.message
                         else -> showMessage(customer_form, ex.message!!)
                     }
                 }

@@ -1,5 +1,6 @@
 package br.com.suitesistemas.portsmobile.view.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ class ProductQuantityDialog : DialogFragment() {
     private val productsColors: MutableList<ProductColor> = mutableListOf()
     private val productsQuantities: LinkedHashMap<Product, ProductDetail> = linkedMapOf()
     private val response: LinkedHashMap<Product, ProductDetail> = linkedMapOf()
+    private var confirmed = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return LayoutInflater.from(context!!).inflate(R.layout.dialog_product_quantity, container)
@@ -30,6 +32,15 @@ class ProductQuantityDialog : DialogFragment() {
         initColors()
         configureList()
         configureButton()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        if (confirmed) {
+            confirmed = false
+        } else {
+            onDismiss()
+        }
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -77,6 +88,7 @@ class ProductQuantityDialog : DialogFragment() {
 
     private fun configureButton() {
         product_dialog_btn_save.setOnClickListener {
+            confirmed = true
             dismiss()
             (product_dialog_list.adapter as ProductQuantityAdapter).clearFocus()
             callback(response)
@@ -86,16 +98,19 @@ class ProductQuantityDialog : DialogFragment() {
     companion object {
         private const val PRODUCT_DIALOG_TAG = "PRODUCT_DIALOG_TAG"
         private lateinit var callback: (productsQuantities: LinkedHashMap<Product, ProductDetail>) -> Unit
+        private lateinit var onDismiss: () -> Unit
 
         fun newInstance(products: List<Product>,
                         productsColors: List<ProductColor>,
-                        callback: (productsQuantities: LinkedHashMap<Product, ProductDetail>) -> Unit): ProductQuantityDialog {
+                        callback: (productsQuantities: LinkedHashMap<Product, ProductDetail>) -> Unit,
+                        onDismiss: () -> Unit): ProductQuantityDialog {
             val bundle = Bundle()
             bundle.putParcelableArrayList("products", ArrayList(products))
             bundle.putParcelableArrayList("colors", ArrayList(productsColors))
 
             val dialog = ProductQuantityDialog()
             this.callback = callback
+            this.onDismiss = onDismiss
             dialog.arguments = bundle
 
             return dialog

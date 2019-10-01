@@ -2,13 +2,12 @@ package br.com.suitesistemas.portsmobile.view.activity.form
 
 import android.app.Activity
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.TimePicker
@@ -26,6 +25,7 @@ import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
 import br.com.suitesistemas.portsmobile.custom.progress_bar.show
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
+import br.com.suitesistemas.portsmobile.custom.spinner.onItemSelected
 import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
 import br.com.suitesistemas.portsmobile.custom.view.showMessage
@@ -88,11 +88,15 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
     }
 
     private fun initViewModel() {
+        val sharedPref = getSharedPreferences("userResponse", Context.MODE_PRIVATE)
         val companyName = SharedPreferencesUtils.getCompanyName(this)
         viewModel = ViewModelProviders.of(this).get(SaleFormViewModel::class.java)
-        viewModel.initRepositories(companyName)
-        viewModel.fetchAllCompanies()
-        viewModel.fetchAllPaymentConditions()
+        with (viewModel) {
+            initRepositories(companyName, sharedPref.getInt("codigo", 0))
+            findLoggedUser()
+            fetchAllCompanies()
+            fetchAllPaymentConditions()
+        }
     }
 
     private fun configureDataBinding() {
@@ -105,8 +109,29 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
     }
 
     private fun configureObservers() {
+        viewModel.userResponse.observe(this, getUserObserver())
         viewModel.companiesResponse.observe(this, getCompanyObserver())
         viewModel.paymentConditionResponse.observe(this, getPaymentConditionsObserver())
+    }
+
+    private fun getUserObserver(): Observer<ApiResponse<User?>> {
+        return Observer {
+            when (it.messageError) {
+                null -> {
+                    it.data?.let { user ->
+                        viewModel.user = user
+                        val saleToEdit = intent.getSerializableExtra("sale")
+                        if (saleToEdit == null) {
+                            val sale = viewModel.sale.value!!
+                            sale.fky_vendedor = user.fky_pessoa
+                            viewModel.sale.value = sale
+                        }
+                    }
+                }
+                else -> showMessageError(sale_form, "USER FINDALL ERROR:", it.messageError!!,
+                    getString(R.string.nao_encontrou_usuario))
+            }
+        }
     }
 
     private fun getCompanyObserver(): Observer<ApiResponse<MutableList<Company>?>> {
@@ -285,12 +310,9 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
     }
 
     private fun configurePaymentConditionsField() {
-        sale_form_payment_condition.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                viewModel.sale.value?.dbl_total_produtos = viewModel.getTotalItems(position)
-                configureTotals()
-            }
+        sale_form_payment_condition.onItemSelected {
+            viewModel.sale.value?.dbl_total_produtos = viewModel.getTotalItems(it)
+            configureTotals()
         }
     }
 
@@ -477,6 +499,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PEOPLE_SELECTED_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 data?.let {
@@ -494,18 +517,26 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
             }
         }
         hideKeyboard()
-        sale_form_btn_confirm.showFromBottom()
     }
 
     override fun onPostResume() {
         super.onPostResume()
-        if (viewModel.selectedProducts())
+        if (viewModel.selectedProducts()) {
+            sale_form_progressbar.show()
             viewModel.initProductColors { selected, colors -> showQuantityDialog(selected, colors) }
+        } else {
+            sale_form_btn_confirm.showFromBottom()
+        }
     }
 
     private fun showQuantityDialog(selected: MutableList<Product>, colors: MutableList<ProductColor>) {
+        sale_form_progressbar.hide()
         ProductQuantityDialog
-            .newInstance(selected, colors) { addProductsAndQuantities(it) }
+            .newInstance(selected, colors, {
+                addProductsAndQuantities(it)
+            }, {
+                viewModel.clearSelectedProducts()
+            })
             .show(supportFragmentManager)
     }
 
@@ -519,7 +550,10 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
         viewModel.clearSelectedProducts()
         configureList()
         configureTotals()
-        Handler().postDelayed({ hideKeyboard() }, 150)
+        Handler().postDelayed({
+            hideKeyboard()
+            sale_form_btn_confirm.showFromBottom()
+        }, 150)
     }
 
     private fun configureTotals() {

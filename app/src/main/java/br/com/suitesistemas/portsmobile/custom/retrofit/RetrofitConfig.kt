@@ -2,6 +2,7 @@ package br.com.suitesistemas.portsmobile.custom.retrofit
 
 import br.com.suitesistemas.portsmobile.BuildConfig
 import br.com.suitesistemas.portsmobile.service.auth.AuthService
+import br.com.suitesistemas.portsmobile.service.color.ColorService
 import br.com.suitesistemas.portsmobile.service.company.CompanyService
 import br.com.suitesistemas.portsmobile.service.customer.CustomerService
 import br.com.suitesistemas.portsmobile.service.financial_release.FinancialReleaseService
@@ -10,6 +11,7 @@ import br.com.suitesistemas.portsmobile.service.product.ProductService
 import br.com.suitesistemas.portsmobile.service.product.color.ProductColorService
 import br.com.suitesistemas.portsmobile.service.sale.SaleService
 import br.com.suitesistemas.portsmobile.service.sale.item.SaleItemService
+import br.com.suitesistemas.portsmobile.service.user.UserService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
@@ -31,6 +33,7 @@ class RetrofitConfig {
 
     fun authService() = retrofit.create(AuthService::class.java)
     fun customerService() = retrofit.create(CustomerService::class.java)
+    fun colorService() = retrofit.create(ColorService::class.java)
     fun companyService() = retrofit.create(CompanyService::class.java)
     fun financialReleaseService() = retrofit.create(FinancialReleaseService::class.java)
     fun paymentConditionService() = retrofit.create(PaymentConditionService::class.java)
@@ -38,5 +41,6 @@ class RetrofitConfig {
     fun productColorService() = retrofit.create(ProductColorService::class.java)
     fun saleService() = retrofit.create(SaleService::class.java)
     fun saleItemService() = retrofit.create(SaleItemService::class.java)
+    fun userService() = retrofit.create(UserService::class.java)
 
 }

@@ -40,7 +40,7 @@ class FinancialFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Obse
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setTitle(R.string.lancamentos)
+        setTitle(R.string.lancamentos_financeiros)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
