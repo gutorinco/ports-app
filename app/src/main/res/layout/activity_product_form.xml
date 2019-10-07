@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="android.text.InputType"/>
+        <variable
+                name="viewModel"
+                type="br.com.suitesistemas.portsmobile.viewModel.form.ProductFormViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/product_form"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".view.activity.form.SaleFormActivity">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/progress_bar_height">
+
+                <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                        android:id="@+id/product_form_progressbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/CustomProgressBar"/>
+
+            </FrameLayout>
+
+            <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_opaque">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="@dimen/default_padding"
+                            android:orientation="vertical">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="3">
+
+                                <EditText
+                                        android:id="@+id/product_form_ref"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"
+                                        android:autofillHints="@string/referencia"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:hint="@string/referencia"
+                                        android:imeOptions="actionNext"
+                                        android:inputType="@{InputType.TYPE_NULL}"
+                                        android:text="@={viewModel.product.dsc_referencia}"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                <EditText
+                                        android:id="@+id/product_form_name"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"
+                                        android:autofillHints="@string/descricao"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:hint="@string/descricao"
+                                        android:imeOptions="actionNext"
+                                        android:inputType="@{InputType.TYPE_NULL}"
+                                        android:text="@={viewModel.product.dsc_produto}"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                            <EditText
+                                    android:id="@+id/product_form_obs"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/tiny_margin"
+                                    android:autofillHints="@string/observacao"
+                                    android:hint="@string/observacao"
+                                    android:imeOptions="actionDone"
+                                    android:inputType="text"
+                                    android:text="@={viewModel.product.dsc_observacao}"
+                                    android:textSize="@dimen/medium_font"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/spinner_label_margin_bottom"
+                                        android:layout_marginStart="@dimen/tiny_margin"
+                                        android:layout_marginTop="@dimen/tiny_margin"
+                                        android:text="@string/empresa"
+                                        android:textSize="@dimen/medium_font"/>
+                                <Spinner
+                                        android:id="@+id/product_form_company"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/very_tiny_margin"
+                                        android:layout_marginStart="@dimen/tiny_margin"
+                                        android:layout_marginTop="@dimen/tiny_margin"
+                                        android:text="@string/unidade_medida"
+                                        android:textSize="@dimen/medium_font"/>
+                                <Spinner
+                                        android:id="@+id/product_form_unit_measure"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/tiny_margin"
+                                android:layout_marginTop="@dimen/tiny_margin"
+                                android:orientation="horizontal">
+
+                            <androidx.cardview.widget.CardView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="@dimen/small_margin"
+                                    android:layout_weight="1"
+                                    android:elevation="@dimen/elevation"
+                                    app:cardCornerRadius="@dimen/small_margin">
+
+                                <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:orientation="vertical">
+
+                                    <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_margin="@dimen/tiny_margin"
+                                            android:text="@string/preco_compra"
+                                            android:textSize="@dimen/medium_font"
+                                            android:textStyle="bold"/>
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content">
+
+                                        <EditText
+                                                android:id="@+id/product_form_buy_price"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginBottom="@dimen/tiny_margin"
+                                                android:autofillHints="@string/a_vista"
+                                                android:hint="@string/a_vista"
+                                                android:imeOptions="actionDone"
+                                                android:inputType="numberDecimal"
+                                                android:text="@{Double.toString(viewModel.product.dbl_compra_vista)}"
+                                                android:textSize="@dimen/medium_font"/>
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content">
+
+                                        <EditText
+                                                android:id="@+id/product_form_buy_price_financed"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:autofillHints="@string/a_prazo"
+                                                android:hint="@string/a_prazo"
+                                                android:imeOptions="actionDone"
+                                                android:inputType="numberDecimal"
+                                                android:text="@{Double.toString(viewModel.product.dbl_compra_prazo)}"
+                                                android:textSize="@dimen/medium_font"/>
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="@dimen/small_margin"
+                                    android:layout_weight="1"
+                                    android:elevation="@dimen/elevation"
+                                    app:cardCornerRadius="@dimen/small_margin">
+
+                                <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:orientation="vertical">
+
+                                    <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_margin="@dimen/tiny_margin"
+                                            android:text="@string/percentual_lucro"
+                                            android:textSize="@dimen/medium_font"
+                                            android:textStyle="bold"/>
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content">
+
+                                        <EditText
+                                                android:id="@+id/product_form_sale_perc_price"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginBottom="@dimen/tiny_margin"
+                                                android:autofillHints="@string/a_vista"
+                                                android:hint="@string/a_vista"
+                                                android:imeOptions="actionDone"
+                                                android:inputType="number"
+                                                android:text="@{Double.toString(viewModel.product.dbl_perc_lucro_vista)}"
+                                                android:textSize="@dimen/medium_font"/>
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content">
+
+                                        <EditText
+                                                android:id="@+id/product_form_sale_perc_price_financed"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:autofillHints="@string/a_prazo"
+                                                android:hint="@string/a_prazo"
+                                                android:imeOptions="actionDone"
+                                                android:inputType="number"
+                                                android:text="@{Double.toString(viewModel.product.dbl_perc_lucro_prazo)}"
+                                                android:textSize="@dimen/medium_font"/>
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="@dimen/small_margin"
+                                    android:layout_weight="1"
+                                    android:elevation="@dimen/elevation"
+                                    app:cardCornerRadius="@dimen/small_margin">
+
+                                <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:orientation="vertical">
+
+                                    <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_margin="@dimen/tiny_margin"
+                                            android:text="@string/preco_venda"
+                                            android:textSize="@dimen/medium_font"
+                                            android:textStyle="bold"/>
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content">
+
+                                        <EditText
+                                                android:id="@+id/product_form_sale_price"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginBottom="@dimen/tiny_margin"
+                                                android:autofillHints="@string/a_vista"
+                                                android:hint="@string/a_vista"
+                                                android:imeOptions="actionDone"
+                                                android:inputType="numberDecimal"
+                                                android:text="@{Double.toString(viewModel.product.dbl_venda_vista)}"
+                                                android:textSize="@dimen/medium_font"/>
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                    <com.google.android.material.textfield.TextInputLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content">
+
+                                        <EditText
+                                                android:id="@+id/product_form_sale_price_financed"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:autofillHints="@string/a_prazo"
+                                                android:hint="@string/a_prazo"
+                                                android:imeOptions="actionDone"
+                                                android:inputType="numberDecimal"
+                                                android:text="@{Double.toString(viewModel.product.dbl_venda_prazo)}"
+                                                android:textSize="@dimen/medium_font"/>
+
+                                    </com.google.android.material.textfield.TextInputLayout>
+
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                            android:id="@+id/product_form_btn_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/small_margin"
+                            android:layout_marginEnd="@dimen/small_margin"
+                            android:layout_marginStart="@dimen/small_margin"
+                            android:backgroundTint="@color/colorSecondary"
+                            android:elevation="@dimen/elevation"
+                            android:text="@string/adicionar_cores"
+                            app:cornerRadius="@dimen/large_margin"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/product_form_colors"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbars="vertical"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/product_form_btn_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="@dimen/default_margin"
+                android:src="@drawable/ic_check"
+                app:backgroundTint="@color/success"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

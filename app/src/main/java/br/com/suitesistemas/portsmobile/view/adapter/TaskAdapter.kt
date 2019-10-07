@@ -16,7 +16,7 @@ class TaskAdapter(private val context: Context,
                   private val edit: (position: Int) -> Unit) : RecyclerView.Adapter<TaskViewHolder>(), CustomAdapter<Task> {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): TaskViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.fragment_task_adapter, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.adapter_task, parent, false)
         return TaskViewHolder(view)
     }
 
@@ -57,9 +57,9 @@ class TaskAdapter(private val context: Context,
 
     override fun getItemCount() = tasks.size
 
-    override fun setAdapter(tasks: List<Task>) {
+    override fun setAdapter(list: List<Task>) {
         this.tasks.clear()
-        this.tasks.addAll(tasks)
+        this.tasks.addAll(list)
         notifyDataSetChanged()
     }
 

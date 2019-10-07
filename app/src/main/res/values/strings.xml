@@ -113,9 +113,13 @@
     <string name="nao_encontrou_usuario">Não foi possível obter os dados do usuário logado</string>
     <string name="nao_encontrou_empresas">Não foi possível obter os dados das empresas</string>
     <string name="nao_encontrou_condicoes">Não foi possível obter os dados das condiçoes de pagamento</string>
+    <string name="nao_encontrou_cores">Não foi possível encontrar as cores do produto</string>
+    <string name="nao_encontrou_unidades">Não foi possível obter os dados das unidades de medida</string>
     <string name="nao_encontrou_itens_venda">Não foi possível obter os itens da venda</string>
     <string name="falha_inserir_cliente">Falha ao inserir os dados do cliente</string>
     <string name="falha_atualizar_cliente">Falha ao atualizar os dados do cliente</string>
+    <string name="falha_inserir_produto">Falha ao inserir os dados do produto</string>
+    <string name="falha_atualizar_produto">Falha ao atualizar os dados do produto</string>
     <string name="falha_inserir_venda">Falha ao inserir os dados da venda</string>
     <string name="falha_inserir_itens_venda">Falha ao inserir os itens da venda</string>
     <string name="falha_atualizar_venda">Falha ao atualizar os dados da venda</string>
@@ -144,5 +148,20 @@
     <string name="salvando">Salvando</string>
     <string name="produtos">Produtos</string>
     <string name="home">Home</string>
+    <string name="unidade_medida">Unidade Medida</string>
+    <string name="descricao">Descrição</string>
+    <string name="referencia">Referência</string>
+    <string name="preco_compra">Preço compra</string>
+    <string name="a_vista">A vista</string>
+    <string name="a_prazo">A prazo</string>
+    <string name="preco_venda">Preço venda</string>
+    <string name="adicionar_cores">Adicionar Cores</string>
+    <string name="nenhuma_unidade_medida">Nenhuma unidade de medida encontrada</string>
+    <string name="cadastro_produto">Cadastro de Produto</string>
+    <string name="falha_inserir_cores">Falha ao inserir os dados das cores</string>
+    <string name="falha_remover_cores">Falha ao remover as cores do produto</string>
+    <string name="digite_nome_cor">Digite o nome da cor</string>
+    <string name="adicione_cores">É necessário ao menos uma cor para continuar</string>
+    <string name="percentual_lucro">Perc. Lucro</string>
 
 </resources>

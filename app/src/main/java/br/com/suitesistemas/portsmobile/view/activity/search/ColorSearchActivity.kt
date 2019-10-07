@@ -8,13 +8,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
 import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
 import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
-import br.com.suitesistemas.portsmobile.custom.view.onChangedFailure
+import br.com.suitesistemas.portsmobile.custom.view.showMessageError
 import br.com.suitesistemas.portsmobile.databinding.ActivityColorSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Color
 import br.com.suitesistemas.portsmobile.model.ApiResponse
@@ -28,7 +29,6 @@ import kotlinx.android.synthetic.main.activity_color_search.*
 
 class ColorSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiResponse<MutableList<Color>?>> {
 
-    lateinit var type: String
     lateinit var viewModel: ColorSearchViewModel
     private lateinit var colorAdapter: ColorAdapter
 
@@ -80,9 +80,8 @@ class ColorSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiR
         if (response.messageError == null) {
             onResponse(response.data, response.operation)
         } else {
-            onChangedFailure(color_search, response.messageError!!, response.operation) {
-                configureList(viewModel.getList())
-            }
+            showMessageError(color_search, response.messageError!!, response.operation)
+            configureList(viewModel.getList())
         }
     }
 
@@ -91,6 +90,7 @@ class ColorSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiR
             EHttpOperation.GET -> data?.let { colors -> viewModel.addAll(colors as MutableList<Color>) }
             EHttpOperation.DELETE -> deleted()
             EHttpOperation.ROLLBACK -> Snackbar.make(color_search, getString(R.string.acao_desfeita), Snackbar.LENGTH_LONG).show()
+            else -> {}
         }
         setAdapter(data)
     }
@@ -98,8 +98,7 @@ class ColorSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiR
     private fun setAdapter(data: List<Color>?) = data?.let { colorAdapter.setAdapter(it) }
 
     private fun configureList(colors: MutableList<Color>) {
-        colorAdapter = ColorAdapter(baseContext, colors,
-        {
+        colorAdapter = ColorAdapter(baseContext, colors, {
             delete(it)
         }, {
             onItemClicked(it, color_search)
@@ -120,30 +119,29 @@ class ColorSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiR
     }
 
     private fun delete(position: Int) {
+        val color = viewModel.getBy(position)
         val firebaseToken = FirebaseUtils.getToken(this)
         viewModel.searching.value = true
-        viewModel.delete(position, firebaseToken)
+        viewModel.delete(color.num_codigo_online, position, firebaseToken)
     }
 
     override fun deleteRollback() {
         viewModel.searching.value = true
-        viewModel.deleteRollback()
-        viewModel.rollbackResponse.observe(this, Observer {
+        viewModel.deleteRollback("cor")
+        viewModel.rollbackResponse.observe(this, observerHandler({
+            viewModel.add(it, EHttpOperation.ROLLBACK)
+        }, {
+            Snackbar.make(color_search, getString(R.string.falha_desfazer_acao), Snackbar.LENGTH_LONG).show()
+            configureList(viewModel.getList())
+        }, {
             viewModel.searching.value = false
-            if (it.messageError == null) {
-                it.data?.let { color ->
-                    viewModel.add(color, EHttpOperation.ROLLBACK)
-                }
-            } else {
-                Snackbar.make(color_search, getString(R.string.falha_desfazer_acao), Snackbar.LENGTH_LONG).show()
-                configureList(viewModel.getList())
-            }
-        })
+        }))
     }
 
     override fun onItemClicked(position: Int, view: View) {
+        val color = viewModel.getBy(position)
         val data = Intent()
-        data.putExtra("color_response", viewModel.getColorBy(position))
+        data.putExtra("color_response", color)
         setResult(Activity.RESULT_OK, data)
         finish()
     }

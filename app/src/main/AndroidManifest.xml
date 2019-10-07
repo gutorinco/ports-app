@@ -13,10 +13,12 @@
             android:roundIcon="@mipmap/ports"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".view.activity.search.ColorSearchActivity"></activity>
-        <activity android:name=".view.activity.form.ColorFormActivity" />
-        <activity android:name=".view.activity.search.FinancialReleaseSearchActivity" />
+        <activity android:name=".view.activity.search.SelectColorSearchActivity"></activity>
+        <activity android:name=".view.activity.form.ProductFormActivity" />
         <activity android:name=".view.activity.search.ProductSearchActivity" />
+        <activity android:name=".view.activity.search.ColorSearchActivity" />
+        <activity android:name=".view.activity.search.FinancialReleaseSearchActivity" />
+        <activity android:name=".view.activity.search.SelectProductSearchActivity" />
         <activity android:name=".view.activity.search.PeopleSearchActivity" />
         <activity android:name=".view.activity.search.SaleSearchActivity" />
         <activity android:name=".view.activity.form.SaleFormActivity" />
@@ -50,6 +52,16 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="br.com.suitesistemas.portsmobile_TARGET_VENDA" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="br.com.suitesistemas.portsmobile_TARGET_COR" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="br.com.suitesistemas.portsmobile_TARGET_PRODUTO" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

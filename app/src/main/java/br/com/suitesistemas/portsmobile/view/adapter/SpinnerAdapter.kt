@@ -27,7 +27,7 @@ class SpinnerAdapter(context: Context, private var items: List<String>) : ArrayA
         lateinit var holder: SpinnerViewHolder
 
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.spinner_array_adapter, parent, false)
+            view = LayoutInflater.from(context).inflate(R.layout.adapter_spinner_array, parent, false)
             holder = SpinnerViewHolder(view)
             view.tag = holder
         } else {

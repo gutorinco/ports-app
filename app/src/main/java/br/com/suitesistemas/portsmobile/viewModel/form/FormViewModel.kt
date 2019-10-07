@@ -7,18 +7,27 @@ import br.com.suitesistemas.portsmobile.entity.Company
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
+import br.com.suitesistemas.portsmobile.service.company.CompanyRepository
 
 abstract class FormViewModel<T>(application: Application) : AndroidViewModel(application) {
 
     var updateResponse = MutableLiveData<ApiResponse<VersionResponse?>>()
     var insertResponse = MutableLiveData<ApiResponse<T?>>()
     var companiesResponse = MutableLiveData<ApiResponse<MutableList<Company>?>>()
-    protected val companies: MutableList<Company> = mutableListOf()
+    val companies: MutableList<Company> = mutableListOf()
+    protected lateinit var companyRepository: CompanyRepository
 
     protected fun <K> getApiResponseFromExistList(list: MutableList<K>): MutableLiveData<ApiResponse<MutableList<K>?>> {
         val apiResponse = MutableLiveData<ApiResponse<MutableList<K>?>>()
         apiResponse.value = ApiResponse(list, EHttpOperation.GET)
         return apiResponse
+    }
+
+    fun fetchAllCompanies() {
+        companiesResponse = when (companies.isNullOrEmpty()) {
+            true -> companyRepository.findAll()
+            false -> getApiResponseFromExistList(companies)
+        }
     }
 
     fun addAllCompanies(companies: MutableList<Company>) {

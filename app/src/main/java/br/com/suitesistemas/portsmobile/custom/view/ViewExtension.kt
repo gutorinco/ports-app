@@ -19,7 +19,7 @@ fun showMessage(view: View, message: String) {
 fun showMessage(view: View, receivedMessageError: String?, message: String) {
     if (receivedMessageError.isNullOrEmpty())
          showMessage(view, message)
-    else showMessage(view, receivedMessageError)
+    else showMessageError(view, "ERROR", receivedMessageError, message)
 }
 fun showMessageError(view: View, tag: String, messageError: String?, customMessage: String) {
     Log.e(tag, messageError)
@@ -29,19 +29,18 @@ fun showMessageError(view: View, tag: String, messageError: String?, customMessa
 fun Fragment.setTitle(titleId: Int) {
     activity?.setTitle(titleId)
 }
-fun Fragment.onChangedFailure(view: View, messageError: String, operation: EHttpOperation, finished: () -> Unit) {
-    activity?.onChangedFailure(view, messageError, operation, finished)
+fun Fragment.showMessageError(view: View, messageError: String, operation: EHttpOperation) {
+    activity?.showMessageError(view, messageError, operation)
 }
-fun Activity.onChangedFailure(view: View, messageError: String, operation: EHttpOperation, finished: () -> Unit) {
-    baseContext.onChangedFailure(view, messageError, operation, finished)
+fun Activity.showMessageError(view: View, messageError: String, operation: EHttpOperation) {
+    baseContext.showMessageError(view, messageError, operation)
 }
-fun Context.onChangedFailure(view: View, messageError: String, operation: EHttpOperation, finished: () -> Unit) {
+fun Context.showMessageError(view: View, messageError: String, operation: EHttpOperation) {
     if (operation == EHttpOperation.ROLLBACK) {
         showMessageError(view, "ROLLBACK ERROR:", messageError, getString(R.string.falha_desfazer_acao))
     } else {
         showMessageError(view, "ERROR: ", messageError, messageError)
     }
-    finished()
 }
 
 fun Fragment.hideKeyboard() {

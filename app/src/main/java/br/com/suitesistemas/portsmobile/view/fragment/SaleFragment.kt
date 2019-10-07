@@ -12,14 +12,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
 import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
+import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
 import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
 import br.com.suitesistemas.portsmobile.custom.progress_bar.show
 import br.com.suitesistemas.portsmobile.custom.recycler_view.*
-import br.com.suitesistemas.portsmobile.custom.view.onChangedFailure
 import br.com.suitesistemas.portsmobile.custom.view.setTitle
 import br.com.suitesistemas.portsmobile.custom.view.showMessage
+import br.com.suitesistemas.portsmobile.custom.view.showMessageError
 import br.com.suitesistemas.portsmobile.entity.Sale
-import br.com.suitesistemas.portsmobile.entity.SaleItem
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
@@ -112,9 +112,8 @@ class SaleFragment : BasicFragment<Sale, SaleAdapter>(),
                 }
             }
         } else {
-            onChangedFailure(sale_layout, response.messageError!!, response.operation) {
-                configureList(viewModel.getSortingList())
-            }
+            showMessageError(sale_layout, response.messageError!!, response.operation)
+            configureList(viewModel.getSortingList())
         }
     }
 
@@ -138,15 +137,15 @@ class SaleFragment : BasicFragment<Sale, SaleAdapter>(),
             data?.let {
                 when (requestCode) {
                     CREATE_REQUEST_CODE -> {
-                        val saleResponse = it.getSerializableExtra("sale_response") as Sale
+                        val saleResponse = it.getParcelableExtra("sale_response") as Sale
                         viewModel.add(saleResponse)
                     }
                     UPDATE_REQUEST_CODE -> {
-                        val saleResponse = it.getSerializableExtra("sale_response") as Sale
+                        val saleResponse = it.getParcelableExtra("sale_response") as Sale
                         viewModel.updateList(saleResponse)
                     }
                     GET_REQUEST_CODE -> {
-                        val saleResponse = it.getSerializableExtra("sale_response") as Sale
+                        val saleResponse = it.getParcelableExtra("sale_response") as Sale
                         editSaleSelected(saleResponse)
                     }
                 }
@@ -199,32 +198,27 @@ class SaleFragment : BasicFragment<Sale, SaleAdapter>(),
     override fun deleteRollback() {
         sale_progressbar.show()
         viewModel.deleteRollback()
-        viewModel.rollbackResponse.observe(this, Observer {
-            if (it.messageError == null) {
-                it.data?.let { sale ->
-                    if (viewModel.existItems()) {
-                        viewModel.deleteItemRollback(sale)
-                        viewModel.itemRollbackResponse.observe(this, getItemRollbackObserver())
-                    } else {
-                        viewModel.add(sale, EHttpOperation.ROLLBACK)
-                    }
-                }
+        viewModel.rollbackResponse.observe(this, observerHandler({
+            if (viewModel.existItems()) {
+                configureItemRollbackObserver(it)
             } else {
-                onChangedFailure(sale_layout, it.messageError!!, EHttpOperation.ROLLBACK) {
-                    configureList(viewModel.getSortingList())
-                }
+                viewModel.add(it, EHttpOperation.ROLLBACK)
+                sale_progressbar.hide()
             }
-        })
+        }, {
+            showMessageError(sale_layout, it, EHttpOperation.ROLLBACK)
+            configureList(viewModel.getSortingList())
+            sale_progressbar.hide()
+        }))
     }
 
-    private fun getItemRollbackObserver(): Observer<ApiResponse<MutableList<SaleItem>?>> {
-        return Observer {
-            if (it.messageError == null) {
-                onChanged(ApiResponse(viewModel.getSortingList(), EHttpOperation.ROLLBACK))
-            } else {
-                onChanged(ApiResponse(it.messageError!!, EHttpOperation.POST))
-            }
-        }
+    private fun configureItemRollbackObserver(sale: Sale) {
+        viewModel.deleteItemRollback(sale)
+        viewModel.itemRollbackResponse.observe(this, observerHandler({
+            onChanged(ApiResponse(viewModel.getSortingList(), EHttpOperation.ROLLBACK))
+        }, {
+            onChanged(ApiResponse(it, EHttpOperation.POST))
+        }))
     }
 
     override fun onItemClicked(position: Int, view: View) {

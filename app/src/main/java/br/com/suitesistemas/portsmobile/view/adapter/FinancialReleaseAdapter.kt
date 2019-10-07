@@ -12,7 +12,7 @@ class FinancialReleaseAdapter(private val context: Context,
                               private val releases: MutableList<FinancialRelease>) : RecyclerView.Adapter<FinancialReleaseViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): FinancialReleaseViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.fragment_financial_adapter, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.adapter_financial, parent, false)
         return FinancialReleaseViewHolder(view)
     }
 

@@ -1,16 +1,17 @@
 package br.com.suitesistemas.portsmobile.view.viewHolder
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.entity.Product
-import kotlinx.android.synthetic.main.fragment_select_product_adapter.view.*
+import kotlinx.android.synthetic.main.adapter_select_product.view.*
 
-class SelectProductViewHolder(private val adapterView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(adapterView) {
+class SelectProductViewHolder(private val adapterView: View) : RecyclerView.ViewHolder(adapterView) {
 
-    val checkbox = adapterView.product_adapter_checkbox
-    val name = adapterView.product_adapter_name
-    val saleValue = adapterView.product_adapter_sale
-    val saleFinancedValue = adapterView.product_adapter_sale_financed
+    val checkbox = adapterView.select_product_adapter_checkbox
+    val name = adapterView.select_product_adapter_name
+    val saleValue = adapterView.select_product_adapter_sale
+    val saleFinancedValue = adapterView.select_product_adapter_sale_financed
 
     fun bindView(product: Product) {
         name.text = product.dsc_produto

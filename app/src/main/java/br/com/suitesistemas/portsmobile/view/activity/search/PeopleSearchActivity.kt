@@ -8,14 +8,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
 import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
 import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
-import br.com.suitesistemas.portsmobile.custom.view.onChangedFailure
 import br.com.suitesistemas.portsmobile.custom.view.showMessage
+import br.com.suitesistemas.portsmobile.custom.view.showMessageError
 import br.com.suitesistemas.portsmobile.databinding.ActivityPeopleSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Customer
 import br.com.suitesistemas.portsmobile.model.ApiResponse
@@ -31,7 +32,7 @@ class PeopleSearchActivity : SearchActivity(), OnItemClickListener, Observer<Api
 
     lateinit var type: String
     lateinit var viewModel: PeopleSearchViewModel
-    private lateinit var customerAdapter: CustomerAdapter
+    private lateinit var customerAdapter: CustomerAdapter<Any?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,9 +84,8 @@ class PeopleSearchActivity : SearchActivity(), OnItemClickListener, Observer<Api
         if (response.messageError == null) {
             onResponse(response.data, response.operation)
         } else {
-            onChangedFailure(people_search, response.messageError!!, response.operation) {
-                configureList(viewModel.getList())
-            }
+            showMessageError(people_search, response.messageError!!, response.operation)
+            configureList(viewModel.getList())
         }
     }
 
@@ -94,6 +94,7 @@ class PeopleSearchActivity : SearchActivity(), OnItemClickListener, Observer<Api
             EHttpOperation.GET -> data?.let { customers -> viewModel.addAll(customers as MutableList<Customer>) }
             EHttpOperation.DELETE -> deleted()
             EHttpOperation.ROLLBACK -> Snackbar.make(people_search, getString(R.string.acao_desfeita), Snackbar.LENGTH_LONG).show()
+            else -> {}
         }
         setAdapter(data)
     }
@@ -106,13 +107,9 @@ class PeopleSearchActivity : SearchActivity(), OnItemClickListener, Observer<Api
         }, {
             showMessage(people_search, getString(it))
         }, {
-            if (type == "C")
-                delete(it)
-            else showMessage(people_search, getString(R.string.acao_exclusao_clientes))
+            onDelete(it)
         }, {
-            if (type == "C")
-                onItemClicked(it, people_search)
-            else showMessage(people_search, getString(R.string.acao_exclusao_clientes))
+            onEdit(it)
         })
         if (type == "C")
             configureSwipe()
@@ -120,6 +117,18 @@ class PeopleSearchActivity : SearchActivity(), OnItemClickListener, Observer<Api
             adapter = customerAdapter
             addOnItemClickListener(this@PeopleSearchActivity)
         }
+    }
+
+    private fun onDelete(position: Int) {
+        if (type == "C")
+            delete(position)
+        else showMessage(people_search, getString(R.string.acao_exclusao_clientes))
+    }
+
+    private fun onEdit(position: Int) {
+        if (type == "C")
+            onItemClicked(position, people_search)
+        else showMessage(people_search, getString(R.string.acao_exclusao_clientes))
     }
 
     private fun configureSwipe() {
@@ -131,30 +140,28 @@ class PeopleSearchActivity : SearchActivity(), OnItemClickListener, Observer<Api
     }
 
     private fun delete(position: Int) {
+        val customer = viewModel.getBy(position)
         val firebaseToken = FirebaseUtils.getToken(this)
         viewModel.searching.value = true
-        viewModel.delete(position, firebaseToken)
+        viewModel.delete(customer.num_codigo_online, position, firebaseToken)
     }
 
     override fun deleteRollback() {
         viewModel.searching.value = true
-        viewModel.deleteRollback()
-        viewModel.rollbackResponse.observe(this, Observer {
+        viewModel.deleteRollback("pessoa")
+        viewModel.rollbackResponse.observe(this, observerHandler({
+            viewModel.add(it, EHttpOperation.ROLLBACK)
+        }, {
+            Snackbar.make(people_search, getString(R.string.falha_desfazer_acao), Snackbar.LENGTH_LONG).show()
+            configureList(viewModel.getList())
+        }, {
             viewModel.searching.value = false
-            if (it.messageError == null) {
-                it.data?.let { customer ->
-                    viewModel.add(customer, EHttpOperation.ROLLBACK)
-                }
-            } else {
-                Snackbar.make(people_search, getString(R.string.falha_desfazer_acao), Snackbar.LENGTH_LONG).show()
-                configureList(viewModel.getList())
-            }
-        })
+        }))
     }
 
     override fun onItemClicked(position: Int, view: View) {
         val data = Intent()
-        data.putExtra("people_response", viewModel.getCustomerBy(position))
+        data.putExtra("people_response", viewModel.getBy(position))
         data.putExtra("type", type)
 
         setResult(Activity.RESULT_OK, data)

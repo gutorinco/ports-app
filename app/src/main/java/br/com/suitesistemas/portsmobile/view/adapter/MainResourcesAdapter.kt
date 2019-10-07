@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.model.MainResources
-import kotlinx.android.synthetic.main.fragment_resources_adapter.view.*
+import kotlinx.android.synthetic.main.adapter_resources.view.*
 
 class MainResourcesAdapter(private val context: Context,
                            private val resources: List<MainResources>) : BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val resource = getItem(position)
-        val inflate = LayoutInflater.from(context).inflate(R.layout.fragment_resources_adapter, parent, false)
+        val inflate = LayoutInflater.from(context).inflate(R.layout.adapter_resources, parent, false)
 
         with (inflate) {
             main_resources_img.setImageDrawable(resource.drawable)

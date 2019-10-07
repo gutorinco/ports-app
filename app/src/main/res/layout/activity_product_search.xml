@@ -8,7 +8,7 @@
                 name="viewModel"
                 type="br.com.suitesistemas.portsmobile.viewModel.search.ProductSearchViewModel" />
     </data>
-    
+
     <RelativeLayout
             android:id="@+id/product_search"
             android:layout_width="match_parent"
@@ -79,7 +79,6 @@
                 android:textSize="@dimen/medium_font"
                 android:visibility="@{viewModel.listIsEmpty &amp;&amp; viewModel.wasSearched ? View.VISIBLE : View.GONE}"/>
 
-
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/product_search_recycler_view"
                 android:layout_width="match_parent"
@@ -88,17 +87,6 @@
                 android:visibility="@{!viewModel.wasSearched || !viewModel.listIsEmpty ? View.VISIBLE : View.GONE}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/product_search_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="@dimen/default_margin"
-                android:src="@drawable/ic_check"
-                app:backgroundTint="@color/success"
-                android:visibility="@{viewModel.selected ? View.VISIBLE : View.GONE}"/>
-    
     </RelativeLayout>
-    
+
 </layout>

@@ -10,9 +10,9 @@ abstract class ListViewModel<T> : ViewModel() {
     var response = MutableLiveData<ApiResponse<MutableList<T>?>>()
     var rollbackResponse = MutableLiveData<ApiResponse<T?>>()
     var refreshResponse = MutableLiveData<ApiResponse<MutableList<T>?>>()
+    var removedObject: T? = null
     protected var companyName: String = ""
     protected var removedPosition: Int = 0
-    protected var removedObject: T? = null
     protected val list: MutableList<T> = mutableListOf()
 
     fun getBy(position: Int) = list[position]

@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import br.com.suitesistemas.portsmobile.entity.Customer
-import kotlinx.android.synthetic.main.fragment_customer_adapter.view.*
+import kotlinx.android.synthetic.main.adapter_customer.view.*
 
 class CustomerViewHolder(adapterView: View) : ViewHolder(adapterView) {
 

@@ -17,17 +17,17 @@ import br.com.suitesistemas.portsmobile.entity.Customer
 import br.com.suitesistemas.portsmobile.view.dialog.CustomerPhonesDialog
 import br.com.suitesistemas.portsmobile.view.viewHolder.CustomerViewHolder
 
-class CustomerAdapter(private val context: Context,
-                      private val activity: FragmentActivity,
-                      private val customers: MutableList<Customer>,
-                      private val startActivity: (intent: Intent) -> Unit,
-                      private val failure: (stringId: Int) -> Unit,
-                      private val delete: (position: Int) -> Unit,
-                      private val edit: (position: Int) -> Unit) :
+class CustomerAdapter<T>(private val context: Context,
+                         private val activity: FragmentActivity,
+                         private val customers: MutableList<Customer>,
+                         private val startActivity: (intent: Intent) -> Unit,
+                         private val failure: (stringId: Int) -> Unit,
+                         private val delete: (position: Int) -> Unit,
+                         private val edit: (position: Int) -> Unit) :
     Adapter<CustomerViewHolder>(), CustomAdapter<Customer> {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): CustomerViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.fragment_customer_adapter, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.adapter_customer, parent, false)
         return CustomerViewHolder(view)
     }
 

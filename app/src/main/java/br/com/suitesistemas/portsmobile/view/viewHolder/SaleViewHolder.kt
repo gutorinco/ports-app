@@ -3,7 +3,7 @@ package br.com.suitesistemas.portsmobile.view.viewHolder
 import android.view.View
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.entity.Sale
-import kotlinx.android.synthetic.main.fragment_sale_adapter.view.*
+import kotlinx.android.synthetic.main.adapter_sale.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 

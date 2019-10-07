@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
+import androidx.recyclerview.widget.RecyclerView
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.entity.Product
 import br.com.suitesistemas.portsmobile.view.viewHolder.SelectProductViewHolder
@@ -11,10 +12,10 @@ import br.com.suitesistemas.portsmobile.view.viewHolder.SelectProductViewHolder
 class SelectProductAdapter(private val context: Context,
                            private val products: MutableList<Product>,
                            private val onChecked: (checked: Boolean, position: Int) -> Unit
-) : androidx.recyclerview.widget.RecyclerView.Adapter<SelectProductViewHolder>() {
+) : RecyclerView.Adapter<SelectProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): SelectProductViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.fragment_select_product_adapter, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.adapter_select_product, parent, false)
         return SelectProductViewHolder(view)
     }
 

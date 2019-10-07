@@ -8,16 +8,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
 import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
 import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
-import br.com.suitesistemas.portsmobile.custom.view.onChangedFailure
+import br.com.suitesistemas.portsmobile.custom.view.showMessageError
 import br.com.suitesistemas.portsmobile.databinding.ActivitySaleSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Sale
-import br.com.suitesistemas.portsmobile.entity.SaleItem
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
@@ -83,9 +83,8 @@ class SaleSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiRe
         if (response.messageError == null) {
             onResponse(response.data, response.operation)
         } else {
-            onChangedFailure(sale_search, response.messageError!!, response.operation) {
-                configureList(viewModel.getList())
-            }
+            showMessageError(sale_search, response.messageError!!, response.operation)
+            configureList(viewModel.getList())
         }
     }
 
@@ -94,6 +93,7 @@ class SaleSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiRe
             EHttpOperation.GET -> data?.let { customers -> viewModel.addAll(customers as MutableList<Sale>) }
             EHttpOperation.DELETE -> deleted()
             EHttpOperation.ROLLBACK -> Snackbar.make(sale_search, getString(R.string.acao_desfeita), Snackbar.LENGTH_LONG).show()
+            else -> {}
         }
         setAdapter(data)
         viewModel.searching.value = false
@@ -132,39 +132,33 @@ class SaleSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiRe
 
     override fun deleteRollback() {
         viewModel.searching.value = true
-        viewModel.deleteRollback()
-        viewModel.saleRollbackResponse.observe(this, Observer {
-            viewModel.searching.value = false
-            if (it.messageError == null) {
-                it.data?.let { sale ->
-                    if (viewModel.existItems()) {
-                        viewModel.deleteItemRollback(sale)
-                        viewModel.itemRollbackResponse.observe(this, getItemRollbackObserver())
-                    } else {
-                        viewModel.add(sale, EHttpOperation.ROLLBACK)
-                    }
-                }
+        viewModel.deleteRollback("venda")
+        viewModel.rollbackResponse.observe(this, observerHandler({
+            if (viewModel.existItems()) {
+                viewModel.deleteItemRollback(it)
+                configureItemRollbackObserver()
             } else {
-                onChangedFailure(sale_search, it.messageError!!, EHttpOperation.ROLLBACK) {
-                    configureList(viewModel.getList())
-                }
+                viewModel.add(it, EHttpOperation.ROLLBACK)
             }
-        })
+        }, {
+            showMessageError(sale_search, it, EHttpOperation.ROLLBACK)
+            configureList(viewModel.getList())
+        }, {
+            viewModel.searching.value = false
+        }))
     }
 
-    private fun getItemRollbackObserver(): Observer<ApiResponse<MutableList<SaleItem>?>> {
-        return Observer {
-            if (it.messageError == null) {
-                onChanged(ApiResponse(viewModel.getList(), EHttpOperation.ROLLBACK))
-            } else {
-                onChanged(ApiResponse(it.messageError!!, EHttpOperation.POST))
-            }
-        }
+    private fun configureItemRollbackObserver() {
+        viewModel.itemRollbackResponse.observe(this, observerHandler({
+            onChanged(ApiResponse(viewModel.getList(), EHttpOperation.ROLLBACK))
+        }, {
+            onChanged(ApiResponse(it, EHttpOperation.POST))
+        }))
     }
 
     override fun onItemClicked(position: Int, view: View) {
         val data = Intent()
-        data.putExtra("sale_response", viewModel.getSaleBy(position))
+        data.putExtra("sale_response", viewModel.getBy(position))
 
         setResult(Activity.RESULT_OK, data)
         finish()

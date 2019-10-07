@@ -44,7 +44,7 @@ class FinancialFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Obse
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater?.inflate(R.menu.menu_search, menu)
+        inflater.inflate(R.menu.menu_search, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 

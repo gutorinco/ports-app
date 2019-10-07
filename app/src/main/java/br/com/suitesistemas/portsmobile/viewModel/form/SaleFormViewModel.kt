@@ -11,7 +11,7 @@ import br.com.suitesistemas.portsmobile.model.ProductDetail
 import br.com.suitesistemas.portsmobile.model.enums.EYesNo
 import br.com.suitesistemas.portsmobile.service.company.CompanyRepository
 import br.com.suitesistemas.portsmobile.service.payment_condition.PaymentConditionRepository
-import br.com.suitesistemas.portsmobile.service.product.color.ProductColorRepository
+import br.com.suitesistemas.portsmobile.service.product_color.ProductColorRepository
 import br.com.suitesistemas.portsmobile.service.sale.SaleRepository
 import br.com.suitesistemas.portsmobile.service.sale.item.SaleItemRepository
 import br.com.suitesistemas.portsmobile.service.user.UserRepository
@@ -30,7 +30,6 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
     private lateinit var userRepository: UserRepository
     private lateinit var saleRepository: SaleRepository
     private lateinit var saleItemRepository: SaleItemRepository
-    private lateinit var companyRepository: CompanyRepository
     private lateinit var paymentConditionRepository: PaymentConditionRepository
     private lateinit var productColorRepository: ProductColorRepository
     var user: User = User()
@@ -54,13 +53,6 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
         paymentConditionRepository = PaymentConditionRepository(companyName)
         productColorRepository = ProductColorRepository(companyName)
         this.userId = userId
-    }
-
-    fun fetchAllCompanies() {
-        companiesResponse = when (companies.isNullOrEmpty()) {
-            true -> companyRepository.findAll()
-            false -> getApiResponseFromExistList(companies)
-        }
     }
 
     fun findLoggedUser() {
@@ -115,8 +107,7 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
     fun clearSelectedProducts() = productsSelected.clear()
 
     fun validateForm(conditionPosition: Int, companyPosition: Int) {
-        val sale = Sale()
-        sale.copy(this.sale.value!!)
+        val sale = Sale(this.sale.value!!)
 
         if (sale.fky_cliente.dsc_nome_pessoa.isEmpty()) {
             throw InvalidValueException("Cliente", getStringRes(R.string.obrigatorio))
@@ -135,7 +126,7 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
 
         buildItemsList(sale)
 
-        this.sale.value?.copy(sale)
+        this.sale.value = Sale(sale)
     }
 
 
@@ -161,7 +152,7 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
                 }
                 item.dbl_total_item = item.dbl_preco_unit * item.dbl_quantidade
                 val currentItem = itemsBeforeClear.find {
-                    it.fky_produto.cod_produto == product.cod_produto &&
+                    it.fky_produto.num_codigo_online == product.num_codigo_online &&
                             it.num_codigo_online == sale.num_codigo_online
                 }
                 currentItem?.let {
@@ -201,7 +192,7 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
     fun addSelectedProducts(productsSelected: List<Product>?) {
         productsSelected?.let { selected ->
             val productsFiltered = selected.filter {
-                products.keys.find { p -> p.cod_produto == it.cod_produto } == null
+                products.keys.find { p -> p.num_codigo_online == it.num_codigo_online } == null
             }
             this.productsSelected.clear()
             this.productsSelected.addAll(productsFiltered)
@@ -210,19 +201,19 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
 
     private fun initRemovedItemsList(itemsBeforeClear: MutableList<SaleItem>) {
         val removedProducts = this.removedProducts.keys.filter { product ->
-            items.find { it.fky_produto.cod_produto == product.cod_produto } == null
+            items.find { it.fky_produto.num_codigo_online == product.num_codigo_online } == null
         }
-        val removedProductIds = removedProducts.map { it.cod_produto }
+        val removedProductIds = removedProducts.map { it.num_codigo_online }
 
         removedItems.clear()
         removedItems.addAll(itemsBeforeClear.filter {
-            val removedProductId = removedProductIds.find { id -> id == it.fky_produto.cod_produto }
+            val removedProductId = removedProductIds.find { id -> id == it.fky_produto.num_codigo_online }
             removedProductId != null
         } as MutableList<SaleItem>)
     }
 
     private fun getSequenceCode(itemsBeforeClear: MutableList<SaleItem>, product: Product): Int {
-        val item: SaleItem? = itemsBeforeClear.find { it.fky_produto.cod_produto == product.cod_produto }
+        val item: SaleItem? = itemsBeforeClear.find { it.fky_produto.num_codigo_online == product.num_codigo_online }
         if (item != null)
             return item.cod_sequencia
         return items.size + 1
@@ -236,12 +227,12 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
 
         var count = i
         val product = productsSelected[count]
-        productColorRepository.findBy(product.cod_produto!!, { productColors ->
+        productColorRepository.findBy(product.num_codigo_online, { productColors ->
             productColors?.let {
                 it.forEach { color ->
                     val productColor = productsColors.find { productColor ->
-                        productColor.cod_produto.cod_produto == color.cod_produto.cod_produto &&
-                                productColor.cod_cor.cod_cor == color.cod_cor.cod_cor
+                        productColor.cod_produto.num_codigo_online == color.cod_produto.num_codigo_online &&
+                                productColor.cod_cor.num_codigo_online == color.cod_cor.num_codigo_online
                     }
                     if (productColor == null) {
                         productsColors.add(color)

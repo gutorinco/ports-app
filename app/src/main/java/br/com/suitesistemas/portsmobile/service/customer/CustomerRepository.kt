@@ -6,8 +6,9 @@ import br.com.suitesistemas.portsmobile.custom.retrofit.responseHandle
 import br.com.suitesistemas.portsmobile.entity.Customer
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.service.SearchService
 
-class CustomerRepository(private val companyName: String) {
+class CustomerRepository(private val companyName: String) : SearchService<Customer> {
 
     private val service = RetrofitConfig().customerService()
 
@@ -33,7 +34,7 @@ class CustomerRepository(private val companyName: String) {
         return apiResponse
     }
 
-    fun insert(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<Customer?>> {
+    override fun insert(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<Customer?>> {
         val apiResponse = MutableLiveData<ApiResponse<Customer?>>()
         val call = service.insert(companyName, json)
 
@@ -55,13 +56,17 @@ class CustomerRepository(private val companyName: String) {
         return apiResponse
     }
 
-    fun delete(id: String, firebaseToken: String, success: () -> Unit, failure: (messageError: String?) -> Unit) {
+    override fun delete(id: String, firebaseToken: String, success: () -> Unit, failure: (messageError: String?) -> Unit) {
         val call = service.delete(id, companyName, firebaseToken)
         call.responseHandle({
             success()
         }, {
             failure(it)
         })
+    }
+
+    override fun search(search: String): MutableLiveData<ApiResponse<MutableList<Customer>?>> {
+        TODO("not implemented")
     }
 
 }

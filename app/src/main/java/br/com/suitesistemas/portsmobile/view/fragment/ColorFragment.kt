@@ -13,16 +13,16 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
 import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
+import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
 import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
 import br.com.suitesistemas.portsmobile.custom.progress_bar.show
 import br.com.suitesistemas.portsmobile.custom.recycler_view.*
 import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.onChangedFailure
 import br.com.suitesistemas.portsmobile.custom.view.setTitle
 import br.com.suitesistemas.portsmobile.custom.view.showMessage
+import br.com.suitesistemas.portsmobile.custom.view.showMessageError
 import br.com.suitesistemas.portsmobile.entity.Color
 import br.com.suitesistemas.portsmobile.model.ApiResponse
-import br.com.suitesistemas.portsmobile.model.VersionResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
@@ -30,7 +30,6 @@ import br.com.suitesistemas.portsmobile.view.activity.search.ColorSearchActivity
 import br.com.suitesistemas.portsmobile.view.adapter.ColorAdapter
 import br.com.suitesistemas.portsmobile.view.dialog.ColorFormDialog
 import br.com.suitesistemas.portsmobile.viewModel.list.ColorViewModel
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_color.*
 
 class ColorFragment : BasicFragment<Color, ColorAdapter>(),
@@ -55,8 +54,7 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        super.init(color_layout, ColorAdapter(context!!, viewModel.getSortingList(),
-        {
+        super.init(color_layout, ColorAdapter(context!!, viewModel.getSortingList(), {
             delete(it)
         }, {
             showForm(viewModel.getBy(it))
@@ -110,9 +108,8 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
                 }
             }
         } else {
-            onChangedFailure(color_layout, response.messageError!!, response.operation) {
-                configureList(viewModel.getSortingList())
-            }
+            showMessageError(color_layout, response.messageError!!, response.operation)
+            configureList(viewModel.getSortingList())
         }
     }
 
@@ -131,7 +128,7 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
         if (resultCode == Activity.RESULT_OK) {
             data?.let {
                 if (requestCode == GET_REQUEST_CODE) {
-                    val colorResponse = it.getSerializableExtra("color_response") as Color
+                    val colorResponse = it.getParcelableExtra("color_response") as Color
                     showForm(colorResponse)
                 }
             }
@@ -181,14 +178,13 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
     override fun deleteRollback() {
         color_progressbar.show()
         viewModel.deleteRollback()
-        viewModel.rollbackResponse.observe(this, Observer {
-            color_progressbar.show()
-            if (it.messageError == null) {
-                it.data?.let { color -> viewModel.add(color, EHttpOperation.ROLLBACK) }
-            } else {
-                Snackbar.make(color_layout, getString(R.string.falha_desfazer_acao), Snackbar.LENGTH_LONG).show()
-            }
-        })
+        viewModel.rollbackResponse.observe(this, observerHandler({
+            viewModel.add(it, EHttpOperation.ROLLBACK)
+        }, {
+            showMessage(color_layout, it, getString(R.string.falha_desfazer_acao))
+        }, {
+            color_progressbar.hide()
+        }))
     }
 
     override fun onItemClicked(position: Int, view: View) {
@@ -207,38 +203,30 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
                 val firebaseToken = FirebaseUtils.getToken(context!!)
                 viewModel.save(it, firebaseToken)
                 if (color?.num_codigo_online.isNullOrEmpty())
-                     viewModel.insertResponse.observe(this, getInsertObserver())
-                else viewModel.updateResponse.observe(this, getUpdateObserver())
+                     configureInsertObserver()
+                else configureUpdateObserver()
             }
         }
         dialog.show(fragmentManager!!)
     }
 
-    private fun getInsertObserver(): Observer<ApiResponse<Color?>> {
-        return Observer {
-            if (it.messageError == null) {
-                it?.data?.let { color ->
-                    viewModel.add(color)
-                    dialog.dismiss()
-                }
-            } else {
-                showMessage(color_layout, it.messageError, getString(R.string.falha_inserir_cor))
-            }
-        }
+    private fun configureInsertObserver() {
+        viewModel.insertResponse.observe(this, observerHandler({
+            viewModel.add(it)
+            dialog.dismiss()
+        }, {
+            showMessage(color_layout, it, getString(R.string.falha_inserir_cor))
+        }))
     }
 
-    private fun getUpdateObserver(): Observer<ApiResponse<VersionResponse?>> {
-        return Observer {
-            if (it.messageError == null) {
-                it?.data?.let { versionResponse ->
-                    viewModel.color?.version = versionResponse.version
-                    viewModel.updateList(viewModel.color!!)
-                    dialog.dismiss()
-                }
-            } else {
-                showMessage(color_layout, it.messageError, getString(R.string.falha_atualizar_cor))
-            }
-        }
+    private fun configureUpdateObserver() {
+        viewModel.updateResponse.observe(this, observerHandler({
+            viewModel.color?.version = it.version
+            viewModel.updateList(viewModel.color!!)
+            dialog.dismiss()
+        }, {
+            showMessage(color_layout, it, getString(R.string.falha_atualizar_cor))
+        }))
     }
 
 }

@@ -12,13 +12,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
 import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
+import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
 import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
 import br.com.suitesistemas.portsmobile.custom.progress_bar.show
 import br.com.suitesistemas.portsmobile.custom.recycler_view.*
 import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.onChangedFailure
 import br.com.suitesistemas.portsmobile.custom.view.setTitle
 import br.com.suitesistemas.portsmobile.custom.view.showMessage
+import br.com.suitesistemas.portsmobile.custom.view.showMessageError
 import br.com.suitesistemas.portsmobile.entity.Customer
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
@@ -28,10 +29,9 @@ import br.com.suitesistemas.portsmobile.view.activity.form.CustomerFormActivity
 import br.com.suitesistemas.portsmobile.view.activity.search.PeopleSearchActivity
 import br.com.suitesistemas.portsmobile.view.adapter.CustomerAdapter
 import br.com.suitesistemas.portsmobile.viewModel.list.CustomerViewModel
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_customer.*
 
-class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
+class CustomerFragment : BasicFragment<Customer, CustomerAdapter<Any?>>(),
             OnItemClickListener,
             SwipeRefreshLayout.OnRefreshListener,
             Observer<ApiResponse<MutableList<Customer>?>> {
@@ -112,9 +112,8 @@ class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
                 }
             }
         } else {
-            onChangedFailure(customer_layout, response.messageError!!, response.operation) {
-                configureList(viewModel.getSortingList())
-            }
+            showMessageError(customer_layout, response.messageError!!, response.operation)
+            configureList(viewModel.getSortingList())
         }
     }
 
@@ -135,15 +134,15 @@ class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
             data?.let {
                 when (requestCode) {
                     CREATE_REQUEST_CODE -> {
-                        val customerResponse = it.getSerializableExtra("customer_response") as Customer
+                        val customerResponse = it.getParcelableExtra("customer_response") as Customer
                         viewModel.add(customerResponse)
                     }
                     UPDATE_REQUEST_CODE -> {
-                        val customerResponse = it.getSerializableExtra("customer_response") as Customer
+                        val customerResponse = it.getParcelableExtra("customer_response") as Customer
                         viewModel.updateList(customerResponse)
                     }
                     GET_REQUEST_CODE -> {
-                        val customerResponse = it.getSerializableExtra("people_response") as Customer
+                        val customerResponse = it.getParcelableExtra("people_response") as Customer
                         editCustomerSelected(customerResponse)
                     }
                 }
@@ -200,14 +199,13 @@ class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
     override fun deleteRollback() {
         customer_progressbar.show()
         viewModel.deleteRollback()
-        viewModel.rollbackResponse.observe(this, Observer {
-            customer_progressbar.show()
-            if (it.messageError == null) {
-                it.data?.let { customer -> viewModel.add(customer, EHttpOperation.ROLLBACK) }
-            } else {
-                Snackbar.make(customer_layout, getString(R.string.falha_desfazer_acao), Snackbar.LENGTH_LONG).show()
-            }
-        })
+        viewModel.rollbackResponse.observe(this, observerHandler({
+            viewModel.add(it, EHttpOperation.ROLLBACK)
+        }, {
+            showMessage(customer_layout, it, getString(R.string.falha_desfazer_acao))
+        }, {
+            customer_progressbar.hide()
+        }))
     }
 
     override fun onItemClicked(position: Int, view: View) {

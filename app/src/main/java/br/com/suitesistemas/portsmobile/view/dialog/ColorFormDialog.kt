@@ -28,7 +28,7 @@ class ColorFormDialog : DialogFragment(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         arguments?.let {
-            color = it.getSerializable("color") as Color
+            color = it.getParcelable("color") as Color
             dialog_color_form_name.setText(color.dsc_cor)
         }
         dialog_color_form_name.actionDoneClicked { onClick(null) }
@@ -70,7 +70,7 @@ class ColorFormDialog : DialogFragment(), View.OnClickListener {
 
         fun newInstance(color: Color?, callback: (color: Color) -> Unit): ColorFormDialog {
             val bundle = Bundle()
-            bundle.putSerializable("color", color)
+            bundle.putParcelable("color", color)
 
             val dialog = ColorFormDialog()
             this.callback = callback

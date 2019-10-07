@@ -28,7 +28,7 @@ class ProductQuantityAdapter(private val context: Context,
         val productColors = products[product]?.colors
 
         if (convertView == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.dialog_product_quantity_adapter, parent, false)
+            view = LayoutInflater.from(context).inflate(R.layout.adapter_product_quantity, parent, false)
             holder = ProductQuantityViewHolder(view)
             view.tag = holder
         } else {

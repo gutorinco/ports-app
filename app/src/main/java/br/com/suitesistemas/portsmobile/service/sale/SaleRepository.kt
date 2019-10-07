@@ -6,8 +6,9 @@ import br.com.suitesistemas.portsmobile.custom.retrofit.responseHandle
 import br.com.suitesistemas.portsmobile.entity.Sale
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.service.SearchService
 
-class SaleRepository(private val companyName: String) {
+class SaleRepository(private val companyName: String) : SearchService<Sale> {
 
     fun findAll(): MutableLiveData<ApiResponse<MutableList<Sale>?>> {
         val apiResponse: MutableLiveData<ApiResponse<MutableList<Sale>?>> = MutableLiveData()
@@ -20,7 +21,7 @@ class SaleRepository(private val companyName: String) {
         return apiResponse
     }
 
-    fun search(search: String): MutableLiveData<ApiResponse<MutableList<Sale>?>> {
+    override fun search(search: String): MutableLiveData<ApiResponse<MutableList<Sale>?>> {
         val apiResponse: MutableLiveData<ApiResponse<MutableList<Sale>?>> = MutableLiveData()
         val call = RetrofitConfig().saleService().search(companyName, search)
 
@@ -31,7 +32,7 @@ class SaleRepository(private val companyName: String) {
         return apiResponse
     }
 
-    fun insert(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<Sale?>> {
+    override fun insert(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<Sale?>> {
         val apiResponse = MutableLiveData<ApiResponse<Sale?>>()
         val call = RetrofitConfig().saleService().insert(companyName, json)
 
@@ -53,7 +54,7 @@ class SaleRepository(private val companyName: String) {
         return apiResponse
     }
 
-    fun delete(id: String,
+    override fun delete(id: String,
                firebaseToken: String,
                success: () -> Unit,
                failure: (messageError: String?) -> Unit) {

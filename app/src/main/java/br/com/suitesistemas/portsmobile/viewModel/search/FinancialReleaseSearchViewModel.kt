@@ -5,26 +5,9 @@ import br.com.suitesistemas.portsmobile.service.financial_release.FinancialRelea
 
 class FinancialReleaseSearchViewModel : SearchViewModel<FinancialRelease>() {
 
-    private val releases: MutableList<FinancialRelease> = mutableListOf()
-    private lateinit var repository: FinancialReleaseRepository
-
-    fun initRepository(companyName: String) {
-        this.companyName = companyName
-        repository = FinancialReleaseRepository(companyName)
+    override fun initRepository(company: String) {
+        companyName = company
+        repository = FinancialReleaseRepository(company)
     }
-
-    override fun search(search: String) {
-        wasSearched.value = true
-        releases.clear()
-        searching.value = true
-        response = repository.search(search)
-    }
-
-    override fun addAll(list: MutableList<FinancialRelease>) {
-        releases.addAll(list)
-        listIsEmpty.value = releases.isNullOrEmpty()
-    }
-
-    override fun getList(): MutableList<FinancialRelease> = getListCopy(releases)
 
 }

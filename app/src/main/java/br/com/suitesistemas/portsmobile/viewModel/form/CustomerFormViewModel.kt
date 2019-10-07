@@ -25,7 +25,6 @@ class CustomerFormViewModel(application: Application) : FormViewModel<Customer>(
     val ufs = br.com.suitesistemas.portsmobile.model.ufs
     private var initializingEdition = false
     private lateinit var customerRepository: CustomerRepository
-    private lateinit var companyRepository: CompanyRepository
 
     init {
         customer.value = Customer()
@@ -34,13 +33,6 @@ class CustomerFormViewModel(application: Application) : FormViewModel<Customer>(
     fun initRepositories(companyName: String) {
         customerRepository = CustomerRepository(companyName)
         companyRepository  = CompanyRepository(companyName)
-    }
-
-    fun fetchAllCompanies() {
-        companiesResponse = when (companies.isNullOrEmpty()) {
-            true -> companyRepository.findAll()
-            false -> getApiResponseFromExistList(companies)
-        }
     }
 
     fun concat(customerToConcat: Customer) {
@@ -83,8 +75,7 @@ class CustomerFormViewModel(application: Application) : FormViewModel<Customer>(
     }
 
     fun validateForm(situation: String, companyPosition: Int) {
-        val customer = Customer()
-        customer.copy(this.customer.value!!)
+        val customer = Customer(this.customer.value!!)
 
         if (companies.isNullOrEmpty())
             throw InvalidValueException(getStringRes(R.string.nenhuma_empresa))
@@ -125,7 +116,7 @@ class CustomerFormViewModel(application: Application) : FormViewModel<Customer>(
         customer.dsc_ddd_celular_01 = celPhone.ddd
         customer.dsc_celular_01 = celPhone.number
 
-        this.customer.value?.copy(customer)
+        this.customer.value = Customer(customer)
     }
 
     fun save(firebaseToken: String) {

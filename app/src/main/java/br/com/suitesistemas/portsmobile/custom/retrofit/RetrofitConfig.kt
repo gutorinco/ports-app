@@ -8,9 +8,10 @@ import br.com.suitesistemas.portsmobile.service.customer.CustomerService
 import br.com.suitesistemas.portsmobile.service.financial_release.FinancialReleaseService
 import br.com.suitesistemas.portsmobile.service.payment_condition.PaymentConditionService
 import br.com.suitesistemas.portsmobile.service.product.ProductService
-import br.com.suitesistemas.portsmobile.service.product.color.ProductColorService
+import br.com.suitesistemas.portsmobile.service.product_color.ProductColorService
 import br.com.suitesistemas.portsmobile.service.sale.SaleService
 import br.com.suitesistemas.portsmobile.service.sale.item.SaleItemService
+import br.com.suitesistemas.portsmobile.service.unit_measure.UnitMeasureService
 import br.com.suitesistemas.portsmobile.service.user.UserService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -41,6 +42,7 @@ class RetrofitConfig {
     fun productColorService() = retrofit.create(ProductColorService::class.java)
     fun saleService() = retrofit.create(SaleService::class.java)
     fun saleItemService() = retrofit.create(SaleItemService::class.java)
+    fun unitMeasureService() = retrofit.create(UnitMeasureService::class.java)
     fun userService() = retrofit.create(UserService::class.java)
 
 }

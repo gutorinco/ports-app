@@ -8,40 +8,33 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
-import android.widget.EditText
 import android.widget.TimePicker
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
 import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
 import br.com.suitesistemas.portsmobile.custom.calendar.toStringFormat
 import br.com.suitesistemas.portsmobile.custom.edit_text.afterTextChanged
 import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
+import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
 import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
 import br.com.suitesistemas.portsmobile.custom.progress_bar.show
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
 import br.com.suitesistemas.portsmobile.custom.spinner.onItemSelected
+import br.com.suitesistemas.portsmobile.custom.spinner.setAdapterAndSelection
 import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
 import br.com.suitesistemas.portsmobile.custom.view.showMessage
-import br.com.suitesistemas.portsmobile.custom.view.showMessageError
 import br.com.suitesistemas.portsmobile.databinding.ActivitySaleFormBinding
 import br.com.suitesistemas.portsmobile.entity.*
-import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.ProductDetail
-import br.com.suitesistemas.portsmobile.model.VersionResponse
 import br.com.suitesistemas.portsmobile.model.enums.EYesNo
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.activity.search.PeopleSearchActivity
-import br.com.suitesistemas.portsmobile.view.activity.search.ProductSearchActivity
-import br.com.suitesistemas.portsmobile.view.adapter.ProductAdapter
-import br.com.suitesistemas.portsmobile.view.adapter.SpinnerAdapter
+import br.com.suitesistemas.portsmobile.view.activity.search.SelectProductSearchActivity
+import br.com.suitesistemas.portsmobile.view.adapter.SaleProductAdapter
 import br.com.suitesistemas.portsmobile.view.dialog.ProductQuantityDialog
 import br.com.suitesistemas.portsmobile.viewModel.form.SaleFormViewModel
 import kotlinx.android.synthetic.main.activity_sale_form.*
@@ -57,7 +50,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
     lateinit var viewModel: SaleFormViewModel
     private val calendar = Calendar.getInstance()
     private lateinit var timeDialog: TimePickerDialog
-    private lateinit var productAdapter: ProductAdapter
+    private lateinit var saleProductAdapter: SaleProductAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,15 +63,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
         initForm()
     }
 
-    override fun onAttachFragment(fragment: Fragment) {
-        super.onAttachFragment(fragment)
-        sale_form_btn_confirm.showFromBottom()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        sale_form_btn_confirm.hideToBottom()
-    }
+    override fun getBtnConfirm() = sale_form_btn_confirm
 
     private fun init() {
         initTimeDialog()
@@ -109,110 +94,84 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
     }
 
     private fun configureObservers() {
-        viewModel.userResponse.observe(this, getUserObserver())
-        viewModel.companiesResponse.observe(this, getCompanyObserver())
-        viewModel.paymentConditionResponse.observe(this, getPaymentConditionsObserver())
+        configureUserObserver()
+        configureCompanyObserver()
+        configurePaymentConditionsObserver()
     }
 
-    private fun getUserObserver(): Observer<ApiResponse<User?>> {
-        return Observer {
-            when (it.messageError) {
-                null -> {
-                    it.data?.let { user ->
-                        viewModel.user = user
-                        val saleToEdit = intent.getSerializableExtra("sale")
-                        if (saleToEdit == null) {
-                            val sale = viewModel.sale.value!!
-                            sale.fky_vendedor = user.fky_pessoa
-                            viewModel.sale.value = sale
-                        }
-                    }
-                }
-                else -> showMessageError(sale_form, "USER FINDALL ERROR:", it.messageError!!,
-                    getString(R.string.nao_encontrou_usuario))
+    private fun configureUserObserver() {
+        viewModel.userResponse.observe(this, observerHandler({
+            viewModel.user = it
+            val saleToEdit = intent.getParcelableExtra<Sale>("sale")
+            if (saleToEdit == null) {
+                val sale = viewModel.sale.value!!
+                sale.fky_vendedor = it.fky_pessoa
+                viewModel.sale.value = sale
             }
-        }
-    }
-
-    private fun getCompanyObserver(): Observer<ApiResponse<MutableList<Company>?>> {
-        return Observer {
+        }, {
+            showMessage(sale_form, it, getString(R.string.nao_encontrou_usuario))
+        }, {
             sale_form_progressbar.hide()
-            when (it.messageError) {
-                null -> configureCompanyAdapter(it)
-                else -> showMessageError(sale_form, "COMPANY FINDALL ERROR:", it.messageError!!,
-                    getString(R.string.nao_encontrou_empresas))
-            }
-        }
+        }))
     }
 
-    private fun getPaymentConditionsObserver(): Observer<ApiResponse<MutableList<PaymentConditions>?>> {
-        return Observer {
+    private fun configureCompanyObserver() {
+        viewModel.companiesResponse.observe(this, observerHandler({
+            configureCompanyAdapter(it)
+        }, {
+            showMessage(sale_form, it, getString(R.string.nao_encontrou_empresas))
+        }, {
             sale_form_progressbar.hide()
-            when (it.messageError) {
-                null -> configurePaymentConditionsAdapter(it)
-                else -> showMessageError(sale_form, "CONDITION FINDALL ERROR", it.messageError!!,
-                    getString(R.string.nao_encontrou_condicoes))
-            }
-        }
+        }))
     }
 
-    private fun configureCompanyAdapter(response: ApiResponse<MutableList<Company>?>) {
-        response.data?.let { companies ->
-            viewModel.addAllCompanies(companies)
-            val companiesName = companies.map { company -> company.dsc_empresa }
-            val index = companies.indexOfFirst { company ->
-                company.cod_empresa == viewModel.sale.value?.fky_empresa?.cod_empresa
-            }
-            sale_form_company.adapter = getSpinnerAdapter(companiesName)
-            sale_form_company.setSelection(index)
-        }
+    private fun configurePaymentConditionsObserver() {
+        viewModel.paymentConditionResponse.observe(this, observerHandler({
+            configurePaymentConditionsAdapter(it)
+        }, {
+            showMessage(sale_form, it, getString(R.string.nao_encontrou_condicoes))
+        }, {
+            sale_form_progressbar.hide()
+        }))
     }
 
-    private fun configurePaymentConditionsAdapter(response: ApiResponse<MutableList<PaymentConditions>?>) {
-        response.data?.let { conditions ->
-            viewModel.addAllPaymentConditions(conditions)
-            val conditionsName = conditions.map { condition -> condition.dsc_condicao_pagamento }
-            val index = conditions.indexOfFirst { condition ->
-                val conditionId = viewModel.sale.value?.fky_condicao_pagamento?.cod_condicao_pagamento!!
-                if (conditionId > 0)
-                    condition.cod_condicao_pagamento = conditionId
-                condition.flg_a_vista == EYesNo.S
-            }
-            sale_form_payment_condition.adapter = getSpinnerAdapter(conditionsName)
-            sale_form_payment_condition.setSelection(index)
+    private fun configureCompanyAdapter(companies: MutableList<Company>) {
+        viewModel.addAllCompanies(companies)
+        val companiesName = companies.map { company -> company.dsc_empresa }
+        val index = companies.indexOfFirst { company ->
+            company.cod_empresa == viewModel.sale.value?.fky_empresa?.cod_empresa
         }
+        sale_form_company.setAdapterAndSelection(this, companiesName, index)
     }
 
-    private fun getSpinnerAdapter(names: List<String>): ArrayAdapter<String> {
-        val adapter = SpinnerAdapter(this, names)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        return adapter
+    private fun configurePaymentConditionsAdapter(conditions: MutableList<PaymentConditions>) {
+        viewModel.addAllPaymentConditions(conditions)
+        val conditionsName = conditions.map { condition -> condition.dsc_condicao_pagamento }
+        val index = conditions.indexOfFirst { condition ->
+            val conditionId = viewModel.sale.value?.fky_condicao_pagamento?.cod_condicao_pagamento!!
+            if (conditionId > 0)
+                condition.cod_condicao_pagamento = conditionId
+            condition.flg_a_vista == EYesNo.S
+        }
+        sale_form_payment_condition.setAdapterAndSelection(this, conditionsName, index)
     }
 
     private fun initForm() {
-        val saleToEdit = intent.getSerializableExtra("sale")
+        val saleToEdit = intent.getParcelableExtra<Sale>("sale")
         if (saleToEdit != null) {
             sale_form_progressbar.show()
-            viewModel.findItemBy(saleToEdit as Sale)
-            viewModel.itemResponse.observe(this, getItemObserver(saleToEdit))
+            viewModel.findItemBy(saleToEdit)
+            viewModel.itemResponse.observe(this, observerHandler({
+                viewModel.allAllItems(it)
+                viewModel.sale.value = Sale(saleToEdit)
+                edit()
+            }, {
+                showMessage(sale_form, it, getString(R.string.nao_encontrou_itens_venda))
+            }, {
+                sale_form_progressbar.hide()
+            }))
         } else {
             init()
-        }
-    }
-
-    private fun getItemObserver(saleToEdit: Sale): Observer<ApiResponse<MutableList<SaleItem>?>> {
-        return Observer {
-            sale_form_progressbar.hide()
-            if (it.messageError == null) {
-                it.data?.let { items ->
-                    viewModel.allAllItems(items)
-                    viewModel.sale.value?.copy(saleToEdit)
-                    edit()
-                }
-            } else {
-                showMessageError(sale_form, "SALEItem FINDALL ERROR:", it.messageError!!,
-                    getString(R.string.nao_encontrou_itens_venda))
-            }
         }
     }
 
@@ -225,7 +184,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
         return when (item?.itemId) {
             R.id.menu_search_products -> {
                 startProductSearchActivity()
-                super.onOptionsItemSelected(item)
+                false
             }
             android.R.id.home -> {
                 onBackPressed()
@@ -237,7 +196,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
 
     private fun startProductSearchActivity() {
         executeAfterLoaded(sale_form_progressbar.isIndeterminate, sale_form) {
-            startActivityForResult(Intent(this, ProductSearchActivity::class.java), PRODUCT_SELECTED_CODE)
+            startActivityForResult(Intent(this, SelectProductSearchActivity::class.java), PRODUCT_SELECTED_CODE)
         }
     }
 
@@ -255,10 +214,10 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
     }
 
     private fun configureList() {
-        productAdapter = ProductAdapter(baseContext, viewModel.products)
+        saleProductAdapter = SaleProductAdapter(baseContext, viewModel.products)
         configureSwipe()
         with (sale_form_products) {
-            adapter = productAdapter
+            adapter = saleProductAdapter
             layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         }
     }
@@ -266,7 +225,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
     private fun configureSwipe() {
         sale_form_products.addSwipe(SwipeToDeleteCallback(baseContext) { position ->
             viewModel.removeProductBy(position)
-            productAdapter.notifyDataSetChanged()
+            saleProductAdapter.notifyDataSetChanged()
             configureTotals()
         })
     }
@@ -345,19 +304,6 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
         }
     }
 
-    private fun getDoubleValueFrom(editText: EditText): Double {
-        var value = 0.0
-        val valueText = editText.text.toString()
-        if (valueText.isNotEmpty())
-            value = getDoubleValueFrom(valueText)
-        return value
-    }
-
-    private fun getDoubleValueFrom(valueText: String): Double {
-        val value = valueText.toDouble()
-        return (value * 10.0).roundToLong() / 10.0
-    }
-
     private fun calculateTotalSale(addition: Double, discount: Double) {
         val totalItems = viewModel.sale.value?.dbl_total_produtos!!
         val saleValue = (totalItems + addition) - discount
@@ -393,8 +339,8 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
                     viewModel.sale.value?.dbl_valor_pago = getDoubleValueFrom(sale_form_payed_value)
                     val firebaseToken = FirebaseUtils.getToken(this)
                     viewModel.save(firebaseToken)
-                    viewModel.insertResponse.observe(this, getSaleInsertObserver())
-                    viewModel.updateResponse.observe(this, getSaleUpdateObserver())
+                    configureSaleInsertObserver()
+                    configureSaleUpdateObserver()
                 } catch (ex: InvalidValueException) {
                     when (ex.field) {
                         "Cliente" -> sale_form_client.error = ex.message
@@ -406,81 +352,73 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
         }
     }
 
-    private fun getSaleInsertObserver(): Observer<ApiResponse<Sale?>> {
-        return Observer {
-            if (it.messageError == null) {
-                it?.data?.let { sale -> viewModel.sale.value?.copy(sale) }
-                if (viewModel.itemsIsFilled()) {
-                    viewModel.insertItems()
-                    viewModel.itemInsertResponse.observe(this, getItemsInsertObserver())
-                } else {
-                    sale_form_progressbar.hide()
-                    setSaleResult()
-                }
+    private fun configureSaleInsertObserver() {
+        viewModel.insertResponse.observe(this, observerHandler({
+            viewModel.sale.value = Sale(it)
+            if (viewModel.itemsIsFilled()) {
+                viewModel.insertItems()
+                configureItemsInsertObserver()
             } else {
-                showMessage(sale_form, it.messageError, getString(R.string.falha_inserir_venda))
                 sale_form_progressbar.hide()
-            }
-        }
-    }
-
-    private fun getItemsInsertObserver(): Observer<ApiResponse<MutableList<SaleItem>?>> {
-        return Observer {
-            sale_form_progressbar.hide()
-            if (it.messageError == null) {
                 setSaleResult()
-            } else {
-                showMessage(sale_form, it.messageError, getString(R.string.falha_inserir_itens_venda))
             }
-        }
+        }, {
+            showMessage(sale_form, it, getString(R.string.falha_inserir_venda))
+            sale_form_progressbar.hide()
+        }))
     }
 
-    private fun getSaleUpdateObserver(): Observer<ApiResponse<VersionResponse?>> {
-        return Observer {
-            if (it.messageError == null) {
-                it?.data?.let { versionResponse -> viewModel.sale.value?.version = versionResponse.version }
-                if (viewModel.itemsIsFilled()) {
-                    viewModel.updateItems()
-                    viewModel.itemUpdateResponse.observe(this, getItemsUpdateObserver())
-                } else {
-                    sale_form_progressbar.hide()
-                    setSaleResult()
-                }
+    private fun configureItemsInsertObserver() {
+        viewModel.itemInsertResponse.observe(this, observerHandler({
+            setSaleResult()
+        }, {
+            showMessage(sale_form, it, getString(R.string.falha_inserir_itens_venda))
+        }, {
+            sale_form_progressbar.hide()
+        }))
+    }
+
+    private fun configureSaleUpdateObserver() {
+        viewModel.updateResponse.observe(this, observerHandler({
+            viewModel.sale.value?.version = it.version
+            if (viewModel.itemsIsFilled()) {
+                viewModel.updateItems()
+                configureItemsUpdateObserver()
             } else {
-                showMessage(sale_form, it.messageError, getString(R.string.falha_atualizar_venda))
                 sale_form_progressbar.hide()
-            }
-        }
-    }
-
-    private fun getItemsUpdateObserver(): Observer<ApiResponse<Any?>> {
-        return Observer {
-            sale_form_progressbar.hide()
-            if (it.messageError == null) {
-                if (viewModel.removedItemsIsFilled()) {
-                    sale_form_progressbar.show()
-                    viewModel.deleteItems()
-                    viewModel.itemDeleteResponse.observe(this, getItemsDeleteObserver())
-                } else {
-                    setSaleResult()
-                }
-            } else {
-                showMessage(sale_form, it.messageError, getString(R.string.falha_atualizar_itens_venda))
-            }
-        }
-    }
-
-    private fun getItemsDeleteObserver(): Observer<ApiResponse<Any?>> {
-        return Observer {
-            sale_form_progressbar.hide()
-            if (it.messageError == null) {
-                viewModel.clearRemovedItem()
                 setSaleResult()
-            } else {
-                showMessageError(sale_form, "SALEItem DELETE ERROR:", it.messageError!!,
-                    getString(R.string.falha_remover_itens_venda))
             }
-        }
+        }, {
+            showMessage(sale_form, it, getString(R.string.falha_atualizar_venda))
+            sale_form_progressbar.hide()
+        }))
+    }
+
+    private fun configureItemsUpdateObserver() {
+        viewModel.itemUpdateResponse.observe(this, observerHandler({
+            if (viewModel.removedItemsIsFilled()) {
+                sale_form_progressbar.show()
+                viewModel.deleteItems()
+                configureItemsDeleteObserver()
+            } else {
+                setSaleResult()
+            }
+        }, {
+            showMessage(sale_form, it, getString(R.string.falha_atualizar_itens_venda))
+        }, {
+            sale_form_progressbar.hide()
+        }))
+    }
+
+    private fun configureItemsDeleteObserver() {
+        viewModel.itemDeleteResponse.observe(this, observerHandler({
+            viewModel.clearRemovedItem()
+            setSaleResult()
+        }, {
+            showMessage(sale_form, it, getString(R.string.falha_remover_itens_venda))
+        }, {
+            sale_form_progressbar.hide()
+        }))
     }
 
     private fun setSaleResult() {
@@ -503,7 +441,7 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
         if (requestCode == PEOPLE_SELECTED_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 data?.let {
-                    val people = it.getSerializableExtra("people_response") as Customer
+                    val people = it.getParcelableExtra("people_response") as Customer
                     val type = it.getStringExtra("type")
                     setPeopleName(people, type)
                 }
@@ -542,10 +480,10 @@ class SaleFormActivity : FormActivity(), TimePickerDialog.OnTimeSetListener {
 
     private fun addProductsAndQuantities(productsDetails: LinkedHashMap<Product, ProductDetail>) {
         productsDetails.forEach {
-            var product = viewModel.products.keys.find { prod -> prod.cod_produto == it.key.cod_produto }
+            var product = viewModel.products.keys.find { prod -> prod.num_codigo_online == it.key.num_codigo_online }
             if (product == null)
                 product = it.key
-            viewModel. products[product] = it.value
+            viewModel.products[product] = it.value
         }
         viewModel.clearSelectedProducts()
         configureList()

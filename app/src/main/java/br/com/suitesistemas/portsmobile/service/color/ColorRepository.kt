@@ -6,8 +6,9 @@ import br.com.suitesistemas.portsmobile.custom.retrofit.responseHandle
 import br.com.suitesistemas.portsmobile.entity.Color
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.service.SearchService
 
-class ColorRepository(private val companyName: String) {
+class ColorRepository(private val companyName: String) : SearchService<Color> {
 
     private val service = RetrofitConfig().colorService()
 
@@ -22,7 +23,7 @@ class ColorRepository(private val companyName: String) {
         return apiResponse
     }
 
-    fun search(search: String): MutableLiveData<ApiResponse<MutableList<Color>?>> {
+    override fun search(search: String): MutableLiveData<ApiResponse<MutableList<Color>?>> {
         val apiResponse = MutableLiveData<ApiResponse<MutableList<Color>?>>()
         val call = service.search(companyName, search)
 
@@ -33,7 +34,7 @@ class ColorRepository(private val companyName: String) {
         return apiResponse
     }
 
-    fun insert(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<Color?>> {
+    override fun insert(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<Color?>> {
         val apiResponse = MutableLiveData<ApiResponse<Color?>>()
         val call = service.insert(companyName, json)
 
@@ -55,7 +56,7 @@ class ColorRepository(private val companyName: String) {
         return apiResponse
     }
 
-    fun delete(id: String, firebaseToken: String, success: () -> Unit, failure: (messageError: String?) -> Unit) {
+    override fun delete(id: String, firebaseToken: String, success: () -> Unit, failure: (messageError: String?) -> Unit) {
         val call = service.delete(id, companyName, firebaseToken)
         call.responseHandle({
             success()

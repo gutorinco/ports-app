@@ -17,7 +17,7 @@ class SaleAdapter(private val context: Context,
     CustomAdapter<Sale> {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): SaleViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.fragment_sale_adapter, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.adapter_sale, parent, false)
         return SaleViewHolder(view)
     }
 

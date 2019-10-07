@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import br.com.suitesistemas.portsmobile.custom.calendar.toStringFormat
 import br.com.suitesistemas.portsmobile.entity.Task
-import kotlinx.android.synthetic.main.fragment_task_adapter.view.*
+import kotlinx.android.synthetic.main.adapter_task.view.*
 import java.util.*
 
 class TaskViewHolder(adapterView: View) : RecyclerView.ViewHolder(adapterView) {

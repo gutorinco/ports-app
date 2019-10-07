@@ -37,7 +37,7 @@ abstract class BasicFragment<T, K : CustomAdapter<T>> : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater?.inflate(R.menu.menu_search, menu)
+        inflater.inflate(R.menu.menu_search, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 

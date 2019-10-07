@@ -1,56 +1,40 @@
 package br.com.suitesistemas.portsmobile.viewModel.search
 
-import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.entity.Product
+import br.com.suitesistemas.portsmobile.entity.ProductColor
+import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.service.product.ProductRepository
+import br.com.suitesistemas.portsmobile.service.product_color.ProductColorRepository
 
-class ProductSearchViewModel : SearchViewModel<Product>() {
+class ProductSearchViewModel : SelectSearchViewModel<Product>() {
 
-    @Bindable
-    val selected = MutableLiveData<Boolean>()
-    private val products: MutableList<Product> = mutableListOf()
-    private val productsSelected: MutableList<Product> = mutableListOf()
-    private lateinit var selectedResponse: (Boolean) -> Unit
-    private lateinit var repository: ProductRepository
+    var productColorResponse = MutableLiveData<ApiResponse<MutableList<ProductColor>?>>()
+    var productColorRollbackResponse = MutableLiveData<ApiResponse<MutableList<ProductColor>?>>()
+    val removedProductColors: MutableList<ProductColor> = mutableListOf()
+    private lateinit var productColorRepository: ProductColorRepository
 
-    init {
-        selected.value = false
+    override fun initRepository(company: String) {
+        companyName = company
+        repository = ProductRepository(company)
+        productColorRepository = ProductColorRepository(company)
     }
 
-    fun onSelected(selected: (Boolean) -> Unit) {
-        selectedResponse = selected
+    fun fetchAllColorsBy(position: Int) {
+        val product = getBy(position)
+        deletedOnSearch = true
+        productColorResponse = productColorRepository.findBy(product.num_codigo_online)
     }
 
-    fun initRepository(companyName: String) {
-        this.companyName = companyName
-        repository = ProductRepository(companyName)
+    fun addRemovedProductColors(colors: MutableList<ProductColor>) {
+        removedProductColors.clear()
+        removedProductColors.addAll(colors)
     }
 
-    override fun addAll(list: MutableList<Product>) {
-        products.addAll(list)
-        listIsEmpty.value = products.isNullOrEmpty()
+    fun productColorsDeleteRollback() {
+        removedProductColors.forEach { it.cod_produto = removedObject!! }
+        productColorRollbackResponse = productColorRepository.insert(removedProductColors)
     }
 
-    override fun search(search: String) {
-        products.clear()
-        searching.value = true
-        wasSearched.value = true
-        response = repository.search(search)
-    }
-
-    override fun getList(): MutableList<Product> = getListCopy(products)
-
-    fun getSelectedList(): MutableList<Product> = getListCopy(productsSelected)
-
-    fun onChecked(checked: Boolean, position: Int) {
-        val product = products[position]
-        when (checked) {
-            true -> productsSelected.add(product)
-            false -> productsSelected.remove(product)
-        }
-        selected.value = productsSelected.isNotEmpty()
-        selectedResponse.invoke(productsSelected.isNotEmpty())
-    }
 
 }

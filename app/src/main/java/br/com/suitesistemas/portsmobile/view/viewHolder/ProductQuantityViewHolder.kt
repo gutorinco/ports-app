@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.entity.Product
-import kotlinx.android.synthetic.main.dialog_product_quantity_adapter.view.*
+import kotlinx.android.synthetic.main.adapter_product_quantity.view.*
 
 class ProductQuantityViewHolder(private val adapterView: View) {
 

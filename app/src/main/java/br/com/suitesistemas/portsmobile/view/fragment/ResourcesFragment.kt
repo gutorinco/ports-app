@@ -10,8 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.utils.IconUtils
+import kotlinx.android.synthetic.main.adapter_resources.view.*
 import kotlinx.android.synthetic.main.fragment_resources.*
-import kotlinx.android.synthetic.main.fragment_resources_adapter.view.*
 
 class ResourcesFragment : Fragment() {
 
