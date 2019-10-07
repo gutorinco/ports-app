@@ -12,7 +12,7 @@ import br.com.suitesistemas.portsmobile.custom.spinner.onItemSelected
 import br.com.suitesistemas.portsmobile.entity.Product
 import br.com.suitesistemas.portsmobile.entity.ProductColor
 import br.com.suitesistemas.portsmobile.model.ProductDetail
-import br.com.suitesistemas.portsmobile.view.viewHolder.ProductQuantityViewHolder
+import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.ProductQuantityViewHolder
 
 class ProductQuantityAdapter(private val context: Context,
                              private val products: LinkedHashMap<Product, ProductDetail> = linkedMapOf(),

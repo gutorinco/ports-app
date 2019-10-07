@@ -32,7 +32,7 @@ class PeopleSearchActivity : SearchActivity(), OnItemClickListener, Observer<Api
 
     lateinit var type: String
     lateinit var viewModel: PeopleSearchViewModel
-    private lateinit var customerAdapter: CustomerAdapter<Any?>
+    private lateinit var customerAdapter: CustomerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

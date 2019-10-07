@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/select_color_adapter"
+        android:id="@+id/base_select_adapter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -9,12 +9,12 @@
         android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/select_color_adapter_checkbox"
+            android:id="@+id/base_select_adapter_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingEnd="@dimen/small_margin"/>
 
-    <TextView android:id="@+id/select_color_adapter_name"
+    <TextView android:id="@+id/base_select_adapter_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/medium_font"

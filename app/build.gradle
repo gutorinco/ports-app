@@ -22,7 +22,7 @@ android {
         }
         debug {
 //            buildConfigField "String", 'BASE_URL', "\"https://api.suitesistemas.com.br/app/\""
-            buildConfigField "String", 'BASE_URL', "\"http://192.168.0.106:8080/app/\""
+            buildConfigField "String", 'BASE_URL', "\"http://192.168.0.110:8080/app/\""
         }
     }
     dataBinding {
@@ -51,7 +51,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
     implementation 'com.squareup.retrofit2:converter-jackson:2.6.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'org.json:json:20190722'
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
     implementation 'info.androidhive:fontawesome:0.0.5'
 

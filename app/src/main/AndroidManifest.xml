@@ -13,7 +13,11 @@
             android:roundIcon="@mipmap/ports"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".view.activity.search.SelectColorSearchActivity"></activity>
+        <activity android:name=".view.activity.search.SelectCombinationSearchActivity"></activity>
+        <activity android:name=".view.activity.form.ModelFormActivity" />
+        <activity android:name=".view.activity.search.ModelSearchActivity" />
+        <activity android:name=".view.activity.search.CombinationSearchActivity" />
+        <activity android:name=".view.activity.search.SelectColorSearchActivity" />
         <activity android:name=".view.activity.form.ProductFormActivity" />
         <activity android:name=".view.activity.search.ProductSearchActivity" />
         <activity android:name=".view.activity.search.ColorSearchActivity" />

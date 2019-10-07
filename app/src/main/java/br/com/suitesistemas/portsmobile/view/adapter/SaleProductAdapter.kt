@@ -8,7 +8,7 @@ import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.entity.Color
 import br.com.suitesistemas.portsmobile.entity.Product
 import br.com.suitesistemas.portsmobile.model.ProductDetail
-import br.com.suitesistemas.portsmobile.view.viewHolder.SaleProductViewHolder
+import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.SaleProductViewHolder
 
 class SaleProductAdapter(private val context: Context,
                          private val products: LinkedHashMap<Product, ProductDetail>

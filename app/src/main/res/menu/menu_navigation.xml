@@ -22,6 +22,10 @@
         <item android:id="@+id/menu_product"
               android:title="@string/produtos" />
 
+        <item android:id="@+id/menu_model"
+                android:icon="@drawable/ic_model"
+                android:title="@string/modelos" />
+
         <item android:id="@+id/menu_financial"
             android:icon="@drawable/ic_credit_card"
             android:title="@string/lancamentos" />

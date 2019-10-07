@@ -1,4 +1,4 @@
-package br.com.suitesistemas.portsmobile.view.viewHolder
+package br.com.suitesistemas.portsmobile.view.adapter.viewHolder
 
 import android.view.View
 import android.widget.ArrayAdapter

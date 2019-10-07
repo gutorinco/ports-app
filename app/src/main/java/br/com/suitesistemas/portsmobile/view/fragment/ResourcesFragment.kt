@@ -60,10 +60,15 @@ class ResourcesFragment : Fragment() {
             main_resources_title.text = getString(R.string.cores)
             setOnClickListener { delegate.onResourceSelected(3) }
         }
+        with (fragment_res_model) {
+            main_resources_img.setImageDrawable(getDrawableBy(R.drawable.ic_model_accent))
+            main_resources_title.text = getString(R.string.modelos)
+            setOnClickListener { delegate.onResourceSelected(4) }
+        }
         with (fragment_res_financial_release) {
             main_resources_img.setImageDrawable(getDrawableBy(R.drawable.ic_credit_card_accent))
             main_resources_title.text = getString(R.string.lancamentos)
-            setOnClickListener { delegate.onResourceSelected(4) }
+            setOnClickListener { delegate.onResourceSelected(5) }
         }
     }
 

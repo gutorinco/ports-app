@@ -11,20 +11,19 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.RecyclerView.Adapter
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.entity.Customer
+import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.CustomerViewHolder
 import br.com.suitesistemas.portsmobile.view.dialog.CustomerPhonesDialog
-import br.com.suitesistemas.portsmobile.view.viewHolder.CustomerViewHolder
 
-class CustomerAdapter<T>(private val context: Context,
-                         private val activity: FragmentActivity,
-                         private val customers: MutableList<Customer>,
-                         private val startActivity: (intent: Intent) -> Unit,
-                         private val failure: (stringId: Int) -> Unit,
-                         private val delete: (position: Int) -> Unit,
-                         private val edit: (position: Int) -> Unit) :
-    Adapter<CustomerViewHolder>(), CustomAdapter<Customer> {
+class CustomerAdapter(context: Context,
+     private val activity: FragmentActivity,
+     customers: MutableList<Customer>,
+     private val startActivity: (intent: Intent) -> Unit,
+     private val failure: (stringId: Int) -> Unit,
+     private val delete: (position: Int) -> Unit,
+     private val edit: (position: Int) -> Unit
+) : BaseAdapter<Customer, CustomerViewHolder>(context, customers) {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): CustomerViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.adapter_customer, parent, false)
@@ -32,7 +31,7 @@ class CustomerAdapter<T>(private val context: Context,
     }
 
     override fun onBindViewHolder(holder: CustomerViewHolder, position: Int) {
-        val customer = customers[position]
+        val customer = list[position]
         holder.bindView(customer)
         holder.menu.setOnClickListener {
             val popupMenu = PopupMenu(context, it)
@@ -90,14 +89,6 @@ class CustomerAdapter<T>(private val context: Context,
                 popupMenu.show()
             }
         }
-    }
-
-    override fun getItemCount() = customers.size
-
-    override fun setAdapter(list: List<Customer>) {
-        customers.clear()
-        customers.addAll(list)
-        notifyDataSetChanged()
     }
 
     private fun getCompletePhone(ddd: String, phone: String): String {

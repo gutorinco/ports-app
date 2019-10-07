@@ -83,19 +83,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun configureMenu() {
-        val toggle = ActionBarDrawerToggle(
-            this,
-            drawer_layout,
-            toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
+        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.drawerArrowDrawable.color = getColorBy(android.R.color.white)
         toggle.syncState()
         val productItem = nav_view.menu.findItem(R.id.menu_product)
-        val boxesIcon = IconUtils.get(this, R.string.fa_boxes_solid, R.color.icons)
-        boxesIcon.alpha = 0.8.toInt()
+        val boxesIcon = IconUtils.get(this, R.string.fa_boxes_solid, R.color.icons_custom)
         productItem.icon = boxesIcon
     }
 
@@ -154,6 +147,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.menu_product -> closeAllFragmentsAndReplaceTo(item, ProductFragment())
             R.id.menu_color -> closeAllFragmentsAndReplaceTo(item, ColorFragment())
             R.id.menu_financial -> closeAllFragmentsAndReplaceTo(item, FinancialFragment())
+            R.id.menu_model -> closeAllFragmentsAndReplaceTo(item, ModelFragment())
 //            R.id.menu_order -> closeAllFragmentsAndReplaceTo(OrderFragment())
 //            R.id.menu_task -> closeAllFragmentsAndReplaceTo(item, TaskFragment())
 //            R.id.menu_crm -> closeAllFragmentsAndReplaceTo(CRMFragment())
@@ -181,7 +175,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             1 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_sale), SaleFragment())
             2 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_product), ProductFragment())
             3 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_color), ColorFragment())
-            4 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_financial), FinancialFragment())
+            4 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_model), ModelFragment())
+            5 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_financial), FinancialFragment())
 //            3 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_customer), OrderFragment())
 //            3 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_customer), TaskFragment())
 //            5 -> closeAllFragmentsAndReplaceTo(nav_view.menu.findItem(R.id.menu_customer), CRMFragment())

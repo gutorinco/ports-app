@@ -31,7 +31,7 @@ import br.com.suitesistemas.portsmobile.view.adapter.CustomerAdapter
 import br.com.suitesistemas.portsmobile.viewModel.list.CustomerViewModel
 import kotlinx.android.synthetic.main.fragment_customer.*
 
-class CustomerFragment : BasicFragment<Customer, CustomerAdapter<Any?>>(),
+class CustomerFragment : BasicFragment<Customer, CustomerAdapter>(),
             OnItemClickListener,
             SwipeRefreshLayout.OnRefreshListener,
             Observer<ApiResponse<MutableList<Customer>?>> {

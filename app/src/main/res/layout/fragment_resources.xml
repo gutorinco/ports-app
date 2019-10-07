@@ -44,18 +44,17 @@
                  android:layout_weight="1"
                  layout="@layout/adapter_resources"/>
 
+        <include android:id="@+id/fragment_res_model"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                layout="@layout/adapter_resources"/>
+
         <include android:id="@+id/fragment_res_financial_release"
                  android:layout_width="match_parent"
                  android:layout_height="match_parent"
                  android:layout_weight="1"
                  layout="@layout/adapter_resources"/>
-
-        <include android:id="@+id/fragment_res_order"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:layout_weight="1"
-                 layout="@layout/adapter_resources"
-                android:visibility="invisible"/>
 
     </LinearLayout>
 

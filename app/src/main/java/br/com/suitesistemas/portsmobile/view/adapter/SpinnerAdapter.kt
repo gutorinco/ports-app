@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.view.viewHolder.SpinnerViewHolder
+import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.SpinnerViewHolder
 
 class SpinnerAdapter(context: Context, private var items: List<String>) : ArrayAdapter<String>(context, 0, items) {
 
