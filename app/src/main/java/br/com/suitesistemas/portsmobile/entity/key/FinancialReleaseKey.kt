@@ -2,7 +2,9 @@ package br.com.suitesistemas.portsmobile.entity.key
 
 import android.os.Parcel
 import android.os.Parcelable
+import br.com.suitesistemas.portsmobile.custom.json.EFinancialReleaseStatusDeserializer
 import br.com.suitesistemas.portsmobile.model.enums.EFinancialReleaseStatus
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
 class FinancialReleaseKey() : Parcelable {
 
@@ -10,6 +12,7 @@ class FinancialReleaseKey() : Parcelable {
     var cod_serie: Int = 0
     var cod_sequencia: Int = 0
     var fky_tipo_documento: Int = 0
+    @JsonDeserialize(using = EFinancialReleaseStatusDeserializer::class)
     var flg_status: EFinancialReleaseStatus = EFinancialReleaseStatus.A
 
     constructor(parcel: Parcel) : this() {

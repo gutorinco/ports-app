@@ -11,12 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
-import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
-import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
-import br.com.suitesistemas.portsmobile.custom.recycler_view.hideButtonOnScroll
-import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
+import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.databinding.ActivitySelectColorSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Color
 import br.com.suitesistemas.portsmobile.model.ApiResponse
@@ -26,7 +21,8 @@ import br.com.suitesistemas.portsmobile.viewModel.search.ColorSearchViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_select_color_search.*
 
-class SelectColorSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiResponse<MutableList<Color>?>> {
+class SelectColorSearchActivity : SearchActivity(),
+    OnItemClickListener, Observer<ApiResponse<MutableList<Color>?>> {
 
     lateinit var viewModel: ColorSearchViewModel
     private lateinit var selectColorAdapter: SelectColorAdapter
@@ -103,7 +99,7 @@ class SelectColorSearchActivity : SearchActivity(), OnItemClickListener, Observe
         if (response.messageError == null) {
             response.data?.let {
                 viewModel.addAll(it)
-                selectColorAdapter.setAdapter(it)
+                selectColorAdapter.setAdapter(viewModel.completeList)
             }
         } else {
             Log.e("PRODUCT SEARCH ERROR:", response.messageError)

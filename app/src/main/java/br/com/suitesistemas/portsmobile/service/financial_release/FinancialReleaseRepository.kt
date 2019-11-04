@@ -1,15 +1,16 @@
 package br.com.suitesistemas.portsmobile.service.financial_release
 
 import androidx.lifecycle.MutableLiveData
+import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.custom.retrofit.responseHandle
 import br.com.suitesistemas.portsmobile.entity.FinancialRelease
 import br.com.suitesistemas.portsmobile.model.ApiResponse
-import br.com.suitesistemas.portsmobile.service.SearchService
+import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.service.ListService
 
-class FinancialReleaseRepository(private val companyName: String): SearchService<FinancialRelease> {
+class FinancialReleaseRepository(private val companyName: String): ListService<FinancialRelease> {
 
-    fun findAll(): MutableLiveData<ApiResponse<MutableList<FinancialRelease>?>> {
+    override fun findAll(): MutableLiveData<ApiResponse<MutableList<FinancialRelease>?>> {
         val apiResponse = MutableLiveData<ApiResponse<MutableList<FinancialRelease>?>>()
         val call = RetrofitConfig().financialReleaseService().findAll(companyName)
 
@@ -32,10 +33,13 @@ class FinancialReleaseRepository(private val companyName: String): SearchService
     }
 
     override fun delete(id: String, firebaseToken: String, success: () -> Unit,failure: (messageError: String?) -> Unit) {
-        TODO("not implemented")
+        throw RuntimeException("Not implemented!")
     }
     override fun insert(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<FinancialRelease?>> {
-        TODO("not implemented")
+        throw RuntimeException("Not implemented!")
+    }
+    override fun update(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<VersionResponse?>> {
+        throw RuntimeException("Not implemented!")
     }
 
 }

@@ -1,6 +1,7 @@
 package br.com.suitesistemas.portsmobile.service.product
 
 import br.com.suitesistemas.portsmobile.entity.Product
+import br.com.suitesistemas.portsmobile.model.CodeResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
 import retrofit2.Call
 import retrofit2.http.*
@@ -13,7 +14,10 @@ interface ProductService {
     @GET("produto/{apelido}")
     fun search(@Path("apelido") apelido: String,
                @Query("search") search: String,
-               @Query("field") field: String = "Nome"): Call<MutableList<Product>>
+               @Query("field") field: String): Call<MutableList<Product>>
+
+    @GET("produto/{apelido}/auto_increment")
+    fun getNextCode(@Path("apelido") apelido: String): Call<CodeResponse>
 
     @POST("produto/{apelido}")
     fun insert(@Path("apelido") apelido: String, @Body json: MutableList<HashMap<String, Any?>>): Call<Product>

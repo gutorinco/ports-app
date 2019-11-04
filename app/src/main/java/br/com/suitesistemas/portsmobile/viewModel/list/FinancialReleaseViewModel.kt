@@ -2,22 +2,15 @@ package br.com.suitesistemas.portsmobile.viewModel.list
 
 import br.com.suitesistemas.portsmobile.entity.FinancialRelease
 import br.com.suitesistemas.portsmobile.service.financial_release.FinancialReleaseRepository
+import br.com.suitesistemas.portsmobile.viewModel.completeList.ListViewModel
 
-class FinancialReleaseViewModel : ListViewModel<FinancialRelease>() {
+class FinancialReleaseViewModel : ListViewModel<FinancialRelease, FinancialReleaseRepository>("lancamento") {
 
-    private lateinit var repository: FinancialReleaseRepository
-
-    fun fetchAllFinancialReleases(companyName: String) {
-        this.companyName = companyName
-        repository = FinancialReleaseRepository(companyName)
-        response = repository.findAll()
+    override fun initRepositories(company: String) {
+        companyName = company
+        repository = FinancialReleaseRepository(company)
     }
 
-    fun refresh() {
-        list.clear()
-        refreshResponse = repository.findAll()
-    }
-
-    override fun sortingList() = list.sortedWith(compareBy(FinancialRelease::dat_emissao)).asReversed()
+    override fun sortingList(list: List<FinancialRelease>) = list.sortedWith(compareBy(FinancialRelease::dat_emissao)).asReversed()
 
 }

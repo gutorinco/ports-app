@@ -6,4 +6,13 @@
         <item>Pendência</item>
         <item>Cancelado</item>
     </array>
+    <array name="crmStatus">
+        <item>Em aberto</item>
+        <item>Concluído</item>
+        <item>Cancelado</item>
+    </array>
+    <array name="crmTypes">
+        <item>Atendimento</item>
+        <item>Pós-venda</item>
+    </array>
 </resources>

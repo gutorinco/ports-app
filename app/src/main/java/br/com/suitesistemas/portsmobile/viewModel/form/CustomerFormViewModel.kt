@@ -5,10 +5,9 @@ import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
-import br.com.suitesistemas.portsmobile.custom.string.getPhoneNumber
-import br.com.suitesistemas.portsmobile.custom.string.numbersOnly
+import br.com.suitesistemas.portsmobile.custom.extensions.getPhoneNumber
+import br.com.suitesistemas.portsmobile.custom.extensions.numbersOnly
 import br.com.suitesistemas.portsmobile.entity.Customer
-import br.com.suitesistemas.portsmobile.model.CustomerSituation
 import br.com.suitesistemas.portsmobile.service.company.CompanyRepository
 import br.com.suitesistemas.portsmobile.service.customer.CustomerRepository
 
@@ -55,6 +54,10 @@ class CustomerFormViewModel(application: Application) : FormViewModel<Customer>(
             }
         }
     }
+
+    override fun getCompanyIndex(): Int = companies.indexOfFirst { company ->
+        company.cod_empresa == customer.value?.fky_empresa?.cod_empresa
+    }
     
     fun getTypeIndex(): Int {
         return if (initializingEdition) {
@@ -74,14 +77,11 @@ class CustomerFormViewModel(application: Application) : FormViewModel<Customer>(
         return customer.value?.dsc_cpf_cnpj!!
     }
 
-    fun validateForm(situation: String, companyPosition: Int) {
+    fun validateForm() {
         val customer = Customer(this.customer.value!!)
 
         if (companies.isNullOrEmpty())
             throw InvalidValueException(getStringRes(R.string.nenhuma_empresa))
-
-        customer.fky_empresa = companies[companyPosition]
-        customer.flg_situacao_cliente = CustomerSituation(situation).flag
 
         if (customer.dsc_nome_pessoa.isEmpty()) {
             throw InvalidValueException("Nome", getStringRes(R.string.obrigatorio))
@@ -119,17 +119,11 @@ class CustomerFormViewModel(application: Application) : FormViewModel<Customer>(
         this.customer.value = Customer(customer)
     }
 
-    fun save(firebaseToken: String) {
-        if (customer.value?.num_codigo_online.isNullOrEmpty())
-             insert(firebaseToken)
-        else update(firebaseToken)
-    }
-
-    private fun insert(firebaseToken: String) {
+    fun insert(firebaseToken: String) {
         insertResponse = customerRepository.insert(getJsonRequest("pessoa", customer.value!!, firebaseToken))
     }
 
-    private fun update(firebaseToken: String) {
+    fun update(firebaseToken: String) {
         updateResponse = customerRepository.update(getJsonRequest("pessoa", customer.value!!, firebaseToken))
     }
 

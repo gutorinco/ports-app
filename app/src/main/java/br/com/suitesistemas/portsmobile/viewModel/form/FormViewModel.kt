@@ -34,6 +34,10 @@ abstract class FormViewModel<T>(application: Application) : AndroidViewModel(app
         this.companies.addAll(companies)
     }
 
+    fun getCompaniesNames() = companies.map { company -> company.dsc_empresa }
+
+    open fun getCompanyIndex(): Int = 0
+
     protected fun getJsonRequest(objName: String, obj: T, firebaseToken: String): MutableList<HashMap<String, Any?>> {
         val jsonRequest: MutableList<HashMap<String, Any?>> = mutableListOf()
 

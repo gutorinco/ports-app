@@ -24,4 +24,6 @@ class PeopleSearchViewModel : SearchViewModel<Customer>() {
         response = (repository as CustomerRepository).search(search, type)
     }
 
+    override fun sortingList(list: MutableList<Customer>) = list.sortedWith(compareBy(Customer::dsc_nome_pessoa))
+
 }

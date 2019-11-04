@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
-import br.com.suitesistemas.portsmobile.service.SearchService
+import br.com.suitesistemas.portsmobile.service.ListService
 
 abstract class SearchViewModel<T> : ViewModel() {
 
@@ -13,7 +13,7 @@ abstract class SearchViewModel<T> : ViewModel() {
     @Bindable val wasSearched = MutableLiveData<Boolean>()
     @Bindable val listIsEmpty = MutableLiveData<Boolean>()
     protected var removedPosition: Int = 0
-    protected lateinit var repository: SearchService<T>
+    protected lateinit var repository: ListService<T>
     protected lateinit var companyName: String
     var removedObject: T? = null
     var deletedOnSearch: Boolean = false
@@ -30,14 +30,21 @@ abstract class SearchViewModel<T> : ViewModel() {
     abstract fun initRepository(company: String)
 
     fun add(product: T, operation: EHttpOperation = EHttpOperation.POST) {
-        if (operation == EHttpOperation.ROLLBACK)
-            completeList.add(removedPosition, product)
-        else completeList.add(product)
-        response.value = ApiResponse(completeList, operation)
+        with (completeList) {
+            if (operation == EHttpOperation.ROLLBACK)
+                 add(removedPosition, product)
+            else add(product)
+
+            val sortedList = sortingList(this)
+            clear()
+            addAll(sortedList)
+            response.value = ApiResponse(this, operation)
+        }
     }
 
     fun addAll(list: MutableList<T>) {
-        completeList.addAll(list)
+        val sortedList = sortingList(list)
+        completeList.addAll(sortedList)
         listIsEmpty.value = completeList.isNullOrEmpty()
     }
 
@@ -85,5 +92,7 @@ abstract class SearchViewModel<T> : ViewModel() {
 
         return jsonRequest
     }
+
+    abstract fun sortingList(list: MutableList<T>): List<T>
 
 }

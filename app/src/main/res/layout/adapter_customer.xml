@@ -1,51 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/customer_adapter"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/very_tiny_margin"
-        android:elevation="@dimen/elevation">
+        android:layout_height="wrap_content">
 
-    <LinearLayout android:orientation="horizontal"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content">
+    <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/AdapterCard">
 
-        <LinearLayout android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/small_margin"
-                android:layout_weight="1">
+        <LinearLayout android:orientation="horizontal"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content">
 
-            <TextView android:id="@+id/customer_adapter_name"
+            <LinearLayout android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="@dimen/medium_font"
-                    android:textStyle="bold"/>
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/small_margin"
+                    android:layout_weight="1">
 
-            <TextView android:id="@+id/customer_adapter_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="@dimen/small_font"/>
+                <TextView android:id="@+id/customer_adapter_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="@dimen/medium_font"
+                        android:textStyle="bold"/>
+
+                <TextView android:id="@+id/customer_adapter_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="@dimen/small_font"/>
+
+            </LinearLayout>
+
+            <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="9">
+
+                <ImageButton
+                        android:id="@+id/customer_adapter_menu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/transparent"
+                        android:src="@drawable/ic_dots"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"/>
+
+            </RelativeLayout>
 
         </LinearLayout>
 
-        <RelativeLayout android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="8"
-                android:paddingTop="@dimen/btn_adapter_padding">
+    </com.google.android.material.card.MaterialCardView>
 
-            <ImageButton
-                    android:id="@+id/customer_adapter_menu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@android:color/transparent"
-                    android:src="@drawable/ic_dots"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"/>
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>

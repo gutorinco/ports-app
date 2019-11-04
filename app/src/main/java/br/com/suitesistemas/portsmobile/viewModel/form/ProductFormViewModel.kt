@@ -5,12 +5,12 @@ import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
-import br.com.suitesistemas.portsmobile.entity.Color
-import br.com.suitesistemas.portsmobile.entity.Product
-import br.com.suitesistemas.portsmobile.entity.ProductColor
-import br.com.suitesistemas.portsmobile.entity.UnitMeasure
+import br.com.suitesistemas.portsmobile.entity.*
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.CodeResponse
+import br.com.suitesistemas.portsmobile.model.enums.ESystemType
 import br.com.suitesistemas.portsmobile.service.company.CompanyRepository
+import br.com.suitesistemas.portsmobile.service.configuration.ConfigurationRepository
 import br.com.suitesistemas.portsmobile.service.product.ProductRepository
 import br.com.suitesistemas.portsmobile.service.product_color.ProductColorRepository
 import br.com.suitesistemas.portsmobile.service.unit_measure.UnitMeasureRepository
@@ -18,29 +18,36 @@ import br.com.suitesistemas.portsmobile.service.unit_measure.UnitMeasureReposito
 class ProductFormViewModel(application: Application) : FormViewModel<Product>(application) {
 
     @Bindable var product = MutableLiveData<Product>()
+    @Bindable var code = MutableLiveData<String>()
     val units: MutableList<UnitMeasure> = mutableListOf()
     val colors: MutableList<Color> = mutableListOf()
     var removedColor: Color? = null
+    var systemType = ESystemType.A
     val removedColors: MutableList<Color> = mutableListOf()
     val productColors: MutableList<ProductColor> = mutableListOf()
     val newProductColors: MutableList<ProductColor> = mutableListOf()
+    var codeResponse = MutableLiveData<ApiResponse<CodeResponse?>>()
     var unitsResponse = MutableLiveData<ApiResponse<MutableList<UnitMeasure>?>>()
     var productColorResponse = MutableLiveData<ApiResponse<MutableList<ProductColor>?>>()
     var productColorInsertResponse = MutableLiveData<ApiResponse<MutableList<ProductColor>?>>()
     var productColorDeleteResponse = MutableLiveData<ApiResponse<Boolean?>>()
+    var configResponse = MutableLiveData<ApiResponse<MutableList<Configuration>?>>()
+    private lateinit var configRepository: ConfigurationRepository
     private lateinit var productRepository: ProductRepository
     private lateinit var productColorRepository: ProductColorRepository
     private lateinit var unitMeasureRepository: UnitMeasureRepository
 
     init {
         product.value = Product()
+        code.value = ""
     }
 
     fun initRepositories(companyName: String) {
         productRepository = ProductRepository(companyName)
-        companyRepository  = CompanyRepository(companyName)
-        unitMeasureRepository  = UnitMeasureRepository(companyName)
-        productColorRepository  = ProductColorRepository(companyName)
+        companyRepository = CompanyRepository(companyName)
+        configRepository = ConfigurationRepository(companyName)
+        unitMeasureRepository = UnitMeasureRepository(companyName)
+        productColorRepository = ProductColorRepository(companyName)
     }
 
     fun fetchAllUnits() {
@@ -57,6 +64,24 @@ class ProductFormViewModel(application: Application) : FormViewModel<Product>(ap
         }
     }
 
+    fun fetchConfigurations(){
+        configResponse = configRepository.findAll()
+    }
+
+    fun fetchNextCode() {
+        codeResponse = productRepository.getNextCode()
+    }
+
+    override fun getCompanyIndex() = companies.indexOfFirst { company ->
+        company.cod_empresa == product.value?.fky_empresa?.cod_empresa
+    }
+
+    fun getUnitNames() = units.map { unit -> unit.dsc_unidade_medida }
+
+    fun getUnitIndex() = units.indexOfFirst { company ->
+        company.cod_unidade_medida == product.value?.fky_unidade_medida?.cod_unidade_medida
+    }
+
     fun addAllUnits(units: MutableList<UnitMeasure>) {
         this.units.addAll(units)
     }
@@ -66,43 +91,40 @@ class ProductFormViewModel(application: Application) : FormViewModel<Product>(ap
         colors.addAll(productColors.map { it.cod_cor })
     }
 
+    fun listIsEmpty() = colors.isNullOrEmpty()
+
     fun concat(productToConcat: Product) {
         product.value = productToConcat
+        code.value = productToConcat.cod_online.toString()
     }
 
-    fun validateForm(unitPosition: Int, companyPosition: Int) {
+    fun validateForm() {
         val product = Product(this.product.value!!)
 
         if (units.isNullOrEmpty())
             throw InvalidValueException(getStringRes(R.string.nenhuma_unidade_medida))
         if (colors.isEmpty())
             throw InvalidValueException(getStringRes(R.string.adicione_cores))
-
-        product.fky_empresa = companies[companyPosition]
-        product.fky_unidade_medida = units[unitPosition]
-
         if (product.dsc_produto.isNullOrEmpty())
             throw InvalidValueException("Nome", getStringRes(R.string.obrigatorio))
 
         this.product.value = Product(product)
     }
 
-    fun save(firebaseToken: String) {
-        if (product.value?.num_codigo_online.isNullOrEmpty())
-            insert(firebaseToken)
-        else update(firebaseToken)
-    }
-
-    private fun insert(firebaseToken: String) {
+    fun insert(firebaseToken: String) {
         insertResponse = productRepository.insert(getJsonRequest("produto", product.value!!, firebaseToken))
     }
 
-    private fun update(firebaseToken: String) {
+    fun update(firebaseToken: String) {
         updateResponse = productRepository.update(getJsonRequest("produto", product.value!!, firebaseToken))
     }
 
     fun insertColors() {
-        newProductColors.forEach { it.cod_produto = product.value!! }
+        newProductColors.forEach {
+            it.cod_produto = product.value!!
+            if (systemType == ESystemType.O)
+                it.dsc_codigo_barras = getBarCode(it.cod_produto, it.cod_cor)
+        }
         productColorInsertResponse = productColorRepository.insert(newProductColors)
     }
 
@@ -124,6 +146,27 @@ class ProductFormViewModel(application: Application) : FormViewModel<Product>(ap
                 colors.add(it)
             }
         }
+    }
+
+    private fun getBarCode(product: Product, color: Color): String {
+        val productCode = product.cod_online
+        val textProductCode = when {
+            productCode < 10 -> "00000$productCode"
+            productCode < 100 -> "0000$productCode"
+            productCode < 1000 -> "000$productCode"
+            productCode < 10000 -> "00$productCode"
+            productCode < 100000 -> "0$productCode"
+            else -> productCode.toString()
+        }
+
+        val colorCode = color.cod_cor!!
+        val textColorCode = when {
+            colorCode < 10 -> "00$colorCode"
+            colorCode < 100 -> "0$colorCode"
+            else -> colorCode.toString()
+        }
+
+        return "$textProductCode$textColorCode"
     }
 
 }

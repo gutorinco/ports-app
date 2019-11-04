@@ -8,14 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
-import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
+import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
-import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
-import br.com.suitesistemas.portsmobile.custom.view.showMessageError
 import br.com.suitesistemas.portsmobile.databinding.ActivitySaleSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Sale
 import br.com.suitesistemas.portsmobile.model.ApiResponse
@@ -27,7 +21,8 @@ import br.com.suitesistemas.portsmobile.viewModel.search.SaleSearchViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_sale_search.*
 
-class SaleSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiResponse<MutableList<Sale>?>> {
+class SaleSearchActivity : SearchActivity(),
+    OnItemClickListener, Observer<ApiResponse<MutableList<Sale>?>> {
 
     lateinit var viewModel: SaleSearchViewModel
     private lateinit var saleAdapter: SaleAdapter
@@ -95,7 +90,9 @@ class SaleSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiRe
             EHttpOperation.ROLLBACK -> Snackbar.make(sale_search, getString(R.string.acao_desfeita), Snackbar.LENGTH_LONG).show()
             else -> {}
         }
-        setAdapter(data)
+        if (data != null)
+             setAdapter(viewModel.completeList)
+        else setAdapter(data)
         viewModel.searching.value = false
     }
 
@@ -131,29 +128,31 @@ class SaleSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiRe
     }
 
     override fun deleteRollback() {
-        viewModel.searching.value = true
-        viewModel.deleteRollback("venda")
-        viewModel.rollbackResponse.observe(this, observerHandler({
-            if (viewModel.existItems()) {
-                viewModel.deleteItemRollback(it)
-                configureItemRollbackObserver()
-            } else {
-                viewModel.add(it, EHttpOperation.ROLLBACK)
-            }
-        }, {
-            showMessageError(sale_search, it, EHttpOperation.ROLLBACK)
-            configureList(viewModel.getList())
-        }, {
-            viewModel.searching.value = false
-        }))
+        with (viewModel) {
+            searching.value = true
+            deleteRollback("venda")
+            rollbackResponse.observe(this@SaleSearchActivity, observerHandler({
+                add(it, EHttpOperation.ROLLBACK)
+                if (existItems())
+                    this@SaleSearchActivity.deleteItemRollback(it)
+            }, {
+                showMessageError(sale_search, it, EHttpOperation.ROLLBACK)
+                configureList(getList())
+            }, {
+                searching.value = false
+            }))
+        }
     }
 
-    private fun configureItemRollbackObserver() {
-        viewModel.itemRollbackResponse.observe(this, observerHandler({
-            onChanged(ApiResponse(viewModel.getList(), EHttpOperation.ROLLBACK))
-        }, {
-            onChanged(ApiResponse(it, EHttpOperation.POST))
-        }))
+    private fun deleteItemRollback(sale: Sale) {
+        with (viewModel) {
+            deleteItemRollback(sale)
+            itemRollbackResponse.observe(this@SaleSearchActivity, observerHandler({
+                onChanged(ApiResponse(getList(), EHttpOperation.ROLLBACK))
+            }, {
+                onChanged(ApiResponse(it, EHttpOperation.POST))
+            }))
+        }
     }
 
     override fun onItemClicked(position: Int, view: View) {

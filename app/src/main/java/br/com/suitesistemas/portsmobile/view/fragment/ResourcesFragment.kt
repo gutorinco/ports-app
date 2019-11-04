@@ -60,15 +60,27 @@ class ResourcesFragment : Fragment() {
             main_resources_title.text = getString(R.string.cores)
             setOnClickListener { delegate.onResourceSelected(3) }
         }
+        with (fragment_res_order) {
+            val dollyIcon = IconUtils.get(context!!, R.string.fa_dolly_solid, R.color.icons_accent, 32F)
+            main_resources_img.setImageDrawable(dollyIcon)
+            main_resources_title.text = getString(R.string.pedidos)
+            setOnClickListener { delegate.onResourceSelected(4) }
+        }
         with (fragment_res_model) {
             main_resources_img.setImageDrawable(getDrawableBy(R.drawable.ic_model_accent))
             main_resources_title.text = getString(R.string.modelos)
-            setOnClickListener { delegate.onResourceSelected(4) }
+            setOnClickListener { delegate.onResourceSelected(5) }
+        }
+        with (fragment_res_crm) {
+            val handshakeIcon = IconUtils.get(context!!, R.string.fa_handshake_solid, R.color.icons_accent, 32F)
+            main_resources_img.setImageDrawable(handshakeIcon)
+            main_resources_title.text = getString(R.string.crm)
+            setOnClickListener { delegate.onResourceSelected(6) }
         }
         with (fragment_res_financial_release) {
             main_resources_img.setImageDrawable(getDrawableBy(R.drawable.ic_credit_card_accent))
             main_resources_title.text = getString(R.string.lancamentos)
-            setOnClickListener { delegate.onResourceSelected(5) }
+            setOnClickListener { delegate.onResourceSelected(7) }
         }
     }
 

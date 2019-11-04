@@ -65,7 +65,7 @@ class ProductQuantityDialog : DialogFragment() {
             }
             products.forEach { product ->
                 val productColors: MutableList<ProductColor> = productsColors.filter {
-                        color -> color.cod_produto.cod_produto == product.cod_produto
+                        color -> color.cod_produto.num_codigo_online == product.num_codigo_online
                 } as MutableList<ProductColor>
                 productsQuantities[product] = ProductDetail(1, productColors)
             }
@@ -78,7 +78,7 @@ class ProductQuantityDialog : DialogFragment() {
                 if (response.keys.isNullOrEmpty()) {
                     response[product] = ProductDetail(quantity, mutableListOf(productColor))
                 } else {
-                    var existProduct = response.keys.find { it.cod_produto == product.cod_produto }
+                    var existProduct = response.keys.find { it.num_codigo_online == product.num_codigo_online }
                     if (existProduct == null)
                         existProduct = product
                     response[existProduct] = ProductDetail(quantity, mutableListOf(productColor))

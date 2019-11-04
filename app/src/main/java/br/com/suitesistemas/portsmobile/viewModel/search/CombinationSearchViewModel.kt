@@ -10,4 +10,6 @@ class CombinationSearchViewModel : SelectSearchViewModel<Combination>() {
         repository = CombinationRepository(company)
     }
 
+    override fun sortingList(list: MutableList<Combination>) = list.sortedWith(compareBy(Combination::dsc_combinacao))
+
 }

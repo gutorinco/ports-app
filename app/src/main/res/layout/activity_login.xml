@@ -12,6 +12,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="@dimen/large_margin"
+            android:scrollbars="none"
             tools:context="br.com.suitesistemas.portsmobile.view.activity.LoginActivity">
 
         <LinearLayout

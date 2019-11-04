@@ -6,9 +6,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
-import br.com.suitesistemas.portsmobile.custom.view.showMessageError
+import br.com.suitesistemas.portsmobile.custom.extensions.executeAfterLoaded
+import br.com.suitesistemas.portsmobile.custom.extensions.hideKeyboard
+import br.com.suitesistemas.portsmobile.custom.extensions.showMessageError
 import br.com.suitesistemas.portsmobile.databinding.ActivityFinancialReleaseSearchBinding
 import br.com.suitesistemas.portsmobile.entity.FinancialRelease
 import br.com.suitesistemas.portsmobile.model.ApiResponse
@@ -73,7 +73,12 @@ class FinancialReleaseSearchActivity : SearchActivity(), Observer<ApiResponse<Mu
                 releaseAdapter.setAdapter(it)
             }
         } else {
-            showMessageError(financial_search, "FINANCIAL SEARCH ERROR:", response.messageError, getString(R.string.nenhum_resultado))
+            showMessageError(
+                financial_search,
+                "FINANCIAL SEARCH ERROR:",
+                response.messageError,
+                getString(R.string.nenhum_resultado)
+            )
         }
 
         viewModel.searching.value = false

@@ -1,18 +1,18 @@
 package br.com.suitesistemas.portsmobile.service.color
 
 import androidx.lifecycle.MutableLiveData
+import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.custom.retrofit.responseHandle
 import br.com.suitesistemas.portsmobile.entity.Color
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
-import br.com.suitesistemas.portsmobile.service.SearchService
+import br.com.suitesistemas.portsmobile.service.ListService
 
-class ColorRepository(private val companyName: String) : SearchService<Color> {
+class ColorRepository(private val companyName: String) : ListService<Color> {
 
     private val service = RetrofitConfig().colorService()
 
-    fun findAll(): MutableLiveData<ApiResponse<MutableList<Color>?>> {
+    override fun findAll(): MutableLiveData<ApiResponse<MutableList<Color>?>> {
         val apiResponse = MutableLiveData<ApiResponse<MutableList<Color>?>>()
         val call = service.findAll(companyName)
 
@@ -45,7 +45,7 @@ class ColorRepository(private val companyName: String) : SearchService<Color> {
         return apiResponse
     }
 
-    fun update(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<VersionResponse?>> {
+    override fun update(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<VersionResponse?>> {
         val apiResponse = MutableLiveData<ApiResponse<VersionResponse?>>()
         val call = service.update(companyName, json)
 

@@ -1,5 +1,6 @@
 package br.com.suitesistemas.portsmobile.entity
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import br.com.suitesistemas.portsmobile.model.enums.ETaskStatus
@@ -76,8 +77,9 @@ class Task() : Parcelable {
         parcel.writeInt(version)
     }
 
+    @SuppressLint("WrongConstant")
     override fun describeContents(): Int {
-        return 0
+        return 21
     }
 
     companion object CREATOR : Parcelable.Creator<Task> {

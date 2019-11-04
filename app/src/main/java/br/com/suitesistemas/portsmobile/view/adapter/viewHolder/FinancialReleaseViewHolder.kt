@@ -3,9 +3,9 @@ package br.com.suitesistemas.portsmobile.view.adapter.viewHolder
 import android.view.View
 import androidx.core.content.ContextCompat
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.extensions.toStringFormat
 import br.com.suitesistemas.portsmobile.entity.FinancialRelease
 import kotlinx.android.synthetic.main.adapter_financial.view.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class FinancialReleaseViewHolder(private val adapterView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(adapterView) {
@@ -21,12 +21,12 @@ class FinancialReleaseViewHolder(private val adapterView: View) : androidx.recyc
     fun bindView(release: FinancialRelease) {
         name.text  = release.fky_pessoa.dsc_nome_pessoa
         reference.text = getString(R.string.lanc_adapter_ref, release.dsc_referencia)
-        emissionDate.text = getString(R.string.lanc_adapter_emissao, getDateString(release.dat_emissao))
-        dueDate.text = getString(R.string.lanc_adapter_vencimento, getDateString(release.dat_vencimento))
+        emissionDate.text = getString(R.string.lanc_adapter_emissao, release.dat_emissao.toStringFormat())
+        dueDate.text = getString(R.string.lanc_adapter_vencimento, release.dat_vencimento.toStringFormat())
         if (release.dat_pagamento == null) {
             paymentDate.visibility = View.GONE
         } else {
-            paymentDate.text = getString(R.string.lanc_adapter_vencimento, getDateString(release.dat_pagamento!!))
+            paymentDate.text = getString(R.string.lanc_adapter_vencimento, release.dat_pagamento!!.toStringFormat())
         }
         when (release.fky_situacao_pagamento.dsc_situacao_pagamento!!.toUpperCase(Locale.ROOT)) {
             getString(R.string.em_aberto) -> setStatus(R.string.em_aberto, R.drawable.filled_circle_primary)
@@ -39,10 +39,6 @@ class FinancialReleaseViewHolder(private val adapterView: View) : androidx.recyc
         if (param == null)
             return adapterView.context.getString(stringResource)
         return adapterView.context.getString(stringResource, param)
-    }
-
-    private fun getDateString(date: Date): String {
-        return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date)
     }
 
     private fun setStatus(name: Int, drawableId: Int) {

@@ -8,15 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
-import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
+import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
-import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
-import br.com.suitesistemas.portsmobile.custom.view.showMessage
-import br.com.suitesistemas.portsmobile.custom.view.showMessageError
 import br.com.suitesistemas.portsmobile.databinding.ActivityModelSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Model
 import br.com.suitesistemas.portsmobile.model.ApiResponse
@@ -27,8 +20,10 @@ import br.com.suitesistemas.portsmobile.view.adapter.ModelAdapter
 import br.com.suitesistemas.portsmobile.viewModel.search.ModelSearchViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_model_search.*
+import kotlinx.android.synthetic.main.fragment_model.*
 
-class ModelSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiResponse<MutableList<Model>?>> {
+class ModelSearchActivity : SearchActivity(),
+    OnItemClickListener, Observer<ApiResponse<MutableList<Model>?>> {
 
     lateinit var type: String
     lateinit var viewModel: ModelSearchViewModel
@@ -94,7 +89,9 @@ class ModelSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiR
             EHttpOperation.ROLLBACK -> Snackbar.make(model_search, getString(R.string.acao_desfeita), Snackbar.LENGTH_LONG).show()
             else -> {}
         }
-        setAdapter(data)
+        if (data != null)
+             setAdapter(viewModel.completeList)
+        else setAdapter(data)
     }
 
     private fun setAdapter(data: List<Model>?) = data?.let { modelAdapter.setAdapter(it) }
@@ -121,40 +118,86 @@ class ModelSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiR
     }
 
     private fun delete(position: Int) {
-        val firebaseToken = FirebaseUtils.getToken(this)
         viewModel.searching.value = true
         viewModel.fetchAllCombinationsBy(position)
-        viewModel.modelCombinationResponse.observe(this, observerHandler({
-            viewModel.addRemovedModelCombinations(it)
-            val model = viewModel.getBy(position)
-            viewModel.delete(model.num_codigo_online, position, firebaseToken)
-        }, {
-            showMessage(model_search, getString(R.string.falha_remover_cores))
-        }, {
-            viewModel.searching.value = false
-        }))
+        viewModel.modelCombinationResponse.observe(this,
+            observerHandler({
+                viewModel.addRemovedModelCombinations(it)
+                fetchAllGridCombinations(position)
+            }, {
+                model_progressbar.hide()
+                showMessage(
+                    model_layout,
+                    getString(R.string.falha_remover_combinacoes)
+                )
+            })
+        )
+    }
+
+    private fun fetchAllGridCombinations(position: Int) {
+        viewModel.fetchAllGridCombinationsBy(position)
+        viewModel.modelGridResponse.observe(this,
+            observerHandler({
+                val firebaseToken = FirebaseUtils.getToken(this)
+                viewModel.addRemovedModelGridCombinations(it)
+                val model = viewModel.getBy(position)
+                viewModel.delete(model.num_codigo_online, position, firebaseToken)
+            }, {
+                model_progressbar.hide()
+                showMessage(
+                    model_layout,
+                    getString(R.string.falha_remover_grade)
+                )
+            })
+        )
     }
 
     override fun deleteRollback() {
         viewModel.searching.value = true
         viewModel.deleteRollback("modelo")
-        viewModel.rollbackResponse.observe(this, observerHandler({
-            viewModel.add(it, EHttpOperation.ROLLBACK)
-            viewModel.removedObject = it
-            modelCombinationsDeleteRollback()
-        }, {
-            viewModel.searching.value = false
-            showMessage(model_search, it, getString(R.string.falha_desfazer_acao))
-        }))
+        viewModel.rollbackResponse.observe(this,
+            observerHandler({
+                viewModel.add(it, EHttpOperation.ROLLBACK)
+                viewModel.removedObject = it
+                modelCombinationsDeleteRollback()
+            }, {
+                viewModel.searching.value = false
+                showMessage(
+                    model_layout,
+                    it,
+                    getString(R.string.falha_desfazer_acao)
+                )
+            })
+        )
     }
 
     private fun modelCombinationsDeleteRollback() {
         viewModel.modelCombinationsDeleteRollback()
-        viewModel.modelCombinationRollbackResponse.observe(this, observerHandler({}, {
-            showMessage(model_search, getString(R.string.falha_desfazer_acao))
-        }, {
-            viewModel.searching.value = false
-        }))
+        viewModel.modelCombinationRollbackResponse.observe(this,
+            observerHandler({
+                modelGridCombinationsDeleteRollback()
+            }, {
+                viewModel.searching.value = false
+                showMessage(
+                    model_layout,
+                    getString(R.string.falha_desfazer_acao)
+                )
+            })
+        )
+    }
+
+    private fun modelGridCombinationsDeleteRollback() {
+        viewModel.modelGridCombinationsDeleteRollback()
+        viewModel.modelGridRollbackResponse.observe(this,
+            observerHandler({}, {
+                showMessage(
+                    model_layout,
+                    getString(R.string.falha_desfazer_acao)
+                )
+            }, {
+                viewModel.searching.value = false
+            })
+        )
     }
 
     override fun onItemClicked(position: Int, view: View) {

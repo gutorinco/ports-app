@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.entity.Model
+import br.com.suitesistemas.portsmobile.utils.DoubleUtils
 import kotlinx.android.synthetic.main.adapter_model.view.*
 
 class ModelViewHolder(private val adapterView: View) : RecyclerView.ViewHolder(adapterView) {
@@ -12,11 +13,12 @@ class ModelViewHolder(private val adapterView: View) : RecyclerView.ViewHolder(a
     val name = adapterView.model_adapter_name
     val priceValue = adapterView.model_adapter_price
     val priceFinancedValue = adapterView.model_adapter_price_financed
+    private val utils = DoubleUtils()
 
     fun bindView(model: Model) {
         name.text = model.dsc_modelo
-        priceValue.text = getString(R.string.produto_vista_adapter, model.dbl_preco_unit_vista.toString())
-        priceFinancedValue.text = getString(R.string.produto_prazo_adapter, model.dbl_preco_unit_prazo.toString())
+        priceValue.text = getString(R.string.a_vista_adapter, utils.toStringFormat(model.dbl_preco_unit_vista))
+        priceFinancedValue.text = getString(R.string.a_prazo_adapter, utils.toStringFormat(model.dbl_preco_unit_prazo))
     }
 
     private fun getString(stringResource: Int, param: Any): String {

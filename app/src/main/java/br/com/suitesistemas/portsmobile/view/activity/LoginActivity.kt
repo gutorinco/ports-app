@@ -9,10 +9,10 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.button.hideProgressSpinner
-import br.com.suitesistemas.portsmobile.custom.button.showProgressSpinner
-import br.com.suitesistemas.portsmobile.custom.edit_text.actionDoneClicked
-import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
+import br.com.suitesistemas.portsmobile.custom.extensions.actionDoneClicked
+import br.com.suitesistemas.portsmobile.custom.extensions.hideKeyboard
+import br.com.suitesistemas.portsmobile.custom.extensions.hideProgressSpinner
+import br.com.suitesistemas.portsmobile.custom.extensions.showProgressSpinner
 import br.com.suitesistemas.portsmobile.model.UserRequest
 import br.com.suitesistemas.portsmobile.model.UserResponse
 import br.com.suitesistemas.portsmobile.service.auth.AuthRepository

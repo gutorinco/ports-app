@@ -4,7 +4,7 @@ import android.content.Context
 import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.Filterable
-import br.com.suitesistemas.portsmobile.custom.string.unaccent
+import br.com.suitesistemas.portsmobile.custom.extensions.unaccent
 
 class AutoCompleteAdapter(context: Context,
                           layout: Int,

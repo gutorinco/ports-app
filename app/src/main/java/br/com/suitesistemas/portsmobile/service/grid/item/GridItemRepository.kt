@@ -1,8 +1,8 @@
 package br.com.suitesistemas.portsmobile.service.grid.item
 
 import androidx.lifecycle.MutableLiveData
+import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.custom.retrofit.responseHandle
 import br.com.suitesistemas.portsmobile.entity.GridItem
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 

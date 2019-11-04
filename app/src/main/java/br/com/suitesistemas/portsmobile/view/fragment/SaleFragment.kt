@@ -8,17 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
-import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
-import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
-import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
-import br.com.suitesistemas.portsmobile.custom.progress_bar.show
-import br.com.suitesistemas.portsmobile.custom.recycler_view.*
-import br.com.suitesistemas.portsmobile.custom.view.setTitle
-import br.com.suitesistemas.portsmobile.custom.view.showMessage
-import br.com.suitesistemas.portsmobile.custom.view.showMessageError
+import br.com.suitesistemas.portsmobile.custom.extensions.*
+import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.entity.Sale
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
@@ -32,7 +24,6 @@ import kotlinx.android.synthetic.main.fragment_sale.*
 
 class SaleFragment : BasicFragment<Sale, SaleAdapter>(),
         OnItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener,
         Observer<ApiResponse<MutableList<Sale>?>> {
 
     private lateinit var viewModel: SaleViewModel
@@ -40,80 +31,70 @@ class SaleFragment : BasicFragment<Sale, SaleAdapter>(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(SaleViewModel::class.java)
-        configureObserver()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_sale, container, false)
         setHasOptionsMenu(true)
+        configureObserver()
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        super.init(sale_layout, SaleAdapter(context!!, viewModel.getSortingList(), {
+        super.init(sale_layout, SaleAdapter(context!!, viewModel.getList(), {
             delete(it)
         }, {
-            edit(it)
+            edit(viewModel.getBy(it))
         }))
         setTitle(R.string.vendas)
     }
 
-    override fun onPause() {
-        super.onPause()
-        sale_button.hideToBottom()
-    }
+    override fun getFloatingButton() = sale_button
+    override fun getProgressBar() = sale_progressbar
+    override fun getRefresh() = sale_refresh
+    override fun getLayout() = sale_layout
 
-    override fun onRefresh() {
-        when (sale_progressbar.isIndeterminate) {
-            true -> sale_refresh.isRefreshing = false
-            false -> refresh()
-        }
-    }
-
-    private fun refresh() {
-        sale_progressbar.show()
+    override fun refresh() {
+        showProgress()
         viewModel.refresh()
         viewModel.refreshResponse.observe(this, this)
     }
 
     override fun initSearchActivity() {
-        when (sale_progressbar.isIndeterminate) {
-            true -> showMessage(sale_layout, R.string.aguarde_terminar)
-            false -> {
-                val intent = Intent(activity, SaleSearchActivity::class.java)
-                intent.putExtra("get", true)
-                startActivityForResult(intent, GET_REQUEST_CODE)
-            }
+        executeAfterLoaded {
+            val intent = Intent(activity, SaleSearchActivity::class.java)
+            intent.putExtra("get", true)
+            startActivityForResult(intent, GET_REQUEST_CODE)
         }
     }
 
     private fun configureObserver() {
         val companyName = SharedPreferencesUtils.getCompanyName(activity!!)
-        viewModel.fetchAllSales(companyName)
-        viewModel.response.observe(this, this)
+        with (viewModel) {
+            initRepositories(companyName)
+            fetchAll()
+            response.observe(this@SaleFragment, this@SaleFragment)
+        }
     }
 
     override fun onChanged(response: ApiResponse<MutableList<Sale>?>) {
-        sale_progressbar.hide()
+        hideProgress()
         sale_refresh.isRefreshing = false
 
         if (response.messageError == null) {
             onChangedResponse(response.data, response.operation) {
-                when (sale_progressbar.isIndeterminate) {
-                    true -> showMessage(sale_layout, getString(R.string.aguarde_terminar))
-                    false -> {
-                        configureButton()
-                        response.data?.let { sales ->
-                            viewModel.addAll(sales)
-                            configureList(sales)
-                        }
+               executeAfterLoaded {
+                    configureButton()
+                    response.data?.let { sales ->
+                        viewModel.addAll(sales)
+                        configureList(sales)
                     }
                 }
             }
         } else {
             showMessageError(sale_layout, response.messageError!!, response.operation)
-            configureList(viewModel.getSortingList())
+            configureList(viewModel.getList())
         }
     }
 
@@ -121,12 +102,10 @@ class SaleFragment : BasicFragment<Sale, SaleAdapter>(),
         with (sale_button) {
             showFromBottom()
             setOnClickListener {
-                when (sale_progressbar.isIndeterminate) {
-                    true -> showMessage(sale_layout, R.string.aguarde_terminar)
-                    false -> {
-                        val intent = Intent(activity, SaleFormActivity::class.java)
-                        startActivityForResult(intent, CREATE_REQUEST_CODE)
-                    }
+                executeAfterLoaded {
+                    showProgress()
+                    val intent = Intent(activity, SaleFormActivity::class.java)
+                    startActivityForResult(intent, CREATE_REQUEST_CODE)
                 }
             }
         }
@@ -146,7 +125,7 @@ class SaleFragment : BasicFragment<Sale, SaleAdapter>(),
                     }
                     GET_REQUEST_CODE -> {
                         val saleResponse = it.getParcelableExtra("sale_response") as Sale
-                        editSaleSelected(saleResponse)
+                        edit(saleResponse, UPDATE_REQUEST_CODE)
                     }
                 }
             }
@@ -154,6 +133,7 @@ class SaleFragment : BasicFragment<Sale, SaleAdapter>(),
             refresh()
         }
         sale_button.showFromBottom()
+        hideProgress()
     }
 
     private fun configureList(sales: MutableList<Sale>) {
@@ -171,9 +151,8 @@ class SaleFragment : BasicFragment<Sale, SaleAdapter>(),
 
     private fun configureSwipe() {
         sale_recyclerview.addSwipe(SwipeToDeleteCallback(context!!) { itemPosition ->
-            when (sale_progressbar.isIndeterminate) {
-                true  -> showMessage(sale_layout, getString(R.string.aguarde_terminar))
-                false -> delete(itemPosition)
+            executeAfterLoaded {
+                delete(itemPosition)
             }
         })
     }
@@ -190,55 +169,52 @@ class SaleFragment : BasicFragment<Sale, SaleAdapter>(),
 
     private fun delete(position: Int) {
         val firebaseToken = FirebaseUtils.getToken(context!!)
-        sale_progressbar.show()
+        showProgress()
         viewModel.findAllItemsBySale(position)
         viewModel.itemResponse.observe(this, Observer { viewModel.deleteSale(position, it.data!!, firebaseToken) })
     }
 
     override fun deleteRollback() {
-        sale_progressbar.show()
-        viewModel.deleteRollback()
-        viewModel.rollbackResponse.observe(this, observerHandler({
-            if (viewModel.existItems()) {
-                configureItemRollbackObserver(it)
-            } else {
-                viewModel.add(it, EHttpOperation.ROLLBACK)
-                sale_progressbar.hide()
-            }
-        }, {
-            showMessageError(sale_layout, it, EHttpOperation.ROLLBACK)
-            configureList(viewModel.getSortingList())
-            sale_progressbar.hide()
-        }))
-    }
-
-    private fun configureItemRollbackObserver(sale: Sale) {
-        viewModel.deleteItemRollback(sale)
-        viewModel.itemRollbackResponse.observe(this, observerHandler({
-            onChanged(ApiResponse(viewModel.getSortingList(), EHttpOperation.ROLLBACK))
-        }, {
-            onChanged(ApiResponse(it, EHttpOperation.POST))
-        }))
-    }
-
-    override fun onItemClicked(position: Int, view: View) {
-        when (sale_progressbar.isIndeterminate) {
-            true -> showMessage(sale_layout, getString(R.string.aguarde_terminar))
-            false -> edit(position)
+        showProgress()
+        with (viewModel) {
+            deleteRollback()
+            rollbackResponse.observe(this@SaleFragment, observerHandler({
+                add(it, EHttpOperation.ROLLBACK)
+                if (existItems()) {
+                    this@SaleFragment.deleteItemRoolback(it)
+                } else {
+                    hideProgress()
+                }
+            }, {
+                showMessageError(sale_layout, it, EHttpOperation.ROLLBACK)
+                configureList(getList())
+                hideProgress()
+            }))
         }
     }
 
-    private fun edit(position: Int) {
-        val sale = viewModel.getBy(position)
-        val intent = Intent(activity, SaleFormActivity::class.java)
-        intent.putExtra("sale", sale)
-        startActivityForResult(intent, UPDATE_REQUEST_CODE)
+    private fun deleteItemRoolback(sale: Sale) {
+        with (viewModel) {
+            deleteItemRollback(sale)
+            itemRollbackResponse.observe(this@SaleFragment, observerHandler({
+                onChanged(ApiResponse(getList(), EHttpOperation.ROLLBACK))
+            }, {
+                onChanged(ApiResponse(it, EHttpOperation.POST))
+            }))
+        }
     }
 
-    private fun editSaleSelected(sale: Sale) {
+    override fun onItemClicked(position: Int, view: View) {
+        executeAfterLoaded {
+            edit(viewModel.getBy(position), UPDATE_REQUEST_CODE)
+        }
+    }
+
+    private fun edit(sale: Sale, requestCode: Int = GET_REQUEST_CODE) {
+        showProgress()
         val intent = Intent(activity, SaleFormActivity::class.java)
         intent.putExtra("sale", sale)
-        startActivityForResult(intent, GET_REQUEST_CODE)
+        startActivityForResult(intent, requestCode)
     }
 
 }

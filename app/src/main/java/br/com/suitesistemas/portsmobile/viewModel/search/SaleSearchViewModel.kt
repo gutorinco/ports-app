@@ -59,9 +59,12 @@ class SaleSearchViewModel : SearchViewModel<Sale>() {
     }
 
     fun deleteItemRollback(sale: Sale) {
-        completeList.add(sale)
         items.forEach { it.num_codigo_online = sale.num_codigo_online }
         itemRollbackResponse = saleItemRepository.insert(items)
     }
+
+    override fun sortingList(list: MutableList<Sale>) = list
+        .sortedWith(compareBy(Sale::dat_emissao, Sale::hor_emissao))
+        .asReversed()
 
 }

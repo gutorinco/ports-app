@@ -1,10 +1,11 @@
 package br.com.suitesistemas.portsmobile.entity
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import br.com.suitesistemas.portsmobile.model.enums.EYesNo
 
-class Color() : Parcelable {
+class Color() : Parcelable, ChangeableModel<Color> {
 
     var num_codigo_online: String = ""
     var cod_cor: Int? = null
@@ -33,7 +34,7 @@ class Color() : Parcelable {
         copy(color)
     }
 
-    fun copy(color: Color) {
+    override fun copy(color: Color) {
         num_codigo_online = color.num_codigo_online
         cod_cor = color.cod_cor
         dsc_cor = color.dsc_cor
@@ -53,8 +54,9 @@ class Color() : Parcelable {
         parcel.writeInt(version)
     }
 
+    @SuppressLint("WrongConstant")
     override fun describeContents(): Int {
-        return 0
+        return 1
     }
 
     companion object CREATOR : Parcelable.Creator<Color> {
@@ -66,5 +68,11 @@ class Color() : Parcelable {
             return arrayOfNulls(size)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        return num_codigo_online == (other as Color).num_codigo_online
+    }
+
+    override fun getId() = num_codigo_online
 
 }

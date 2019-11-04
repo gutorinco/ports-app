@@ -8,6 +8,7 @@
     <dimen name="large_margin">30dp</dimen>
     <dimen name="very_large_margin">60dp</dimen>
     <dimen name="large_font">16sp</dimen>
+    <dimen name="big_font">20sp</dimen>
     <dimen name="medium_font">13sp</dimen>
     <dimen name="small_font">10sp</dimen>
     <dimen name="progress_bar_height">3dp</dimen>
@@ -15,4 +16,5 @@
     <dimen name="toolbar_padding">24dp</dimen>
     <dimen name="spinner_label_margin_bottom">4.75dp</dimen>
     <dimen name="btn_adapter_padding">4dp</dimen>
+    <dimen name="bottom_button">60dp</dimen>
 </resources>

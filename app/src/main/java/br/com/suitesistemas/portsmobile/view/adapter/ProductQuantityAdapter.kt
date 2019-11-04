@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.EditText
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.spinner.onItemSelected
+import br.com.suitesistemas.portsmobile.custom.extensions.onItemSelected
 import br.com.suitesistemas.portsmobile.entity.Product
 import br.com.suitesistemas.portsmobile.entity.ProductColor
 import br.com.suitesistemas.portsmobile.model.ProductDetail

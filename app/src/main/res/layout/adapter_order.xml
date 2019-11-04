@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/order_adapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/AdapterCard">
+
+        <LinearLayout android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="@dimen/small_margin"
+                    android:orientation="vertical">
+
+                <TextView android:id="@+id/order_adapter_client_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/medium_font"
+                        android:textStyle="bold"/>
+
+                <TextView android:id="@+id/order_adapter_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/very_tiny_margin"
+                        android:textSize="@dimen/small_font"/>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                    <TextView android:id="@+id/order_adapter_total_item"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/very_tiny_margin"
+                            android:layout_weight="1"
+                            android:textSize="@dimen/small_font"/>
+
+                    <TextView android:id="@+id/order_adapter_total_order"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/very_tiny_margin"
+                            android:layout_weight="1"
+                            android:textSize="@dimen/small_font"/>
+
+                    <TextView android:id="@+id/order_adapter_payment_condition"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/very_tiny_margin"
+                            android:layout_weight="1"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/small_font"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="9">
+
+                <ImageButton
+                        android:id="@+id/order_adapter_menu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/transparent"
+                        android:src="@drawable/ic_dots"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

@@ -6,7 +6,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/small_margin"
         android:paddingLeft="@dimen/tiny_margin"
-        android:paddingRight="@dimen/tiny_margin"
+        android:paddingRight="@dimen/default_margin"
         android:paddingTop="@dimen/tiny_margin">
 
     <TextView

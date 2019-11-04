@@ -1,18 +1,28 @@
 package br.com.suitesistemas.portsmobile.viewModel.search
 
+import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.entity.Product
 import br.com.suitesistemas.portsmobile.entity.ProductColor
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.enums.EConfigProductSearch
 import br.com.suitesistemas.portsmobile.service.product.ProductRepository
 import br.com.suitesistemas.portsmobile.service.product_color.ProductColorRepository
 
 class ProductSearchViewModel : SelectSearchViewModel<Product>() {
 
+    @Bindable var searchTypeText = MutableLiveData<Boolean>()
+    @Bindable var isBarCode = MutableLiveData<Boolean>()
     var productColorResponse = MutableLiveData<ApiResponse<MutableList<ProductColor>?>>()
     var productColorRollbackResponse = MutableLiveData<ApiResponse<MutableList<ProductColor>?>>()
     val removedProductColors: MutableList<ProductColor> = mutableListOf()
+    lateinit var searchBy: EConfigProductSearch
     private lateinit var productColorRepository: ProductColorRepository
+
+    init {
+        searchTypeText.value = true
+        isBarCode.value = false
+    }
 
     override fun initRepository(company: String) {
         companyName = company
@@ -36,5 +46,18 @@ class ProductSearchViewModel : SelectSearchViewModel<Product>() {
         productColorRollbackResponse = productColorRepository.insert(removedProductColors)
     }
 
+    override fun search(search: String) {
+        completeList.clear()
+        searching.value = true
+        wasSearched.value = true
+        response = (repository as ProductRepository).search(search, when (searchBy) {
+            EConfigProductSearch.CODIGO -> "Código"
+            EConfigProductSearch.COD_BARRAS -> "Barras"
+            EConfigProductSearch.DESCRICAO -> "Nome"
+            EConfigProductSearch.REFERENCIA -> "Referência"
+        })
+    }
+
+    override fun sortingList(list: MutableList<Product>) = list.sortedWith(compareBy(Product::dsc_produto))
 
 }

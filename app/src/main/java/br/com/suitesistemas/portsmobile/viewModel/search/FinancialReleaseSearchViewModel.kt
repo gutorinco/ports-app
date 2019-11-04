@@ -10,4 +10,6 @@ class FinancialReleaseSearchViewModel : SearchViewModel<FinancialRelease>() {
         repository = FinancialReleaseRepository(company)
     }
 
+    override fun sortingList(list: MutableList<FinancialRelease>) = list.sortedWith(compareBy(FinancialRelease::dat_emissao)).asReversed()
+
 }

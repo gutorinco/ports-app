@@ -11,7 +11,7 @@ import android.widget.DatePicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.calendar.toStringFormat
+import br.com.suitesistemas.portsmobile.custom.extensions.toStringFormat
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 

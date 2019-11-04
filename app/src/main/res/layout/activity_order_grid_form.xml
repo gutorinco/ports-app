@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+                name="viewModel"
+                type="br.com.suitesistemas.portsmobile.viewModel.form.OrderGridFormViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/order_grid_form"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            tools:context=".view.activity.form.OrderGridFormActivity">
+
+        <requestFocus/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/progress_bar_height">
+
+                <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                        android:id="@+id/order_grid_form_progressbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/CustomProgressBar"/>
+
+            </FrameLayout>
+
+            <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_opaque"
+                    android:fillViewport="true"
+                    android:scrollbars="none">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/default_padding"
+                            android:orientation="vertical">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/spinner_label_margin_bottom"
+                                    android:layout_marginStart="@dimen/tiny_margin"
+                                    android:layout_marginTop="@dimen/tiny_margin"
+                                    android:enabled="@{viewModel.listIsEmpty}"
+                                    android:text="@string/combinacao"
+                                    android:textSize="@dimen/medium_font"/>
+                            <Spinner
+                                    android:id="@+id/order_grid_form_combination"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/tiny_margin"
+                                    android:enabled="@{viewModel.listIsEmpty}"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                <EditText
+                                        android:id="@+id/order_grid_form_box"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:autofillHints="@string/caixa"
+                                        android:enabled="@{viewModel.listIsEmpty}"
+                                        android:hint="@string/caixa"
+                                        android:imeOptions="actionNext"
+                                        android:inputType="number"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/tiny_margin"
+                                        android:layout_marginTop="@dimen/tiny_margin"
+                                        android:text="@string/numero"
+                                        android:textSize="@dimen/medium_font"/>
+                                <Spinner
+                                        android:id="@+id/order_grid_form_number"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/very_tiny_margin"/>
+
+                            </LinearLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1">
+
+                                <EditText
+                                        android:id="@+id/order_grid_form_quantity"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:autofillHints="@string/quantidade"
+                                        android:hint="@string/quantidade"
+                                        android:imeOptions="actionDone"
+                                        android:inputType="number"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/small_margin"
+                            app:cardCornerRadius="0dp"
+                            app:cardElevation="0dp"
+                            style="@style/Card">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                            <include layout="@layout/title_card"/>
+
+                            <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/border_bottom"
+                                    android:baselineAligned="false"
+                                    android:orientation="horizontal">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1">
+
+                                    <EditText
+                                            android:id="@+id/order_grid_form_unit_price"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:autofillHints="@string/preco_unit"
+                                            android:enabled="false"
+                                            android:hint="@string/preco_unit"
+                                            android:imeOptions="actionNext"
+                                            android:inputType="phone"
+                                            android:textSize="@dimen/medium_font"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1">
+
+                                    <EditText
+                                            android:id="@+id/order_grid_form_discount"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:autofillHints="@string/desconto"
+                                            android:hint="@string/desconto"
+                                            android:imeOptions="actionNext"
+                                            android:inputType="phone"
+                                            android:textSize="@dimen/medium_font"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1">
+
+                                    <EditText
+                                            android:id="@+id/order_grid_form_subtotal"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:autofillHints="@string/subtotal"
+                                            android:enabled="false"
+                                            android:hint="@string/subtotal"
+                                            android:imeOptions="actionNext"
+                                            android:inputType="phone"
+                                            android:textSize="@dimen/medium_font"/>
+
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.button.MaterialButton
+                            android:id="@+id/order_grid_form_add"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/colorSecondary"
+                            android:layout_marginBottom="@dimen/tiny_margin"
+                            android:layout_marginLeft="@dimen/default_margin"
+                            android:layout_marginRight="@dimen/default_margin"
+                            android:layout_marginTop="@dimen/tiny_margin"
+                            android:text="@string/adicionar"
+                            app:cornerRadius="@dimen/large_margin"/>
+
+                    <TextView android:id="@+id/order_grid_form_empty_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/small_margin"
+                            android:gravity="center"
+                            android:text="@string/nenhuma_grade_adicionada"
+                            android:textSize="@dimen/medium_font"
+                            android:visibility="@{viewModel.listIsEmpty ? View.VISIBLE : View.GONE}"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/order_grid_form_items"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbars="vertical"
+                            android:visibility="@{viewModel.listIsEmpty ? View.GONE : View.VISIBLE}"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/order_grid_form_btn_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="@dimen/default_margin"
+                android:src="@drawable/ic_check"
+                app:backgroundTint="@color/success"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

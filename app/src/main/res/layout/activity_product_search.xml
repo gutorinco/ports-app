@@ -4,6 +4,7 @@
 
     <data>
         <import type="android.view.View"/>
+        <import type="android.text.InputType"/>
         <variable
                 name="viewModel"
                 type="br.com.suitesistemas.portsmobile.viewModel.search.ProductSearchViewModel" />
@@ -16,12 +17,13 @@
             android:background="@color/white_opaque"
             android:fitsSystemWindows="true">
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
                 android:id="@+id/product_search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/small_margin"
-                android:elevation="@dimen/elevation">
+                app:cardElevation="@dimen/progress_bar_height"
+                style="@style/Card">
 
             <LinearLayout
                     android:layout_width="match_parent"
@@ -47,7 +49,7 @@
                         android:paddingStart="@dimen/small_margin"
                         android:hint="@string/digite_nome_produto"
                         android:imeOptions="actionDone"
-                        android:inputType="text"
+                        android:inputType="@{viewModel.searchTypeText ? InputType.TYPE_CLASS_TEXT : InputType.TYPE_CLASS_NUMBER}"
                         android:textColor="@color/icons"
                         android:textSize="@dimen/medium_font"/>
 
@@ -67,9 +69,18 @@
                         android:indeterminate="true"
                         android:visibility="@{viewModel.searching ? View.VISIBLE : View.GONE}"/>
 
+                <ImageButton
+                        android:id="@+id/product_search_bar_scanner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/transparent"
+                        android:contentDescription="@string/leitor_cod_barras"
+                        android:src="@drawable/ic_camera"
+                        android:visibility="@{viewModel.isBarCode() ? View.VISIBLE : View.GONE}"/>
+
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView android:id="@+id/product_search_empty_view"
                 android:layout_width="match_parent"

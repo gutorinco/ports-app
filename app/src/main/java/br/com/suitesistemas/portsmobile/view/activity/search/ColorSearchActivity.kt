@@ -8,14 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
-import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
+import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
-import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
-import br.com.suitesistemas.portsmobile.custom.view.showMessageError
 import br.com.suitesistemas.portsmobile.databinding.ActivityColorSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Color
 import br.com.suitesistemas.portsmobile.model.ApiResponse
@@ -27,7 +21,9 @@ import br.com.suitesistemas.portsmobile.viewModel.search.ColorSearchViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_color_search.*
 
-class ColorSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiResponse<MutableList<Color>?>> {
+class ColorSearchActivity : SearchActivity(),
+        OnItemClickListener,
+        Observer<ApiResponse<MutableList<Color>?>> {
 
     lateinit var viewModel: ColorSearchViewModel
     private lateinit var colorAdapter: ColorAdapter
@@ -92,7 +88,9 @@ class ColorSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiR
             EHttpOperation.ROLLBACK -> Snackbar.make(color_search, getString(R.string.acao_desfeita), Snackbar.LENGTH_LONG).show()
             else -> {}
         }
-        setAdapter(data)
+        if (data != null)
+             setAdapter(viewModel.completeList)
+        else setAdapter(data)
     }
 
     private fun setAdapter(data: List<Color>?) = data?.let { colorAdapter.setAdapter(it) }
@@ -128,14 +126,20 @@ class ColorSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiR
     override fun deleteRollback() {
         viewModel.searching.value = true
         viewModel.deleteRollback("cor")
-        viewModel.rollbackResponse.observe(this, observerHandler({
-            viewModel.add(it, EHttpOperation.ROLLBACK)
-        }, {
-            Snackbar.make(color_search, getString(R.string.falha_desfazer_acao), Snackbar.LENGTH_LONG).show()
-            configureList(viewModel.getList())
-        }, {
-            viewModel.searching.value = false
-        }))
+        viewModel.rollbackResponse.observe(this,
+            observerHandler({
+                viewModel.add(it, EHttpOperation.ROLLBACK)
+            }, {
+                Snackbar.make(
+                    color_search,
+                    getString(R.string.falha_desfazer_acao),
+                    Snackbar.LENGTH_LONG
+                ).show()
+                configureList(viewModel.getList())
+            }, {
+                viewModel.searching.value = false
+            })
+        )
     }
 
     override fun onItemClicked(position: Int, view: View) {

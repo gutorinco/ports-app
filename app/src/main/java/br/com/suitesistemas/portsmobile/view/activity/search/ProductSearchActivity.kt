@@ -1,35 +1,41 @@
 package br.com.suitesistemas.portsmobile.view.activity.search
 
+import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
-import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
+import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
-import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
-import br.com.suitesistemas.portsmobile.custom.view.showMessage
-import br.com.suitesistemas.portsmobile.custom.view.showMessageError
 import br.com.suitesistemas.portsmobile.databinding.ActivityProductSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Product
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.enums.EConfigProductSearch
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
+import br.com.suitesistemas.portsmobile.model.enums.ESystemType
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
+import br.com.suitesistemas.portsmobile.view.activity.PermissionActivity
+import br.com.suitesistemas.portsmobile.view.activity.ScannerActivity
 import br.com.suitesistemas.portsmobile.view.adapter.ProductAdapter
 import br.com.suitesistemas.portsmobile.viewModel.search.ProductSearchViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_product_search.*
 
-class ProductSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiResponse<MutableList<Product>?>> {
+class ProductSearchActivity : SearchActivity(),
+        OnItemClickListener,
+        Observer<ApiResponse<MutableList<Product>?>> {
 
+    companion object {
+        private const val BARCODE = 1
+        private const val REQUEST_PERMISSION = 2
+    }
     lateinit var type: String
     lateinit var viewModel: ProductSearchViewModel
     private lateinit var productAdapter: ProductAdapter
@@ -47,9 +53,14 @@ class ProductSearchActivity : SearchActivity(), OnItemClickListener, Observer<Ap
     }
 
     private fun initViewModel() {
+        val sharedPref = getSharedPreferences("config", Context.MODE_PRIVATE)
         val companyName = SharedPreferencesUtils.getCompanyName(this)
         viewModel = ViewModelProviders.of(this).get(ProductSearchViewModel::class.java)
-        viewModel.initRepository(companyName)
+        with (viewModel) {
+            initRepository(companyName)
+            searchBy = EConfigProductSearch.valueOf(sharedPref.getString("productSearchBy", EConfigProductSearch.DESCRICAO.name)!!)
+            isBarCode.value = searchBy == EConfigProductSearch.COD_BARRAS
+        }
     }
 
     private fun configureDataBinding() {
@@ -62,10 +73,70 @@ class ProductSearchActivity : SearchActivity(), OnItemClickListener, Observer<Ap
     }
 
     private fun configureSearchBar() {
+        with (viewModel) {
+            searchTypeText.value = searchBy == EConfigProductSearch.DESCRICAO || searchBy == EConfigProductSearch.REFERENCIA
+        }
+
+        configureSearchBarHint()
         product_search_bar_home.setOnClickListener { onHomeNavigation() }
         product_search_bar_done.setOnClickListener(this)
         product_search_bar_query.setOnEditorActionListener(this)
         product_search_bar.requestFocus()
+        product_search_bar_scanner.setOnClickListener {
+            if (hasPermission(Manifest.permission.CAMERA)) {
+                initScannerActivity()
+            } else {
+                with (Intent(this, PermissionActivity::class.java)) {
+                    putExtra("icon", R.drawable.ic_camera_accent)
+                    putExtra("name", "Câmera")
+                    startActivityForResult(this, REQUEST_PERMISSION)
+                }
+            }
+        }
+    }
+
+    private fun configureSearchBarHint() {
+        with (viewModel) {
+            val hint = when (searchBy) {
+                EConfigProductSearch.CODIGO -> R.string.digite_codigo_produto
+                EConfigProductSearch.COD_BARRAS -> R.string.digite_codigo_barras
+                EConfigProductSearch.REFERENCIA -> R.string.digite_ref_produto
+                EConfigProductSearch.DESCRICAO -> R.string.digite_nome_produto
+            }
+            product_search_bar_query.hint = getString(hint)
+        }
+    }
+
+    private fun initScannerActivity() {
+        val intent = Intent(this, ScannerActivity::class.java)
+        startActivityForResult(intent, BARCODE)
+    }
+
+    private fun getNewAdapter(products: MutableList<Product>): ProductAdapter {
+        val sharedPref = getSharedPreferences("config", Context.MODE_PRIVATE)
+        val type = sharedPref!!.getString("systemType", ESystemType.A.name)
+        return ProductAdapter(baseContext, products, ESystemType.valueOf(type), {
+            delete(it)
+        }, {
+            onItemClicked(it, product_search)
+        })
+    }
+
+    private fun configureList(products: MutableList<Product>) {
+        productAdapter = getNewAdapter(products)
+        configureSwipe()
+        with (product_search_recycler_view) {
+            adapter = productAdapter
+            addOnItemClickListener(this@ProductSearchActivity)
+        }
+    }
+
+    private fun configureSwipe() {
+        product_search_recycler_view.addSwipe(SwipeToDeleteCallback(baseContext) { itemPosition ->
+            executeAfterLoaded(viewModel.searching.value!!, product_search) {
+                delete(itemPosition)
+            }
+        })
     }
 
     override fun onClick(v: View?) {
@@ -94,67 +165,84 @@ class ProductSearchActivity : SearchActivity(), OnItemClickListener, Observer<Ap
             EHttpOperation.ROLLBACK -> Snackbar.make(product_search, getString(R.string.acao_desfeita), Snackbar.LENGTH_LONG).show()
             else -> {}
         }
-        setAdapter(data)
+        if (data != null)
+             setAdapter(viewModel.completeList)
+        else setAdapter(data)
     }
 
     private fun setAdapter(data: List<Product>?) = data?.let { productAdapter.setAdapter(it) }
 
-    private fun configureList(products: MutableList<Product>) {
-        productAdapter = ProductAdapter(baseContext, products, {
-            delete(it)
-        }, {
-            onItemClicked(it, product_search)
-        })
-        configureSwipe()
-        with (product_search_recycler_view) {
-            adapter = productAdapter
-            addOnItemClickListener(this@ProductSearchActivity)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == BARCODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                data?.let {
+                    val barcode = it.getStringExtra("scanner_response")
+                    product_search_bar_query.setText(barcode)
+                    onClick(null)
+                }
+            }
+        } else if (requestCode == REQUEST_PERMISSION) {
+            if (resultCode == Activity.RESULT_OK) {
+                requestPermission(Manifest.permission.CAMERA)
+            } else {
+                showMessage(product_search, R.string.permissao_nao_concedida)
+            }
         }
+        hideKeyboard()
     }
 
-    private fun configureSwipe() {
-        product_search_recycler_view.addSwipe(SwipeToDeleteCallback(baseContext) { itemPosition ->
-            executeAfterLoaded(viewModel.searching.value!!, product_search) {
-                delete(itemPosition)
-            }
-        })
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val denied = grantResults.filter { it != PackageManager.PERMISSION_GRANTED }
+        if (denied.isEmpty()) {
+            initScannerActivity()
+        } else {
+            showMessage(product_search, R.string.permissao_nao_concedida)
+        }
     }
 
     private fun delete(position: Int) {
         val firebaseToken = FirebaseUtils.getToken(this)
-        viewModel.searching.value = true
-        viewModel.fetchAllColorsBy(position)
-        viewModel.productColorResponse.observe(this, observerHandler({
-            viewModel.addRemovedProductColors(it)
-            val product = viewModel.getBy(position)
-            viewModel.delete(product.num_codigo_online, position, firebaseToken)
-        }, {
-            showMessage(product_search, getString(R.string.falha_remover_cores))
-        }, {
-            viewModel.searching.value = false
-        }))
+        with (viewModel) {
+            searching.value = true
+            fetchAllColorsBy(position)
+            productColorResponse.observe(this@ProductSearchActivity, observerHandler({
+                addRemovedProductColors(it)
+                val product = getBy(position)
+                delete(product.num_codigo_online, position, firebaseToken)
+            }, {
+                showMessage(product_search, getString(R.string.falha_remover_cores))
+            }, {
+                searching.value = false
+            }))
+        }
     }
 
     override fun deleteRollback() {
-        viewModel.searching.value = true
-        viewModel.deleteRollback("produto")
-        viewModel.rollbackResponse.observe(this, observerHandler({
-            viewModel.add(it, EHttpOperation.ROLLBACK)
-            viewModel.removedObject = it
-            productColorsDeleteRollback()
-        }, {
-            viewModel.searching.value = false
-            showMessage(product_search, it, getString(R.string.falha_desfazer_acao))
-        }))
+        with (viewModel) {
+            searching.value = true
+            deleteRollback("produto")
+            rollbackResponse.observe(this@ProductSearchActivity, observerHandler({
+                add(it, EHttpOperation.ROLLBACK)
+                removedObject = it
+                this@ProductSearchActivity.productColorsDeleteRollback()
+            }, {
+                searching.value = false
+                showMessage(product_search, it, getString(R.string.falha_desfazer_acao))
+            }))
+        }
     }
 
     private fun productColorsDeleteRollback() {
-        viewModel.productColorsDeleteRollback()
-        viewModel.productColorRollbackResponse.observe(this, observerHandler({}, {
-            showMessage(product_search, getString(R.string.falha_desfazer_acao))
-        }, {
-            viewModel.searching.value = false
-        }))
+        with (viewModel) {
+            productColorsDeleteRollback()
+            productColorRollbackResponse.observe(this@ProductSearchActivity, observerHandler({}, {
+                showMessage(product_search, getString(R.string.falha_desfazer_acao))
+            }, {
+                searching.value = false
+            }))
+        }
     }
 
     override fun onItemClicked(position: Int, view: View) {

@@ -3,59 +3,99 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:background="@color/white_opaque"
-             android:orientation="vertical"
-             android:padding="@dimen/tiny_margin"
              tools:context=".view.fragment.ResourcesFragment">
 
-    <LinearLayout
+    <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:background="@color/white_opaque"
+            android:fillViewport="true"
+            android:padding="@dimen/tiny_margin"
+            android:scrollbars="none">
 
-        <include android:id="@+id/fragment_res_people"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:layout_weight="1"
-                 layout="@layout/adapter_resources"/>
-
-        <include android:id="@+id/fragment_res_sale"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:layout_weight="1"
-                 layout="@layout/adapter_resources"/>
-
-        <include android:id="@+id/fragment_res_product"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:layout_weight="1"
-                 layout="@layout/adapter_resources"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-        <include android:id="@+id/fragment_res_color"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:layout_weight="1"
-                 layout="@layout/adapter_resources"/>
-
-        <include android:id="@+id/fragment_res_model"
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                layout="@layout/adapter_resources"/>
+                android:orientation="vertical">
 
-        <include android:id="@+id/fragment_res_financial_release"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:layout_weight="1"
-                 layout="@layout/adapter_resources"/>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-    </LinearLayout>
+                <include android:id="@+id/fragment_res_people"
+                         android:layout_width="match_parent"
+                         android:layout_height="match_parent"
+                         android:layout_weight="1"
+                         layout="@layout/adapter_resources"/>
+
+                <include android:id="@+id/fragment_res_sale"
+                         android:layout_width="match_parent"
+                         android:layout_height="match_parent"
+                         android:layout_weight="1"
+                         layout="@layout/adapter_resources"/>
+
+                <include android:id="@+id/fragment_res_product"
+                         android:layout_width="match_parent"
+                         android:layout_height="match_parent"
+                         android:layout_weight="1"
+                         layout="@layout/adapter_resources"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <include android:id="@+id/fragment_res_color"
+                         android:layout_width="match_parent"
+                         android:layout_height="match_parent"
+                         android:layout_weight="1"
+                         layout="@layout/adapter_resources"/>
+
+                <include android:id="@+id/fragment_res_order"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        layout="@layout/adapter_resources"/>
+
+                <include android:id="@+id/fragment_res_model"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        layout="@layout/adapter_resources"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <include android:id="@+id/fragment_res_crm"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        layout="@layout/adapter_resources"/>
+
+                <include android:id="@+id/fragment_res_financial_release"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        layout="@layout/adapter_resources"/>
+
+                <include android:id="@+id/fragment_res_task"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        layout="@layout/adapter_resources"
+                        android:visibility="invisible"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

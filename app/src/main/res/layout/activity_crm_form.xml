@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="android.text.InputType"/>
+        <variable
+                name="viewModel"
+                type="br.com.suitesistemas.portsmobile.viewModel.form.CRMFormViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/crm_form"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            tools:context=".view.activity.form.CRMFormActivity">
+
+        <requestFocus/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/progress_bar_height">
+
+                <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                        android:id="@+id/crm_form_progressbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/CustomProgressBar"/>
+
+            </FrameLayout>
+
+            <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_opaque"
+                    android:scrollbars="none">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/default_padding"
+                        android:orientation="vertical">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal">
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                            <EditText
+                                    android:id="@+id/crm_form_date"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/tiny_margin"
+                                    android:autofillHints="@string/data_cadastro"
+                                    android:hint="@string/data_cadastro"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="text"
+                                    android:textSize="@dimen/medium_font"
+                                    android:enabled="false"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                            <EditText
+                                    android:id="@+id/crm_form_customer"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="@dimen/small_margin"
+                                    android:autofillHints="@string/cliente"
+                                    android:hint="@string/cliente"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="@{InputType.TYPE_NULL}"
+                                    android:text="@={viewModel.crm.fky_cliente.dsc_nome_pessoa}"
+                                    android:textSize="@dimen/medium_font"/>
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/tiny_margin"
+                            android:orientation="horizontal">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/tipo"
+                                    android:textSize="@dimen/medium_font"/>
+                            <Spinner
+                                    android:id="@+id/crm_form_type"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                            <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/status"
+                                    android:textSize="@dimen/medium_font"/>
+                            <Spinner
+                                    android:id="@+id/crm_form_status"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                        <EditText
+                                android:id="@+id/crm_form_description"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/tiny_margin"
+                                android:autofillHints="@string/descricao"
+                                android:focusable="true"
+                                android:focusableInTouchMode="true"
+                                android:hint="@string/descricao"
+                                android:imeOptions="actionNext"
+                                android:text="@={viewModel.crm.dsc_crm}"
+                                android:textSize="@dimen/medium_font"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/tiny_margin"
+                            app:cardCornerRadius="@dimen/small_margin"
+                            style="@style/Card">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                            <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_margin="@dimen/tiny_margin"
+                                    android:text="@string/ocorrencia"
+                                    android:textSize="@dimen/medium_font"
+                                    android:textStyle="bold"/>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                <EditText
+                                        android:id="@+id/crm_form_occurence_date"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"
+                                        android:autofillHints="@string/data"
+                                        android:hint="@string/data"
+                                        android:imeOptions="actionNext"
+                                        android:inputType="@{InputType.TYPE_NULL}"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                <EditText
+                                        android:id="@+id/crm_form_occurence_description"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:autofillHints="@string/descricao"
+                                        android:hint="@string/descricao"
+                                        android:imeOptions="actionDone"
+                                        android:inputType="text"
+                                        android:text="@={viewModel.crm.mem_ocorrencia}"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/tiny_margin"
+                            app:cardCornerRadius="@dimen/small_margin"
+                            style="@style/Card">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+                            <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_margin="@dimen/tiny_margin"
+                                    android:text="@string/solucao"
+                                    android:textSize="@dimen/medium_font"
+                                    android:textStyle="bold"/>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                <EditText
+                                        android:id="@+id/crm_form_solution_date"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="@dimen/tiny_margin"
+                                        android:autofillHints="@string/data"
+                                        android:hint="@string/data"
+                                        android:imeOptions="actionNext"
+                                        android:inputType="@{InputType.TYPE_NULL}"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                <EditText
+                                        android:id="@+id/crm_form_solution_description"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:autofillHints="@string/descricao"
+                                        android:hint="@string/descricao"
+                                        android:imeOptions="actionDone"
+                                        android:inputType="text"
+                                        android:text="@={viewModel.crm.mem_solucao}"
+                                        android:textSize="@dimen/medium_font"/>
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:visibility="@{viewModel.showList ? View.GONE : View.VISIBLE}">
+
+                        <com.google.android.material.button.MaterialButton
+                                android:id="@+id/crm_form_add_order"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/colorSecondary"
+                                android:layout_marginBottom="@dimen/tiny_margin"
+                                android:layout_marginLeft="@dimen/default_margin"
+                                android:layout_marginRight="@dimen/default_margin"
+                                android:layout_marginTop="@dimen/tiny_margin"
+                                android:layout_weight="1"
+                                android:text="@string/add_pedido"
+                                app:cornerRadius="@dimen/large_margin"/>
+
+                        <com.google.android.material.button.MaterialButton
+                                android:id="@+id/crm_form_add_sale"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/colorSecondary"
+                                android:layout_marginBottom="@dimen/tiny_margin"
+                                android:layout_marginLeft="@dimen/default_margin"
+                                android:layout_marginRight="@dimen/default_margin"
+                                android:layout_marginTop="@dimen/tiny_margin"
+                                android:layout_weight="1"
+                                android:text="@string/add_venda"
+                                app:cornerRadius="@dimen/large_margin"
+                                app:icon="@drawable/ic_cart_button"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:visibility="@{viewModel.showList ? View.VISIBLE : View.GONE}">
+
+                        <com.google.android.material.button.MaterialButton
+                                android:id="@+id/crm_form_back_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/very_tiny_margin"
+                                android:backgroundTint="@color/colorSecondary"
+                                app:icon="@drawable/ic_back_button"
+                                app:iconGravity="textStart"/>
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/small_margin"
+                                android:gravity="center"
+                                android:text="@={viewModel.label}"
+                                android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/crm_form_item"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="@{viewModel.showList ? View.VISIBLE : View.GONE}"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/crm_form_btn_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="@dimen/default_margin"
+                android:src="@drawable/ic_check"
+                app:backgroundTint="@color/success"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

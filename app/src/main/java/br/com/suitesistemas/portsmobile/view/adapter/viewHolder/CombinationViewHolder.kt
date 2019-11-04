@@ -7,6 +7,7 @@ import kotlinx.android.synthetic.main.adapter_combination.view.*
 
 class CombinationViewHolder(adapterView: View) : RecyclerView.ViewHolder(adapterView) {
 
+    val menu = adapterView.combination_adapter_menu
     val name = adapterView.combination_adapter_name
 
     fun bindView(combination: Combination) {

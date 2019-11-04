@@ -11,12 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
-import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
-import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
-import br.com.suitesistemas.portsmobile.custom.recycler_view.hideButtonOnScroll
-import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
+import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.databinding.ActivitySelectCombinationSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Combination
 import br.com.suitesistemas.portsmobile.model.ApiResponse
@@ -26,7 +21,8 @@ import br.com.suitesistemas.portsmobile.viewModel.search.CombinationSearchViewMo
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_select_combination_search.*
 
-class SelectCombinationSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiResponse<MutableList<Combination>?>> {
+class SelectCombinationSearchActivity : SearchActivity(),
+    OnItemClickListener, Observer<ApiResponse<MutableList<Combination>?>> {
 
     lateinit var viewModel: CombinationSearchViewModel
     private lateinit var selectCombinationAdapter: SelectCombinationAdapter
@@ -103,7 +99,7 @@ class SelectCombinationSearchActivity : SearchActivity(), OnItemClickListener, O
         if (response.messageError == null) {
             response.data?.let {
                 viewModel.addAll(it)
-                selectCombinationAdapter.setAdapter(it)
+                selectCombinationAdapter.setAdapter(viewModel.completeList)
             }
         } else {
             Log.e("COMBINAT SEARCH ERROR:", response.messageError)

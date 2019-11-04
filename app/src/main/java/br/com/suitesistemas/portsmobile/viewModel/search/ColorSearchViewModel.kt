@@ -10,4 +10,6 @@ class ColorSearchViewModel : SelectSearchViewModel<Color>() {
         repository = ColorRepository(company)
     }
 
+    override fun sortingList(list: MutableList<Color>) = list.sortedWith(compareBy(Color::dsc_cor))
+
 }

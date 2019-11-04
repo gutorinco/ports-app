@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+                name="viewModel"
+                type="br.com.suitesistemas.portsmobile.viewModel.search.CRMSearchViewModel" />
+    </data>
+
+    <RelativeLayout
+            android:id="@+id/crm_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white_opaque"
+            android:fitsSystemWindows="true">
+
+        <com.google.android.material.card.MaterialCardView
+                android:id="@+id/crm_search_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/small_margin"
+                app:cardElevation="@dimen/progress_bar_height"
+                style="@style/Card">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <ImageButton
+                        android:id="@+id/crm_search_bar_home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/transparent"
+                        android:contentDescription="@string/voltar"
+                        android:src="@drawable/ic_back"/>
+
+                <TextView
+                        android:id="@+id/crm_search_bar_query"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:gravity="center_vertical"
+                        android:paddingEnd="@dimen/small_margin"
+                        android:paddingStart="@dimen/small_margin"
+                        android:hint="@string/data_emissao"
+                        android:textColor="@color/icons"
+                        android:textSize="@dimen/medium_font"/>
+
+                <ImageButton
+                        android:id="@+id/crm_search_bar_done"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/transparent"
+                        android:contentDescription="@string/pesquisar"
+                        android:src="@drawable/ic_search_small"
+                        android:visibility="@{viewModel.searching ? View.GONE : View.VISIBLE}"/>
+
+                <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/large_margin"
+                        android:layout_gravity="center"
+                        android:indeterminate="true"
+                        android:visibility="@{viewModel.searching ? View.VISIBLE : View.GONE}"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView android:id="@+id/crm_search_empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/nao_encontrado"
+                android:textSize="@dimen/medium_font"
+                android:visibility="@{viewModel.listIsEmpty &amp;&amp; viewModel.wasSearched ? View.VISIBLE : View.GONE}"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/crm_search_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="@dimen/very_large_margin"
+                android:visibility="@{!viewModel.wasSearched || !viewModel.listIsEmpty ? View.VISIBLE : View.GONE}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    </RelativeLayout>
+
+</layout>

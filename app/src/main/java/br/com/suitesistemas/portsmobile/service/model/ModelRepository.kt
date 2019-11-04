@@ -1,18 +1,18 @@
 package br.com.suitesistemas.portsmobile.service.model
 
 import androidx.lifecycle.MutableLiveData
+import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.custom.retrofit.responseHandle
 import br.com.suitesistemas.portsmobile.entity.Model
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
-import br.com.suitesistemas.portsmobile.service.SearchService
+import br.com.suitesistemas.portsmobile.service.ListService
 
-class ModelRepository(private val companyName: String) : SearchService<Model> {
+class ModelRepository(private val companyName: String) : ListService<Model> {
 
     private val service = RetrofitConfig().modelService()
 
-    fun findAll(): MutableLiveData<ApiResponse<MutableList<Model>?>> {
+    override fun findAll(): MutableLiveData<ApiResponse<MutableList<Model>?>> {
         val apiResponse = MutableLiveData<ApiResponse<MutableList<Model>?>>()
         val call = service.findAll(companyName)
 
@@ -39,7 +39,7 @@ class ModelRepository(private val companyName: String) : SearchService<Model> {
         return apiResponse
     }
 
-    fun update(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<VersionResponse?>> {
+    override fun update(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<VersionResponse?>> {
         val apiResponse = MutableLiveData<ApiResponse<VersionResponse?>>()
         val call = service.update(companyName, json)
 
@@ -55,6 +55,17 @@ class ModelRepository(private val companyName: String) : SearchService<Model> {
         }, {
             failure(it)
         })
+    }
+
+    fun delete(id: String, firebaseToken: String): MutableLiveData<ApiResponse<Boolean?>> {
+        val apiResponse = MutableLiveData<ApiResponse<Boolean?>>()
+        val call = service.delete(id, companyName, firebaseToken)
+
+        call.responseHandle(204) {
+            apiResponse.value = ApiResponse(true)
+        }
+
+        return apiResponse
     }
 
 }

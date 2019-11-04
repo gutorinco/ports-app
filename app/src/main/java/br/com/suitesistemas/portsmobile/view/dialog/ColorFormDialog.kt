@@ -8,14 +8,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.button.hideProgressSpinner
-import br.com.suitesistemas.portsmobile.custom.button.showProgressSpinner
-import br.com.suitesistemas.portsmobile.custom.edit_text.actionDoneClicked
+import br.com.suitesistemas.portsmobile.custom.extensions.actionDoneClicked
+import br.com.suitesistemas.portsmobile.custom.extensions.hideProgressSpinner
+import br.com.suitesistemas.portsmobile.custom.extensions.showProgressSpinner
 import br.com.suitesistemas.portsmobile.entity.Color
 import com.github.razir.progressbutton.attachTextChangeAnimator
 import com.github.razir.progressbutton.bindProgressButton
 import kotlinx.android.synthetic.main.dialog_color_form.*
-
 
 class ColorFormDialog : DialogFragment(), View.OnClickListener {
 

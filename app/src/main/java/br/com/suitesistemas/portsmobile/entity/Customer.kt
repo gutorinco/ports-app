@@ -1,11 +1,14 @@
 package br.com.suitesistemas.portsmobile.entity
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
+import br.com.suitesistemas.portsmobile.custom.json.ECustomerSituationDeserializer
 import br.com.suitesistemas.portsmobile.model.enums.ECustomerSituation
 import br.com.suitesistemas.portsmobile.model.enums.EYesNo
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
-class Customer() : Parcelable {
+class Customer() : Parcelable, ChangeableModel<Customer> {
 
     var num_codigo_online: String = ""
     var cod_pessoa: Int? = null
@@ -27,12 +30,46 @@ class Customer() : Parcelable {
     var flg_funcionario: EYesNo = EYesNo.N
     var flg_usuario: EYesNo = EYesNo.N
     var flg_outro: EYesNo = EYesNo.N
+    @JsonDeserialize(using = ECustomerSituationDeserializer::class)
     var flg_situacao_cliente: ECustomerSituation = ECustomerSituation.A
     var flg_cadastrado_app: EYesNo = EYesNo.S
     var flg_integrado_online: EYesNo = EYesNo.N
     var flg_cadastrado_online: EYesNo = EYesNo.N
     var fky_empresa: Company = Company()
     var version: Int = 0
+
+    constructor(customer: Customer) : this() {
+        copy(customer)
+    }
+
+    override fun copy(customer: Customer) {
+        num_codigo_online = customer.num_codigo_online
+        cod_pessoa = customer.cod_pessoa
+        dsc_referencia = customer.dsc_referencia
+        dsc_nome_pessoa = customer.dsc_nome_pessoa
+        dsc_nome_contato = customer.dsc_nome_contato
+        dsc_cpf_cnpj = customer.dsc_cpf_cnpj
+        dsc_rg_insc_estadual = customer.dsc_rg_insc_estadual
+        dsc_ddd_01 = customer.dsc_ddd_01
+        dsc_fone_01 = customer.dsc_fone_01
+        dsc_ddd_celular_01 = customer.dsc_ddd_celular_01
+        dsc_celular_01 = customer.dsc_celular_01
+        dsc_email = customer.dsc_email
+        dsc_observacao = customer.dsc_observacao
+        dsc_cidade = customer.dsc_cidade
+        flg_cliente = customer.flg_cliente
+        flg_fornecedor = customer.flg_fornecedor
+        flg_representante = customer.flg_representante
+        flg_funcionario = customer.flg_funcionario
+        flg_usuario = customer.flg_usuario
+        flg_outro = customer.flg_outro
+        flg_situacao_cliente = customer.flg_situacao_cliente
+        flg_cadastrado_app = customer.flg_cadastrado_app
+        flg_integrado_online = customer.flg_integrado_online
+        flg_cadastrado_online = customer.flg_cadastrado_online
+        fky_empresa = customer.fky_empresa
+        version = customer.version
+    }
 
     constructor(parcel: Parcel) : this() {
         num_codigo_online = parcel.readString() ?: ""
@@ -61,39 +98,6 @@ class Customer() : Parcelable {
         flg_cadastrado_online = EYesNo.values()[parcel.readInt()]
         fky_empresa = parcel.readParcelable(Company::class.java.classLoader) ?: Company()
         version = parcel.readInt()
-    }
-
-    constructor(customer: Customer) : this() {
-        copy(customer)
-    }
-
-    fun copy(customer: Customer) {
-        num_codigo_online = customer.num_codigo_online
-        cod_pessoa = customer.cod_pessoa
-        dsc_referencia = customer.dsc_referencia
-        dsc_nome_pessoa = customer.dsc_nome_pessoa
-        dsc_nome_contato = customer.dsc_nome_contato
-        dsc_cpf_cnpj = customer.dsc_cpf_cnpj
-        dsc_rg_insc_estadual = customer.dsc_rg_insc_estadual
-        dsc_ddd_01 = customer.dsc_ddd_01
-        dsc_fone_01 = customer.dsc_fone_01
-        dsc_ddd_celular_01 = customer.dsc_ddd_celular_01
-        dsc_celular_01 = customer.dsc_celular_01
-        dsc_email = customer.dsc_email
-        dsc_observacao = customer.dsc_observacao
-        dsc_cidade = customer.dsc_cidade
-        flg_cliente = customer.flg_cliente
-        flg_fornecedor = customer.flg_fornecedor
-        flg_representante = customer.flg_representante
-        flg_funcionario = customer.flg_funcionario
-        flg_usuario = customer.flg_usuario
-        flg_outro = customer.flg_outro
-        flg_situacao_cliente = customer.flg_situacao_cliente
-        flg_cadastrado_app = customer.flg_cadastrado_app
-        flg_integrado_online = customer.flg_integrado_online
-        flg_cadastrado_online = customer.flg_cadastrado_online
-        fky_empresa = customer.fky_empresa
-        version = customer.version
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -125,8 +129,9 @@ class Customer() : Parcelable {
         parcel.writeInt(version)
     }
 
+    @SuppressLint("WrongConstant")
     override fun describeContents(): Int {
-        return 0
+        return 4
     }
 
     companion object CREATOR : Parcelable.Creator<Customer> {
@@ -137,6 +142,12 @@ class Customer() : Parcelable {
         override fun newArray(size: Int): Array<Customer?> {
             return arrayOfNulls(size)
         }
+    }
+
+    override fun getId() = num_codigo_online
+
+    override fun equals(other: Any?): Boolean {
+        return num_codigo_online == (other as Customer).num_codigo_online
     }
 
 }

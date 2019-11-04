@@ -1,5 +1,6 @@
 package br.com.suitesistemas.portsmobile.entity
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -25,8 +26,9 @@ class Company() : Parcelable {
         parcel.writeInt(fky_pessoa)
     }
 
+    @SuppressLint("WrongConstant")
     override fun describeContents(): Int {
-        return 0
+        return 3
     }
 
     companion object CREATOR : Parcelable.Creator<Company> {

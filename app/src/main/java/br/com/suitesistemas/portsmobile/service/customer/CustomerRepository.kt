@@ -1,18 +1,18 @@
 package br.com.suitesistemas.portsmobile.service.customer
 
 import androidx.lifecycle.MutableLiveData
+import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.custom.retrofit.responseHandle
 import br.com.suitesistemas.portsmobile.entity.Customer
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
-import br.com.suitesistemas.portsmobile.service.SearchService
+import br.com.suitesistemas.portsmobile.service.ListService
 
-class CustomerRepository(private val companyName: String) : SearchService<Customer> {
+class CustomerRepository(private val companyName: String) : ListService<Customer> {
 
     private val service = RetrofitConfig().customerService()
 
-    fun findAll(): MutableLiveData<ApiResponse<MutableList<Customer>?>> {
+    override fun findAll(): MutableLiveData<ApiResponse<MutableList<Customer>?>> {
         val apiResponse = MutableLiveData<ApiResponse<MutableList<Customer>?>>()
         val call = service.findAll(companyName)
 
@@ -45,7 +45,7 @@ class CustomerRepository(private val companyName: String) : SearchService<Custom
         return apiResponse
     }
 
-    fun update(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<VersionResponse?>> {
+    override fun update(json: MutableList<HashMap<String, Any?>>): MutableLiveData<ApiResponse<VersionResponse?>> {
         val apiResponse = MutableLiveData<ApiResponse<VersionResponse?>>()
         val call = service.update(companyName, json)
 

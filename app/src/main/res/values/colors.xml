@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    <color name="colorPrimary">#007bff</color>-->
-<!--    <color name="colorPrimaryDark">#0069d9</color>-->
-<!--    <color name="colorAccent">#f0c808</color>-->
-<!--    <color name="colorPrimary">#1bcad8</color>-->
-<!--    <color name="colorPrimaryDark">#2a34bd</color>-->
-<!--    <color name="colorAccent">#ff8f04</color>-->
-    <color name="colorPrimary">#13255F</color>
-    <color name="colorPrimaryDark">#111d4a</color>
-    <color name="colorAccent">#ffcf99</color>
-    <color name="colorSecondary">#D81E5B</color>
-    <color name="dark">#1e1e24</color>
+<!--    <color name="colorPrimary">#13255F</color>-->
+<!--    <color name="colorPrimaryDark">#111d4a</color>-->
+<!--    <color name="colorAccent">#ffcf99</color>-->
+<!--    <color name="colorSecondary">#D81E5B</color>-->
+    <color name="colorPrimary">#054CA3</color>
+    <color name="colorPrimaryDark">#2a2a72</color>
+    <color name="colorAccent">#ffa400</color>
+    <color name="colorSecondary">#dc493a</color>
+    <color name="dark">#232528</color>
     <color name="softGray">#CCC</color>
-    <color name="success">#32965d</color>
-    <color name="success_disabled">#68a357</color>
-    <color name="danger">#92140c</color>
+    <color name="soft_blue">#DDDBF1</color>
+    <color name="white">#f8f8ff</color>
+    <color name="success">#2bc016</color>
+    <color name="success_disabled">#26a96c</color>
+    <color name="danger">#ff1b1c</color>
     <color name="icons">#454545</color>
     <color name="icons_custom">#696969</color>
     <color name="icons_accent">#F0C808</color>
-    <color name="white_opaque">#f2f4f3</color>
+    <color name="white_opaque">#fbfcff</color>
 </resources>

@@ -9,10 +9,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
-import br.com.suitesistemas.portsmobile.custom.progress_bar.show
-import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.setTitle
+import br.com.suitesistemas.portsmobile.custom.extensions.executeAfterLoaded
+import br.com.suitesistemas.portsmobile.custom.extensions.hide
+import br.com.suitesistemas.portsmobile.custom.extensions.setTitle
+import br.com.suitesistemas.portsmobile.custom.extensions.show
 import br.com.suitesistemas.portsmobile.entity.FinancialRelease
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
@@ -29,12 +29,12 @@ class FinancialFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Obse
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(FinancialReleaseViewModel::class.java)
-        configureObserver()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_financial, container, false)
         setHasOptionsMenu(true)
+        configureObserver()
         return view
     }
 
@@ -84,8 +84,11 @@ class FinancialFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Obse
 
     private fun configureObserver() {
         val companyName = SharedPreferencesUtils.getCompanyName(activity!!)
-        viewModel.fetchAllFinancialReleases(companyName)
-        viewModel.response.observe(this, this)
+        with (viewModel) {
+            initRepositories(companyName)
+            fetchAll()
+            response.observe(this@FinancialFragment, this@FinancialFragment)
+        }
     }
 
     override fun onChanged(response: ApiResponse<MutableList<FinancialRelease>?>) {

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="br.com.suitesistemas.portsmobile">
+        package="br.com.suitesistemas.portsmobile"
+        android:targetSandboxVersion="1">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <application
             android:allowBackup="true"
@@ -12,8 +15,16 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ports"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme">
-        <activity android:name=".view.activity.search.SelectCombinationSearchActivity"></activity>
+            android:theme="@style/AppTheme"
+            android:usesCleartextTraffic="true">
+        <activity android:name=".view.activity.PrivacyPolicyActivity"></activity>
+        <activity android:name=".view.activity.PermissionActivity" />
+        <activity android:name=".view.activity.search.CRMSearchActivity" />
+        <activity android:name=".view.activity.form.CRMFormActivity" />
+        <activity android:name=".view.activity.search.OrderSearchActivity" />
+        <activity android:name=".view.activity.form.OrderGridFormActivity" />
+        <activity android:name=".view.activity.form.OrderFormActivity" />
+        <activity android:name=".view.activity.search.SelectCombinationSearchActivity" />
         <activity android:name=".view.activity.form.ModelFormActivity" />
         <activity android:name=".view.activity.search.ModelSearchActivity" />
         <activity android:name=".view.activity.search.CombinationSearchActivity" />
@@ -34,11 +45,19 @@
             </intent-filter>
         </activity>
         <activity
+                android:name=".view.activity.ScannerActivity"
+                android:configChanges="orientation|screenSize"
+                android:screenOrientation="portrait" />
+        <activity
                 android:name=".view.activity.MainActivity"
-                android:configChanges="keyboardHidden|orientation"
                 android:label="@string/app_name"
                 android:launchMode="singleTop"
                 android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="br.com.suitesistemas.portsmobile_TARGET_CLIENTE" />
 

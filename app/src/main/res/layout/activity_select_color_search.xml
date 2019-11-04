@@ -16,12 +16,13 @@
             android:background="@color/white_opaque"
             android:fitsSystemWindows="true">
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
                 android:id="@+id/select_color_search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/small_margin"
-                android:elevation="@dimen/elevation">
+                app:cardElevation="@dimen/progress_bar_height"
+                style="@style/Card">
 
             <LinearLayout
                     android:layout_width="match_parent"
@@ -69,7 +70,7 @@
 
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView android:id="@+id/select_color_search_empty_view"
                 android:layout_width="match_parent"

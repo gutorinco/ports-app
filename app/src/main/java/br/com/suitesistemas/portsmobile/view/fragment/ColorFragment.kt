@@ -1,6 +1,5 @@
 package br.com.suitesistemas.portsmobile.view.fragment
 
-
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -9,22 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
-import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
-import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
-import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
-import br.com.suitesistemas.portsmobile.custom.progress_bar.show
-import br.com.suitesistemas.portsmobile.custom.recycler_view.*
-import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.setTitle
-import br.com.suitesistemas.portsmobile.custom.view.showMessage
-import br.com.suitesistemas.portsmobile.custom.view.showMessageError
+import br.com.suitesistemas.portsmobile.custom.extensions.*
+import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.entity.Color
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
-import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.activity.search.ColorSearchActivity
 import br.com.suitesistemas.portsmobile.view.adapter.ColorAdapter
@@ -34,7 +23,6 @@ import kotlinx.android.synthetic.main.fragment_color.*
 
 class ColorFragment : BasicFragment<Color, ColorAdapter>(),
         OnItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener,
         Observer<ApiResponse<MutableList<Color>?>> {
 
     lateinit var viewModel: ColorViewModel
@@ -43,18 +31,18 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(ColorViewModel::class.java)
-        configureObserver()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_color, container, false)
         setHasOptionsMenu(true)
+        configureObserver()
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        super.init(color_layout, ColorAdapter(context!!, viewModel.getSortingList(), {
+        super.init(color_layout, ColorAdapter(context!!, viewModel.getList(), {
             delete(it)
         }, {
             showForm(viewModel.getBy(it))
@@ -62,26 +50,19 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
         setTitle(R.string.cores)
     }
 
-    override fun onPause() {
-        super.onPause()
-        color_button.hideToBottom()
-    }
+    override fun getFloatingButton() = color_button
+    override fun getProgressBar() = color_progressbar
+    override fun getRefresh() = color_refresh
+    override fun getLayout() = color_layout
 
-    override fun onRefresh() {
-        when (color_progressbar.isIndeterminate) {
-            true -> color_refresh.isRefreshing = false
-            false -> refresh()
-        }
-    }
-
-    private fun refresh() {
-        color_progressbar.show()
+    override fun refresh() {
+        showProgress()
         viewModel.refresh()
         viewModel.refreshResponse.observe(this, this)
     }
 
     override fun initSearchActivity() {
-        executeAfterLoaded(color_progressbar.isIndeterminate, color_layout) {
+        executeAfterLoaded {
             val intent = Intent(activity, ColorSearchActivity::class.java)
             startActivityForResult(intent, GET_REQUEST_CODE)
         }
@@ -89,17 +70,20 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
 
     private fun configureObserver() {
         val companyName = SharedPreferencesUtils.getCompanyName(activity!!)
-        viewModel.fetchAllColors(companyName)
-        viewModel.response.observe(this, this)
+        with(viewModel) {
+            initRepositories(companyName)
+            fetchAll()
+            response.observe(this@ColorFragment, this@ColorFragment)
+        }
     }
 
     override fun onChanged(response: ApiResponse<MutableList<Color>?>) {
-        color_progressbar.hide()
+        hideProgress()
         color_refresh.isRefreshing = false
 
         if (response.messageError == null) {
             onChangedResponse(response.data, response.operation) {
-                executeAfterLoaded(color_progressbar.isIndeterminate, color_layout) {
+                executeAfterLoaded {
                     configureButton()
                     response.data?.let { colors ->
                         viewModel.addAll(colors)
@@ -109,15 +93,15 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
             }
         } else {
             showMessageError(color_layout, response.messageError!!, response.operation)
-            configureList(viewModel.getSortingList())
+            configureList(viewModel.getList())
         }
     }
 
     private fun configureButton() {
-        with (color_button) {
+        with(color_button) {
             showFromBottom()
             setOnClickListener {
-                executeAfterLoaded(color_progressbar.isIndeterminate, color_layout) {
+                executeAfterLoaded {
                     showForm(Color())
                 }
             }
@@ -136,6 +120,7 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
             refresh()
         }
         color_button.showFromBottom()
+        hideProgress()
     }
 
     private fun configureList(colors: MutableList<Color>) {
@@ -144,7 +129,7 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
         configureSwipe()
         customAdapter.setAdapter(colors)
 
-        with (color_recyclerview) {
+        with(color_recyclerview) {
             adapter = customAdapter
             addOnItemClickListener(this@ColorFragment)
             hideButtonOnScroll(color_button)
@@ -163,32 +148,33 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
 
     private fun configureSwipe() {
         color_recyclerview.addSwipe(SwipeToDeleteCallback(context!!) { itemPosition ->
-            executeAfterLoaded(color_progressbar.isIndeterminate, color_layout) {
+            executeAfterLoaded {
                 delete(itemPosition)
             }
         })
     }
 
     private fun delete(position: Int) {
-        val firebaseToken = FirebaseUtils.getToken(context!!)
-        color_progressbar.show()
-        viewModel.delete(position, firebaseToken)
+        showProgress()
+        viewModel.delete(position, getFirebaseToken())
     }
 
     override fun deleteRollback() {
-        color_progressbar.show()
-        viewModel.deleteRollback()
-        viewModel.rollbackResponse.observe(this, observerHandler({
-            viewModel.add(it, EHttpOperation.ROLLBACK)
-        }, {
-            showMessage(color_layout, it, getString(R.string.falha_desfazer_acao))
-        }, {
-            color_progressbar.hide()
-        }))
+        showProgress()
+        with (viewModel) {
+            deleteRollback()
+            rollbackResponse.observe(this@ColorFragment, observerHandler({
+                add(it, EHttpOperation.ROLLBACK)
+            }, {
+                showMessage(it, R.string.falha_desfazer_acao)
+            }, {
+                hideProgress()
+            }))
+        }
     }
 
     override fun onItemClicked(position: Int, view: View) {
-        executeAfterLoaded(color_progressbar.isIndeterminate, color_layout) {
+        executeAfterLoaded {
             showForm(viewModel.getBy(position))
         }
     }
@@ -198,35 +184,42 @@ class ColorFragment : BasicFragment<Color, ColorAdapter>(),
         dialog = ColorFormDialog.newInstance(color) {
             if (it.dsc_cor.isNullOrEmpty()) {
                 dialog.dismiss()
-                showMessage(color_layout, getString(R.string.insira_nome))
+                showMessage(getString(R.string.insira_nome))
             } else {
-                val firebaseToken = FirebaseUtils.getToken(context!!)
-                viewModel.save(it, firebaseToken)
-                if (color?.num_codigo_online.isNullOrEmpty())
-                     configureInsertObserver()
-                else configureUpdateObserver()
+                val firebaseToken = getFirebaseToken()
+                with (color!!) {
+                    if (num_codigo_online.isEmpty())
+                         insert(it, firebaseToken)
+                    else update(it, firebaseToken)
+                }
             }
         }
         dialog.show(fragmentManager!!)
     }
 
-    private fun configureInsertObserver() {
-        viewModel.insertResponse.observe(this, observerHandler({
-            viewModel.add(it)
-            dialog.dismiss()
-        }, {
-            showMessage(color_layout, it, getString(R.string.falha_inserir_cor))
-        }))
+    private fun insert(color: Color, firebaseToken: String) {
+        with (viewModel) {
+            insert(color, firebaseToken)
+            insertResponse.observe(this@ColorFragment, observerHandler({
+                add(it)
+                dialog.dismiss()
+            }, {
+                showMessage(it, R.string.falha_inserir_cor)
+            }))
+        }
     }
 
-    private fun configureUpdateObserver() {
-        viewModel.updateResponse.observe(this, observerHandler({
-            viewModel.color?.version = it.version
-            viewModel.updateList(viewModel.color!!)
-            dialog.dismiss()
-        }, {
-            showMessage(color_layout, it, getString(R.string.falha_atualizar_cor))
-        }))
+    private fun update(colorToUpdate: Color, firebaseToken: String) {
+        with (viewModel) {
+            insert(colorToUpdate, firebaseToken)
+            updateResponse.observe(this@ColorFragment, observerHandler({
+                color?.version = it.version
+                updateList(color!!)
+                dialog.dismiss()
+            }, {
+                showMessage(it, R.string.falha_atualizar_cor)
+            }))
+        }
     }
 
 }

@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.entity.Product
+import br.com.suitesistemas.portsmobile.model.enums.ESystemType
 import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.ProductViewHolder
 
 class ProductAdapter(context: Context,
                      products: MutableList<Product>,
+                     private val systemType: ESystemType,
                      private val delete: (position: Int) -> Unit,
                      private val edit: (position: Int) -> Unit
 ) : BaseAdapter<Product, ProductViewHolder>(context, products) {
@@ -20,7 +22,7 @@ class ProductAdapter(context: Context,
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = list[position]
-        holder.bindView(product)
+        holder.bindView(product, systemType)
         holder.menu.setOnClickListener {
             super.createPopup(it, {
                 delete(position)

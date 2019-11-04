@@ -47,20 +47,33 @@
     <string name="task_adapter_prev_inicio">Prev. Início: %s</string>
     <string name="task_adapter_prev_termino">Prev. Término: %s</string>
 
+    <!-- CRM VIEW HOLDER -->
+    <string name="crm_adapter_ocorrencia">Data Ocorrência: %s</string>
+    <string name="crm_adapter_solucao">Data Solução: %s</string>
+    <string name="concluido">CONCLUÍDO</string>
+
     <!-- SITUACAO PAGAMENTO -->
     <string name="em_aberto">EM ABERTO</string>
     <string name="cancelado">CANCELADO</string>
     <string name="pago">PAGO</string>
+
+    <!-- ADAPTER -->
+    <string name="adapter_data_cadastro">Data Cadastro: %s</string>
+    <string name="adapter_referencia">Referência: %s</string>
+    <string name="adapter_codigo">Código: %d</string>
 
     <!-- PRICE ADAPTER -->
     <string name="a_vista_adapter">À vista: R$ %s</string>
     <string name="a_prazo_adapter">À prazo: R$ %s</string>
     <string name="preco_adapter">R$ %s</string>
 
+    <!-- ORDER ADAPTER -->
+    <string name="adapter_total_item">Total item: R$ %s</string>
+    <string name="adapter_total_pedido">Total ped: R$ %s</string>
+    <string name="entre_parenteses">(%s)</string>
+
     <!-- PRODUCT ADAPTER -->
-    <string name="produto_vista_adapter">Preço à vista: R$ %s</string>
-    <string name="produto_prazo_adapter">Preço à prazo: R$ %s</string>
-    <string name="produto_quantidade_adapter">Quantidade: %d</string>
+    <string name="quantidade_adapter">Quantidade: %d</string>
     <string name="em_parenteses">(%s)</string>
 
     <!-- FORM TITLE -->
@@ -94,6 +107,9 @@
     <string name="digite_nome_cliente">Digite o nome da pessoa</string>
     <string name="procurar">Procurar</string>
     <string name="digite_nome_produto">Digite o nome do produto</string>
+    <string name="digite_codigo_produto">Digite o código do produto</string>
+    <string name="digite_ref_produto">Insira a referência do produto</string>
+    <string name="digite_codigo_barras">Insira o código de barras</string>
     <string name="totais">Totais</string>
     <string name="total_itens">Itens</string>
     <string name="total_venda">Venda</string>
@@ -103,6 +119,8 @@
     <string name="acrescimo">Acréscimo</string>
     <string name="desconto">Desconto</string>
     <string name="adicionar">Adicionar</string>
+    <string name="add_cores">Add Cores</string>
+    <string name="add_modelos">Add Modelos</string>
     <string name="add_produtos">Add Produtos</string>
     <string name="cor">Cor</string>
     <string name="cores">Cores</string>
@@ -116,6 +134,9 @@
     <string name="nao_encontrou_cores">Não foi possível encontrar as cores do produto</string>
     <string name="nao_encontrou_combinacoes">Não foi possível encontrar as combinações do modelo</string>
     <string name="nao_encontrou_unidades">Não foi possível obter os dados das unidades de medida</string>
+    <string name="nao_encontrou_grade_modelo">Não foi possível obter os itens da grade do modelo</string>
+    <string name="nao_encontrou_grade_pedido">Não foi possível obter as grades do pedido</string>
+    <string name="nao_encontrou_itens_pedido">Não foi possível obter os itens do pedido</string>
     <string name="nao_encontrou_itens_venda">Não foi possível obter os itens da venda</string>
     <string name="falha_inserir_cliente">Falha ao inserir os dados do cliente</string>
     <string name="falha_atualizar_cliente">Falha ao atualizar os dados do cliente</string>
@@ -130,6 +151,16 @@
     <string name="falha_remover_itens_venda">Falha ao remover os itens da venda</string>
     <string name="falha_inserir_cor">Falha ao inserir os dados da cor</string>
     <string name="falha_atualizar_cor">Falha ao atualizar os dados da cor</string>
+    <string name="falha_inserir_crm">Falha ao inserir os dados do crm</string>
+    <string name="falha_atualizar_crm">Falha ao atualizar os dados do crm</string>
+    <string name="falha_inserir_grade_pedido">Falha ao inserir a grade do pedido</string>
+    <string name="falha_inserir_item_pedido">Falha ao inserir os itens do pedido</string>
+    <string name="falha_inserir_pedido">Falha ao inserir os dados do pedido</string>
+    <string name="falha_atualizar_pedido">Falha ao atualizar os dados do pedido</string>
+    <string name="falha_atualizar_grade_pedido">Falha ao atualizar a grade do pedido</string>
+    <string name="falha_atualizar_item_pedido">Falha ao atualizar os itens do pedido</string>
+    <string name="falha_remover_itens_pedido">Falha ao remover os itens do pedido</string>
+    <string name="falha_remover_grade_pedido">Falha ao remover a grade do pedido</string>
     <string name="pressione_voltar_novamente">Pressione o botão <b>voltar</b> novamente para fechar!</string>
     <string name="nao_encontrou_lancamentos">Não foi possível obter a lista de lançamentos</string>
     <string name="nenhuma_condicao">Nenhuma condição de pagamento foi encontrada</string>
@@ -169,6 +200,7 @@
     <string name="digite_nome_cor">Digite o nome da cor</string>
     <string name="adicione_cores">É necessário ao menos uma cor para continuar</string>
     <string name="adicione_combinacoes">É necessário ao menos uma combinação para continuar</string>
+    <string name="adicione_grades">É necessário ao menos uma grade para continuar</string>
     <string name="percentual_lucro">Perc. Lucro</string>
     <string name="modelos">Modelos</string>
     <string name="digite_nome_modelo">Digite o nome do modelo</string>
@@ -176,5 +208,60 @@
     <string name="adicionar_combinacoes">Adicionar Combinações</string>
     <string name="cadastro_modelo">Cadastro de modelo</string>
     <string name="digite_nome_combinacao">Digite o nome da combinação</string>
+    <string name="total_item">Total Item</string>
+    <string name="total_pedido">Total Pedido</string>
+    <string name="adicionar_modelo">Adicionar Modelo</string>
+    <string name="cadastro_pedido">Cadastro de Pedido</string>
+    <string name="cadastro_grade">Cadastro da Grade</string>
+    <string name="combinacao">Combinação</string>
+    <string name="caixa">Caixa</string>
+    <string name="numero">Número</string>
+    <string name="preco_unit">Preço Unit</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="falha_inserir_grade">Falha ao inserir os dados das grades</string>
+    <string name="falha_remover_grade">Falha ao remover as grades do modelo</string>
+    <string name="nenhuma_combinacao_selecionada">Nenhum combinação selecionada</string>
+    <string name="nenhuma_cor_selecionada">Nenhuma cor selecionada</string>
+    <string name="maior_que_zero">O valor inserido deve ser maior que zero</string>
+    <string name="numero_label">Número: %s</string>
+    <string name="quantidade_label">Quantidade: %s</string>
+    <string name="preco_unit_label">Preço Unit: R$ %s</string>
+    <string name="desconto_label">Desconto: R$ %s</string>
+    <string name="subtotal_label">Subtotal: R$ %s</string>
+    <string name="nenhuma_grade_adicionada">Nenhuma grade adicionada</string>
+    <string name="grade_ja_adicionada">Grade já adicionada</string>
+    <string name="nenhum_numero">Nenhum número foi encontrado para a grade</string>
+    <string name="caixa_label">Caixa: %d</string>
+    <string name="nenhum_item_adicionado">Ao menos um item deve ser adicionado ao pedido</string>
+    <string name="nenhum_item_adicionado_grid">Nenhum item adicionado</string>
+    <string name="tipo">Tipo</string>
+    <string name="status">Status</string>
+    <string name="data_cadastro">Data Cadastro</string>
+    <string name="ocorrencia">Ocorrência</string>
+    <string name="data">Data</string>
+    <string name="solucao">Solução</string>
+    <string name="add_pedido">Add Pedido</string>
+    <string name="add_venda">Add Venda</string>
+    <string name="cadastro_crm">Cadastro de CRM</string>
+    <string name="selecione_pedido_ou_venda">Selecione um pedido ou venda</string>
+    <string name="selecione_tipo">Selecione um tipo para o registro</string>
+    <string name="selecione_status">Selecione um status para o registro</string>
+    <string name="nao_excluiu">Não foi possível excluir o registro</string>
+    <string name="configuracoes">Configurações</string>
+    <string name="codigo">Código</string>
+    <string name="cod_barras">Cod. Barras</string>
+    <string name="pesquisa_produto_por">Pesquisa produto por:</string>
+    <string name="tipo_sistema">Tipo de sistema contratado:</string>
+    <string name="ports_desktop">Ports Desktop</string>
+    <string name="ports_online">Ports Online</string>
+    <string name="ambos">Ambos</string>
+    <string name="nao_encontrou_configuracoes">Nenhum configuração foi encontrada</string>
+    <string name="falha_inserir_config">Falha ao inserir os dados da configuração</string>
+    <string name="falha_atualizar_config">Falha ao atualizar os dados da configuração</string>
+    <string name="nao_encontrou_codigo">Não foi possível buscar um código para o produto</string>
+    <string name="leitor_cod_barras">Leitor de Código de Barras</string>
+    <string name="permissao_nao_concedida">Permissão não concedida</string>
+    <string name="prosseguir">Prosseguir</string>
+    <string name="politica_privacidade">Política de Privacidade</string>
 
 </resources>

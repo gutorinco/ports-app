@@ -8,22 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
-import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
-import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
-import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
-import br.com.suitesistemas.portsmobile.custom.progress_bar.show
-import br.com.suitesistemas.portsmobile.custom.recycler_view.*
-import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.setTitle
-import br.com.suitesistemas.portsmobile.custom.view.showMessage
-import br.com.suitesistemas.portsmobile.custom.view.showMessageError
+import br.com.suitesistemas.portsmobile.custom.extensions.*
+import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.entity.Model
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
-import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.activity.form.ModelFormActivity
 import br.com.suitesistemas.portsmobile.view.activity.search.ModelSearchActivity
@@ -32,27 +22,26 @@ import br.com.suitesistemas.portsmobile.viewModel.list.ModelViewModel
 import kotlinx.android.synthetic.main.fragment_model.*
 
 class ModelFragment : BasicFragment<Model, ModelAdapter>(),
-    OnItemClickListener,
-    SwipeRefreshLayout.OnRefreshListener,
-    Observer<ApiResponse<MutableList<Model>?>> {
+        OnItemClickListener,
+        Observer<ApiResponse<MutableList<Model>?>> {
 
     lateinit var viewModel: ModelViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(ModelViewModel::class.java)
-        configureObserver()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_model, container, false)
         setHasOptionsMenu(true)
+        configureObserver()
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        super.init(model_layout, ModelAdapter(context!!, viewModel.getSortingList(), {
+        super.init(model_layout, ModelAdapter(context!!, viewModel.getList(), {
             delete(it)
         }, {
             edit(viewModel.getBy(it))
@@ -60,26 +49,19 @@ class ModelFragment : BasicFragment<Model, ModelAdapter>(),
         setTitle(R.string.modelos)
     }
 
-    override fun onPause() {
-        super.onPause()
-        model_button.hideToBottom()
-    }
+    override fun getFloatingButton() = model_button
+    override fun getProgressBar() = model_progressbar
+    override fun getRefresh() = model_refresh
+    override fun getLayout() = model_layout
 
-    override fun onRefresh() {
-        when (model_progressbar.isIndeterminate) {
-            true -> model_refresh.isRefreshing = false
-            false -> refresh()
-        }
-    }
-
-    private fun refresh() {
-        model_progressbar.show()
+    override fun refresh() {
+        showProgress()
         viewModel.refresh()
         viewModel.refreshResponse.observe(this, this)
     }
 
     override fun initSearchActivity() {
-        executeAfterLoaded(model_progressbar.isIndeterminate, model_layout) {
+        executeAfterLoaded {
             val intent = Intent(activity, ModelSearchActivity::class.java)
             startActivityForResult(intent, GET_REQUEST_CODE)
         }
@@ -87,17 +69,20 @@ class ModelFragment : BasicFragment<Model, ModelAdapter>(),
 
     private fun configureObserver() {
         val companyName = SharedPreferencesUtils.getCompanyName(activity!!)
-        viewModel.fetchAllModels(companyName)
-        viewModel.response.observe(this, this)
+        with(viewModel) {
+            initRepositories(companyName)
+            fetchAll()
+            response.observe(this@ModelFragment, this@ModelFragment)
+        }
     }
 
     override fun onChanged(response: ApiResponse<MutableList<Model>?>) {
-        model_progressbar.hide()
+        hideProgress()
         model_refresh.isRefreshing = false
 
         if (response.messageError == null) {
             onChangedResponse(response.data, response.operation) {
-                executeAfterLoaded(model_progressbar.isIndeterminate, model_layout) {
+                executeAfterLoaded {
                     configureButton()
                     response.data?.let { models ->
                         viewModel.addAll(models)
@@ -107,15 +92,15 @@ class ModelFragment : BasicFragment<Model, ModelAdapter>(),
             }
         } else {
             showMessageError(model_layout, response.messageError!!, response.operation)
-            configureList(viewModel.getSortingList())
+            configureList(viewModel.getList())
         }
     }
 
     private fun configureButton() {
-        with (model_button) {
+        with(model_button) {
             showFromBottom()
             setOnClickListener {
-                executeAfterLoaded(model_progressbar.isIndeterminate, model_layout) {
+                executeAfterLoaded {
                     val intent = Intent(activity, ModelFormActivity::class.java)
                     startActivityForResult(intent, CREATE_REQUEST_CODE)
                 }
@@ -145,6 +130,7 @@ class ModelFragment : BasicFragment<Model, ModelAdapter>(),
             refresh()
         }
         model_button.showFromBottom()
+        hideProgress()
     }
 
     private fun configureList(models: MutableList<Model>) {
@@ -153,7 +139,7 @@ class ModelFragment : BasicFragment<Model, ModelAdapter>(),
         configureSwipe()
         customAdapter.setAdapter(models)
 
-        with (model_recyclerview) {
+        with(model_recyclerview) {
             adapter = customAdapter
             addOnItemClickListener(this@ModelFragment)
             hideButtonOnScroll(model_button)
@@ -172,55 +158,81 @@ class ModelFragment : BasicFragment<Model, ModelAdapter>(),
 
     private fun configureSwipe() {
         model_recyclerview.addSwipe(SwipeToDeleteCallback(context!!) { itemPosition ->
-            executeAfterLoaded(model_progressbar.isIndeterminate, model_layout) {
+            executeAfterLoaded {
                 delete(itemPosition)
             }
         })
     }
 
     private fun delete(position: Int) {
-        val firebaseToken = FirebaseUtils.getToken(context!!)
-        model_progressbar.show()
-        viewModel.fetchAllCombinationsBy(position)
-        viewModel.modelCombinationResponse.observe(this, observerHandler({
-            viewModel.addRemovedModelCombinations(it)
-            viewModel.delete(position, firebaseToken)
-        }, {
-            showMessage(model_layout, getString(R.string.falha_remover_combinacoes))
-        }, {
-            model_progressbar.hide()
-        }))
+        showProgress()
+        with (viewModel) {
+            fetchAllCombinationsBy(position)
+            modelCombinationResponse.observe(this@ModelFragment, observerHandler({
+                addRemovedModelCombinations(it)
+                fetchAllGridCombinations(position)
+            }, {
+                handleError(it, R.string.falha_remover_combinacoes)
+            }))
+        }
+    }
+
+    private fun fetchAllGridCombinations(position: Int) {
+        with (viewModel) {
+            fetchAllGridCombinationsBy(position)
+            modelGridResponse.observe(this@ModelFragment, observerHandler({
+                addRemovedModelGridCombinations(it)
+                delete(position, getFirebaseToken())
+            }, {
+                handleError(it, R.string.falha_remover_grade)
+            }))
+        }
     }
 
     override fun deleteRollback() {
-        model_progressbar.show()
-        viewModel.deleteRollback()
-        viewModel.rollbackResponse.observe(this, observerHandler({
-            viewModel.add(it, EHttpOperation.ROLLBACK)
-            viewModel.removedObject = it
-            modelCombinationsDeleteRollback()
-        }, {
-            model_progressbar.hide()
-            showMessage(model_layout, it, getString(R.string.falha_desfazer_acao))
-        }))
+        showProgress()
+        with (viewModel) {
+            deleteRollback()
+            rollbackResponse.observe(this@ModelFragment, observerHandler({
+                add(it, EHttpOperation.ROLLBACK)
+                removedObject = it
+                this@ModelFragment.modelCombinationsDeleteRollback()
+            }, {
+                handleError(it, R.string.falha_desfazer_acao)
+            }))
+        }
     }
 
     private fun modelCombinationsDeleteRollback() {
-        viewModel.modelCombinationsDeleteRollback()
-        viewModel.modelCombinationRollbackResponse.observe(this, observerHandler({}, {
-            showMessage(model_layout, getString(R.string.falha_desfazer_acao))
-        }, {
-            model_progressbar.hide()
-        }))
+        with (viewModel) {
+            modelCombinationsDeleteRollback()
+            modelCombinationRollbackResponse.observe(this@ModelFragment, observerHandler({
+                this@ModelFragment.modelGridCombinationsDeleteRollback()
+            }, {
+                handleError(it, R.string.falha_desfazer_acao)
+            }))
+        }
+    }
+
+    private fun modelGridCombinationsDeleteRollback() {
+        with (viewModel) {
+            modelGridCombinationsDeleteRollback()
+            modelGridRollbackResponse.observe(this@ModelFragment, observerHandler({}, {
+                showMessage(getString(R.string.falha_desfazer_acao))
+            }, {
+                hideProgress()
+            }))
+        }
     }
 
     override fun onItemClicked(position: Int, view: View) {
-        executeAfterLoaded(model_progressbar.isIndeterminate, model_layout) {
+        executeAfterLoaded {
             edit(viewModel.getBy(position))
         }
     }
 
     private fun edit(model: Model?) {
+        showProgress()
         val intent = Intent(activity, ModelFormActivity::class.java)
         intent.putExtra("model", model)
         startActivityForResult(intent, UPDATE_REQUEST_CODE)

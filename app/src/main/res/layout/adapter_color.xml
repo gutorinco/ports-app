@@ -1,41 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/color_adapter"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/very_tiny_margin"
-        android:elevation="@dimen/elevation">
+        android:layout_height="wrap_content">
 
-    <LinearLayout android:orientation="horizontal"
+    <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            style="@style/AdapterCard">
 
-        <TextView android:id="@+id/color_adapter_name"
+        <LinearLayout android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/small_margin"
-                android:layout_weight="1"
-                android:gravity="left|center"
-                android:textSize="@dimen/medium_font"
-                android:textStyle="bold"/>
+                android:layout_height="wrap_content">
 
-        <RelativeLayout android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="8"
-                android:paddingTop="@dimen/btn_adapter_padding">
+            <TextView android:id="@+id/color_adapter_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_weight="1"
+                    android:gravity="left|center"
+                    android:textSize="@dimen/medium_font"
+                    android:textStyle="bold"/>
 
-            <ImageButton
-                    android:id="@+id/color_adapter_menu"
-                    android:layout_width="wrap_content"
+            <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@android:color/transparent"
-                    android:src="@drawable/ic_dots"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"/>
+                    android:layout_weight="9">
 
-        </RelativeLayout>
+                <ImageButton
+                        android:id="@+id/color_adapter_menu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/transparent"
+                        android:src="@drawable/ic_dots"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"/>
 
-    </LinearLayout>
+            </RelativeLayout>
 
-</com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

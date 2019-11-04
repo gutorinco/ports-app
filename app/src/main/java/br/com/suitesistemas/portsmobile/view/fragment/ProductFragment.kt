@@ -1,6 +1,7 @@
 package br.com.suitesistemas.portsmobile.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,22 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.button.hideToBottom
-import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
-import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
-import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
-import br.com.suitesistemas.portsmobile.custom.progress_bar.show
-import br.com.suitesistemas.portsmobile.custom.recycler_view.*
-import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.setTitle
-import br.com.suitesistemas.portsmobile.custom.view.showMessage
-import br.com.suitesistemas.portsmobile.custom.view.showMessageError
+import br.com.suitesistemas.portsmobile.custom.extensions.*
+import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
+import br.com.suitesistemas.portsmobile.entity.Configuration
 import br.com.suitesistemas.portsmobile.entity.Product
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
-import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
+import br.com.suitesistemas.portsmobile.model.enums.ESystemType
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.activity.form.ProductFormActivity
 import br.com.suitesistemas.portsmobile.view.activity.search.ProductSearchActivity
@@ -33,7 +26,6 @@ import kotlinx.android.synthetic.main.fragment_product.*
 
 class ProductFragment : BasicFragment<Product, ProductAdapter>(),
             OnItemClickListener,
-            SwipeRefreshLayout.OnRefreshListener,
             Observer<ApiResponse<MutableList<Product>?>> {
 
     lateinit var viewModel: ProductViewModel
@@ -41,7 +33,6 @@ class ProductFragment : BasicFragment<Product, ProductAdapter>(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(ProductViewModel::class.java)
-        configureObserver()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -50,54 +41,84 @@ class ProductFragment : BasicFragment<Product, ProductAdapter>(),
         return view
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        super.init(product_layout, ProductAdapter(context!!, viewModel.getSortingList(), {
-            delete(it)
-        }, {
-            edit(it)
-        }))
+    override fun onResume() {
+        super.onResume()
         setTitle(R.string.produtos)
+        viewModel.initRepositories(SharedPreferencesUtils.getCompanyName(activity!!))
+        initSystemType()
     }
 
-    override fun onPause() {
-        super.onPause()
-        product_button.hideToBottom()
-    }
+    private fun initSystemType() {
+        showProgress()
+        val sharedPref = activity!!.getSharedPreferences("config", Context.MODE_PRIVATE)
+        val type = sharedPref!!.getString("systemType", null)
+        if (type == null) {
+            showProgress()
+            with (viewModel) {
+                fetchConfigurations()
+                configResponse.observe(this@ProductFragment, observerHandler({
+                    val config = if (it.isNotEmpty()) it[0] else Configuration()
+                    systemType = config.flg_tipo_sistema
+                    init()
 
-    override fun onRefresh() {
-        when (product_progressbar.isIndeterminate) {
-            true -> product_refresh.isRefreshing = false
-            false -> refresh()
+                    with(sharedPref.edit()) {
+                        putString("systemType", systemType.name)
+                        apply()
+                        commit()
+                    }
+                }, {
+                    showMessage(getString(R.string.nao_encontrou_configuracoes))
+                }, {
+                    hideProgress()
+                }))
+            }
+        } else {
+            viewModel.systemType = ESystemType.valueOf(type)
+            init()
         }
     }
 
-    private fun refresh() {
-        product_progressbar.show()
+    private fun init() {
+        fetchAll()
+        super.init(product_layout, ProductAdapter(context!!, viewModel.getList(), viewModel.systemType, {
+            delete(it)
+        }, {
+            edit(viewModel.getBy(it), GET_REQUEST_CODE)
+        }))
+    }
+
+    override fun getFloatingButton() = product_button
+    override fun getProgressBar() = product_progressbar
+    override fun getRefresh() = product_refresh
+    override fun getLayout() = product_layout
+
+    override fun refresh() {
+        showProgress()
         viewModel.refresh()
         viewModel.refreshResponse.observe(this, this)
     }
 
     override fun initSearchActivity() {
-        executeAfterLoaded(product_progressbar.isIndeterminate, product_layout) {
+        executeAfterLoaded {
             val intent = Intent(activity, ProductSearchActivity::class.java)
             startActivityForResult(intent, GET_REQUEST_CODE)
         }
     }
 
-    private fun configureObserver() {
-        val companyName = SharedPreferencesUtils.getCompanyName(activity!!)
-        viewModel.fetchAllProducts(companyName)
-        viewModel.response.observe(this, this)
+    private fun fetchAll() {
+        with (viewModel) {
+            fetchAll()
+            response.observe(this@ProductFragment, this@ProductFragment)
+        }
     }
 
     override fun onChanged(response: ApiResponse<MutableList<Product>?>) {
-        product_progressbar.hide()
+        hideProgress()
         product_refresh.isRefreshing = false
 
         if (response.messageError == null) {
             onChangedResponse(response.data, response.operation) {
-                executeAfterLoaded(product_progressbar.isIndeterminate, product_layout) {
+                executeAfterLoaded {
                     configureButton()
                     response.data?.let { products ->
                         viewModel.addAll(products)
@@ -107,7 +128,7 @@ class ProductFragment : BasicFragment<Product, ProductAdapter>(),
             }
         } else {
             showMessageError(product_layout, response.messageError!!, response.operation)
-            configureList(viewModel.getSortingList())
+            configureList(viewModel.getList())
         }
     }
 
@@ -115,7 +136,7 @@ class ProductFragment : BasicFragment<Product, ProductAdapter>(),
         with (product_button) {
             showFromBottom()
             setOnClickListener {
-                executeAfterLoaded(product_progressbar.isIndeterminate, product_layout) {
+                executeAfterLoaded {
                     val intent = Intent(activity, ProductFormActivity::class.java)
                     startActivityForResult(intent, CREATE_REQUEST_CODE)
                 }
@@ -137,7 +158,7 @@ class ProductFragment : BasicFragment<Product, ProductAdapter>(),
                     }
                     GET_REQUEST_CODE -> {
                         val productResponse = it.getParcelableExtra("product_response") as Product
-                        editProductSelected(productResponse)
+                        edit(productResponse, UPDATE_REQUEST_CODE)
                     }
                 }
             }
@@ -145,12 +166,7 @@ class ProductFragment : BasicFragment<Product, ProductAdapter>(),
             refresh()
         }
         product_button.showFromBottom()
-    }
-
-    private fun editProductSelected(product: Product) {
-        val intent = Intent(activity, ProductFormActivity::class.java)
-        intent.putExtra("product", product)
-        startActivityForResult(intent, UPDATE_REQUEST_CODE)
+        hideProgress()
     }
 
     private fun configureList(products: MutableList<Product>) {
@@ -178,59 +194,64 @@ class ProductFragment : BasicFragment<Product, ProductAdapter>(),
 
     private fun configureSwipe() {
         product_recyclerview.addSwipe(SwipeToDeleteCallback(context!!) { itemPosition ->
-            executeAfterLoaded(product_progressbar.isIndeterminate, product_layout) {
+            executeAfterLoaded {
                 delete(itemPosition)
             }
         })
     }
 
     private fun delete(position: Int) {
-        val firebaseToken = FirebaseUtils.getToken(context!!)
-        product_progressbar.show()
-        viewModel.fetchAllColorsBy(position)
-        viewModel.productColorResponse.observe(this, observerHandler({
-            viewModel.addRemovedProductColors(it)
-            viewModel.delete(position, firebaseToken)
-        }, {
-            showMessage(product_layout, getString(R.string.falha_remover_cores))
-        }, {
-            product_progressbar.hide()
-        }))
-    }
-
-    override fun deleteRollback() {
-        product_progressbar.show()
-        viewModel.deleteRollback()
-        viewModel.rollbackResponse.observe(this, observerHandler({
-            viewModel.add(it, EHttpOperation.ROLLBACK)
-            viewModel.removedObject = it
-            productColorsDeleteRollback()
-        }, {
-            product_progressbar.hide()
-            showMessage(product_layout, it, getString(R.string.falha_desfazer_acao))
-        }))
-    }
-
-    private fun productColorsDeleteRollback() {
-        viewModel.productColorsDeleteRollback()
-        viewModel.productColorRollbackResponse.observe(this, observerHandler({}, {
-            showMessage(product_layout, getString(R.string.falha_desfazer_acao))
-        }, {
-            product_progressbar.hide()
-        }))
-    }
-
-    override fun onItemClicked(position: Int, view: View) {
-        executeAfterLoaded(product_progressbar.isIndeterminate, product_layout) {
-            edit(position)
+        showProgress()
+        with (viewModel) {
+            fetchAllColorsBy(position)
+            productColorResponse.observe(this@ProductFragment, observerHandler({
+                addRemovedProductColors(it)
+                delete(position, getFirebaseToken())
+            }, {
+                showMessage(getString(R.string.falha_remover_cores))
+            }, {
+                hideProgress()
+            }))
         }
     }
 
-    private fun edit(position: Int) {
-        val product = viewModel.getBy(position)
+    override fun deleteRollback() {
+        showProgress()
+        with (viewModel) {
+            deleteRollback()
+            rollbackResponse.observe(this@ProductFragment, observerHandler({
+                add(it, EHttpOperation.ROLLBACK)
+                removedObject = it
+                this@ProductFragment.productColorsDeleteRollback()
+            }, {
+                handleError(it, R.string.falha_desfazer_acao)
+            }))
+        }
+    }
+
+    private fun productColorsDeleteRollback() {
+        with (viewModel) {
+            productColorsDeleteRollback()
+            productColorRollbackResponse.observe(this@ProductFragment, observerHandler({}, {
+                showMessage(getString(R.string.falha_desfazer_acao))
+            }, {
+                hideProgress()
+            }))
+        }
+    }
+
+    override fun onItemClicked(position: Int, view: View) {
+        executeAfterLoaded {
+            val product = viewModel.getBy(position)
+            edit(product, UPDATE_REQUEST_CODE)
+        }
+    }
+
+    private fun edit(product: Product, requestCode: Int) {
+        showProgress()
         val intent = Intent(activity, ProductFormActivity::class.java)
         intent.putExtra("product", product)
-        startActivityForResult(intent, UPDATE_REQUEST_CODE)
+        startActivityForResult(intent, requestCode)
     }
 
 }

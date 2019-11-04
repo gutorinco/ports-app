@@ -6,10 +6,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.recycler_view.OnItemClickListener
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addOnItemClickListener
-import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
+import br.com.suitesistemas.portsmobile.custom.extensions.OnItemClickListener
+import br.com.suitesistemas.portsmobile.custom.extensions.addOnItemClickListener
+import br.com.suitesistemas.portsmobile.custom.extensions.executeAfterLoaded
+import br.com.suitesistemas.portsmobile.custom.extensions.hideKeyboard
 import br.com.suitesistemas.portsmobile.databinding.ActivityCombinationSearchBinding
 import br.com.suitesistemas.portsmobile.entity.Combination
 import br.com.suitesistemas.portsmobile.model.ApiResponse
@@ -18,7 +18,8 @@ import br.com.suitesistemas.portsmobile.view.adapter.CombinationAdapter
 import br.com.suitesistemas.portsmobile.viewModel.search.CombinationSearchViewModel
 import kotlinx.android.synthetic.main.activity_combination_search.*
 
-class CombinationSearchActivity : SearchActivity(), OnItemClickListener, Observer<ApiResponse<MutableList<Combination>?>> {
+class CombinationSearchActivity : SearchActivity(),
+    OnItemClickListener, Observer<ApiResponse<MutableList<Combination>?>> {
 
     lateinit var viewModel: CombinationSearchViewModel
 

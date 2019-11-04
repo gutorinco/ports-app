@@ -1,5 +1,6 @@
 package br.com.suitesistemas.portsmobile.entity
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import br.com.suitesistemas.portsmobile.model.enums.EYesNo
@@ -34,8 +35,9 @@ class Grid() : Parcelable {
         parcel.writeValue(version)
     }
 
+    @SuppressLint("WrongConstant")
     override fun describeContents(): Int {
-        return 0
+        return 7
     }
 
     companion object CREATOR : Parcelable.Creator<Grid> {

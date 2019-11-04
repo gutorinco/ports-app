@@ -9,8 +9,8 @@ android {
         applicationId "br.com.suitesistemas.portsmobile"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 25
-        versionName "1.08"
+        versionCode 30
+        versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk.abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
     }
@@ -21,8 +21,8 @@ android {
             buildConfigField "String", 'BASE_URL', "\"https://api.suitesistemas.com.br/app/\""
         }
         debug {
-//            buildConfigField "String", 'BASE_URL', "\"https://api.suitesistemas.com.br/app/\""
-            buildConfigField "String", 'BASE_URL', "\"http://192.168.0.110:8080/app/\""
+            buildConfigField "String", 'BASE_URL', "\"https://api.suitesistemas.com.br/app/\""
+//            buildConfigField "String", 'BASE_URL', "\"http://192.168.0.104:8080/app/\""
         }
     }
     dataBinding {
@@ -51,7 +51,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
     implementation 'com.squareup.retrofit2:converter-jackson:2.6.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'me.dm7.barcodescanner:zxing:1.9.13'
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
+    implementation 'pub.devrel:easypermissions:3.0.0'
     implementation 'info.androidhive:fontawesome:0.0.5'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

@@ -1,30 +1,22 @@
 package br.com.suitesistemas.portsmobile.view.activity.form
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextWatcher
-import android.widget.EditText
+import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.custom.button.showFromBottom
-import br.com.suitesistemas.portsmobile.custom.edit_text.afterTextChanged
 import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
-import br.com.suitesistemas.portsmobile.custom.observer.observerHandler
-import br.com.suitesistemas.portsmobile.custom.progress_bar.hide
-import br.com.suitesistemas.portsmobile.custom.progress_bar.show
+import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
-import br.com.suitesistemas.portsmobile.custom.recycler_view.addSwipe
-import br.com.suitesistemas.portsmobile.custom.spinner.setAdapterAndSelection
-import br.com.suitesistemas.portsmobile.custom.view.executeAfterLoaded
-import br.com.suitesistemas.portsmobile.custom.view.hideKeyboard
-import br.com.suitesistemas.portsmobile.custom.view.showMessage
 import br.com.suitesistemas.portsmobile.databinding.ActivityProductFormBinding
 import br.com.suitesistemas.portsmobile.entity.Color
-import br.com.suitesistemas.portsmobile.entity.Company
+import br.com.suitesistemas.portsmobile.entity.Configuration
 import br.com.suitesistemas.portsmobile.entity.Product
-import br.com.suitesistemas.portsmobile.entity.UnitMeasure
+import br.com.suitesistemas.portsmobile.model.enums.ESystemType
+import br.com.suitesistemas.portsmobile.utils.DoubleUtils
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.activity.search.SelectColorSearchActivity
@@ -33,7 +25,7 @@ import br.com.suitesistemas.portsmobile.viewModel.form.ProductFormViewModel
 import kotlinx.android.synthetic.main.activity_product_form.*
 import kotlin.math.roundToLong
 
-class ProductFormActivity : FormActivity() {
+class ProductFormActivity : FormActivity<Product>(R.menu.menu_product_form, R.id.menu_search_colors) {
 
     private lateinit var colorAdapter: ColorAdapter
     private lateinit var viewModel: ProductFormViewModel
@@ -47,58 +39,33 @@ class ProductFormActivity : FormActivity() {
 
         configureActionBar(R.string.cadastro_produto)
         initViewModel()
-        configureObservers()
         configureDataBinding()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchCompanies()
+        fetchUnits()
         configureForm()
         configureList()
-        configureButtons()
+        configureBtnConfirm()
+        initSystemType()
         val productToEdit = intent.getParcelableExtra<Product>("product")
-        if (productToEdit != null)
+        if (productToEdit != null) {
             edit(productToEdit)
+        } else if (viewModel.systemType == ESystemType.O) {
+            fetchNextCode()
+        }
     }
 
     override fun getBtnConfirm() = product_form_btn_confirm
+    override fun getProgressBar() = product_form_progressbar
+    override fun getLayout() = product_form
 
     private fun initViewModel() {
         val companyName = SharedPreferencesUtils.getCompanyName(this)
         viewModel = ViewModelProviders.of(this).get(ProductFormViewModel::class.java)
         viewModel.initRepositories(companyName)
-        viewModel.fetchAllCompanies()
-        viewModel.fetchAllUnits()
-    }
-
-    private fun configureObservers() {
-        viewModel.companiesResponse.observe(this, observerHandler({
-            configureCompanyAdapter(it)
-        },{
-            showMessage(product_form, it, getString(R.string.nao_encontrou_empresas))
-        }))
-
-        viewModel.unitsResponse.observe(this, observerHandler({
-            configureUnitAdapter(it)
-        }, {
-            showMessage(product_form, it, getString(R.string.nao_encontrou_unidades))
-        }, {
-            product_form_progressbar.hide()
-        }))
-    }
-
-    private fun configureCompanyAdapter(companies: MutableList<Company>) {
-        viewModel.addAllCompanies(companies)
-        val companiesName = companies.map { company -> company.dsc_empresa }
-        val index = companies.indexOfFirst { company ->
-            company.cod_empresa == viewModel.product.value?.fky_empresa?.cod_empresa
-        }
-        product_form_company.setAdapterAndSelection(this, companiesName, index)
-    }
-
-    private fun configureUnitAdapter(units: MutableList<UnitMeasure>) {
-        viewModel.addAllUnits(units)
-        val unitsName = units.map { unit -> unit.dsc_unidade_medida }
-        val index = units.indexOfFirst { company ->
-            company.cod_unidade_medida == viewModel.product.value?.fky_unidade_medida?.cod_unidade_medida
-        }
-        product_form_unit_measure.setAdapterAndSelection(this, unitsName, index)
     }
 
     private fun configureDataBinding() {
@@ -107,103 +74,256 @@ class ProductFormActivity : FormActivity() {
             .apply {
                 lifecycleOwner = this@ProductFormActivity
                 viewModel = this@ProductFormActivity.viewModel
+                doubleUtils = DoubleUtils()
             }
+    }
+
+    private fun fetchCompanies() {
+        with (viewModel) {
+            fetchAllCompanies()
+            companiesResponse.observe(this@ProductFormActivity, observerHandler({
+                addAllCompanies(it)
+                val companiesName = getCompaniesNames()
+                val index = getCompanyIndex()
+                product_form_company.setAdapterAndSelection(this@ProductFormActivity, companiesName, index)
+            }, {
+                showMessage(it, R.string.nao_encontrou_empresas)
+            }))
+        }
+    }
+
+    private fun fetchUnits() {
+        with (viewModel) {
+            fetchAllUnits()
+            unitsResponse.observe(this@ProductFormActivity, observerHandler({
+                addAllUnits(it)
+                val unitsName = getUnitNames()
+                val index = getUnitIndex()
+                product_form_unit_measure.setAdapterAndSelection(this@ProductFormActivity, unitsName, index)
+            }, {
+                showMessage(it, R.string.nao_encontrou_unidades)
+            }, {
+                hideProgress()
+            }))
+        }
+    }
+
+    override fun onClickedMenu() {
+        executeAfterLoaded {
+            val intent = Intent(this, SelectColorSearchActivity::class.java)
+            startActivityForResult(intent, COLORS_SELECTED)
+        }
     }
 
     private fun configureForm() {
-        product_form_buy_price.afterTextChanged { text -> calculateSalePrice(text, false, false) }
-        product_form_buy_price_financed.afterTextChanged { text -> calculateSalePrice(text, true, false) }
-        product_form_sale_perc_price.afterTextChanged { text -> calculateSalePrice(text, false, true) }
-        product_form_sale_perc_price_financed.afterTextChanged { text -> calculateSalePrice(text, true, true) }
-        product_form_sale_price.afterTextChanged { text -> calculatePercentual(text, false) }
-        product_form_sale_price_financed.afterTextChanged { text -> calculatePercentual(text, true) }
+        with (product_form_buy_price) {
+            addNumberMask()
+            afterTextChanged { text -> calculateSalePrice(text, false, false) }
+        }
+        with (product_form_buy_price_financed) {
+            addNumberMask()
+            afterTextChanged { text -> calculateSalePrice(text, true, false) }
+        }
+        with (product_form_sale_perc_price) {
+            addNumberMask()
+            afterTextChanged { text -> calculateSalePrice(text, false, true) }
+        }
+        with (product_form_sale_perc_price_financed) {
+            addNumberMask()
+            afterTextChanged { text -> calculateSalePrice(text, true, true) }
+        }
+        with (product_form_sale_price) {
+            addNumberMask()
+            afterTextChanged { text -> calculatePercentual(text, false) }
+        }
+        with (product_form_sale_price_financed) {
+            addNumberMask()
+            afterTextChanged { text -> calculatePercentual(text, true) }
+        }
+        product_form_company.onItemSelected { viewModel.product.value!!.fky_empresa = viewModel.companies[it] }
+        product_form_unit_measure.onItemSelected { viewModel.product.value!!.fky_unidade_medida= viewModel.units[it] }
     }
 
     private fun configureList() {
-        colorAdapter = ColorAdapter(baseContext, viewModel.colors)
-        product_form_colors.adapter = colorAdapter
-        configureSwipe()
+        colorAdapter = ColorAdapter(baseContext, viewModel.colors) { onRemove(it) }
+        with (product_form_colors) {
+            adapter = colorAdapter
+            addSwipe(SwipeToDeleteCallback(baseContext) { onRemove(it) })
+        }
+        configureEmptyView()
     }
 
-    private fun configureSwipe() {
-        product_form_colors.addSwipe(SwipeToDeleteCallback(baseContext) { position ->
-            viewModel.removeColorBy(position)
+    private fun onRemove(position: Int) {
+        with (viewModel) {
+            removeColorBy(position)
             colorAdapter.notifyDataSetChanged()
-        })
+            if (listIsEmpty())
+                configureEmptyView()
+        }
     }
 
-    private fun configureButtons() {
+    private fun configureEmptyView() {
+        if (viewModel.listIsEmpty()) {
+            product_form_empty_view.visibility = View.VISIBLE
+            product_form_colors.visibility = View.GONE
+        } else {
+            product_form_empty_view.visibility = View.GONE
+            product_form_colors.visibility = View.VISIBLE
+        }
+    }
+
+    private fun fetchNextCode() {
+        showProgress()
+        with (viewModel) {
+            fetchNextCode()
+            codeResponse.observe(this@ProductFormActivity, observerHandler({
+                code.value = it.next.toString()
+            }, {
+                showMessage(getString(R.string.nao_encontrou_codigo))
+            }, {
+                hideProgress()
+            }))
+        }
+    }
+
+    private fun configureBtnConfirm() {
         product_form_btn_confirm.setOnClickListener {
-            executeAfterLoaded(product_form_progressbar.isIndeterminate, product_form) {
-                onConfirm()
-            }
-        }
-        product_form_btn_color.setOnClickListener {
-            executeAfterLoaded(product_form_progressbar.isIndeterminate, product_form) {
-                val intent = Intent(this, SelectColorSearchActivity::class.java)
-                startActivityForResult(intent, COLORS_SELECTED)
-            }
-        }
-    }
+            executeAfterLoaded {
+                hideKeyboard()
+                product_form_name.error = null
 
-    private fun onConfirm() {
-        hideKeyboard()
-        product_form_name.error = null
+                try {
+                    with(viewModel.product.value!!) {
+                        dbl_compra_vista = product_form_buy_price.toDoubleValue()
+                        dbl_compra_prazo = product_form_buy_price_financed.toDoubleValue()
+                        dbl_venda_vista = product_form_sale_price.toDoubleValue()
+                        dbl_venda_prazo = product_form_sale_price_financed.toDoubleValue()
 
-        try {
-            val unitPosition = product_form_unit_measure.selectedItemPosition
-            val companyPosition = product_form_company.selectedItemPosition
+                        viewModel.validateForm()
 
-            viewModel.product.value?.dbl_compra_vista = getDoubleValueFrom(product_form_buy_price)
-            viewModel.product.value?.dbl_compra_prazo = getDoubleValueFrom(product_form_buy_price_financed)
-            viewModel.product.value?.dbl_venda_vista = getDoubleValueFrom(product_form_sale_price)
-            viewModel.product.value?.dbl_venda_prazo = getDoubleValueFrom(product_form_sale_price_financed)
-            viewModel.validateForm(unitPosition, companyPosition)
+                        showProgress()
+                        val firebaseToken = FirebaseUtils.getToken(this@ProductFormActivity)
 
-            product_form_progressbar.show()
-            val firebaseToken = FirebaseUtils.getToken(this)
-
-            viewModel.save(firebaseToken)
-            configureInsertObserver()
-            configureUpdateObserver()
-        } catch (ex: InvalidValueException) {
-            when (ex.field) {
-                "Nome" -> product_form_name.error = ex.message
-                else -> showMessage(product_form, ex.message!!)
+                        if (num_codigo_online.isEmpty())
+                             insert(firebaseToken)
+                        else update(firebaseToken)
+                    }
+                } catch (ex: InvalidValueException) {
+                    when (ex.field) {
+                        "Nome" -> product_form_name.error = ex.message
+                        else -> showMessage(ex.message!!)
+                    }
+                }
             }
         }
     }
 
-    private fun configureInsertObserver() {
-        viewModel.insertResponse.observe(this, observerHandler({
-            viewModel.product.value = it
-            saveColors()
-        }, {
-            showMessage(product_form, it, getString(R.string.falha_inserir_produto))
-        }))
+    private fun insert(firebaseToken: String) {
+        with (viewModel) {
+            insert(firebaseToken)
+            insertResponse.observe(this@ProductFormActivity, observerHandler({
+                product.value = it
+                saveColors()
+            }, {
+                showMessage(it, R.string.falha_inserir_produto)
+            }))
+        }
     }
 
-    private fun configureUpdateObserver() {
-        viewModel.updateResponse.observe(this, observerHandler({
-            viewModel.product.value?.version = it.version
-            saveColors()
-        }, {
-            showMessage(product_form, it, getString(R.string.falha_atualizar_produto))
-        }))
+    private fun update(firebaseToken: String) {
+        with (viewModel) {
+            update(firebaseToken)
+            updateResponse.observe(this@ProductFormActivity, observerHandler({
+                product.value?.version = it.version
+                saveColors()
+            }, {
+                showMessage(it, R.string.falha_atualizar_produto)
+            }))
+        }
+    }
+
+    private fun saveColors() {
+        with (viewModel) {
+            if (newProductColors.isNotEmpty()) {
+                insertColors()
+                productColorInsertResponse.observe(this@ProductFormActivity, observerHandler({
+                    newProductColors.clear()
+                    this@ProductFormActivity.deleteColors()
+                }, {
+                    handleError(it, R.string.falha_inserir_cores)
+                }))
+            } else {
+                this@ProductFormActivity.deleteColors()
+            }
+        }
+    }
+
+    private fun deleteColors() {
+        with (viewModel) {
+            if (removedColors.isNotEmpty()) {
+                deleteColors()
+                productColorDeleteResponse.observe(this@ProductFormActivity, observerHandler({
+                    removedColors.removeAt(0)
+                    this@ProductFormActivity.deleteColors()
+                }, {
+                    showMessage(it, R.string.falha_remover_cores)
+                }))
+            } else {
+                hideProgress()
+                created("product_response", product.value!!)
+            }
+        }
+    }
+
+    private fun initSystemType() {
+        val sharedPref = getSharedPreferences("config", Context.MODE_PRIVATE)
+        val type = sharedPref!!.getString("systemType", null)
+        if (type == null) {
+            showProgress()
+            with (viewModel) {
+                fetchConfigurations()
+                configResponse.observe(this@ProductFormActivity, observerHandler({
+                    val config = if (it.isNotEmpty()) it[0] else Configuration()
+                    systemType = config.flg_tipo_sistema
+                    setCodeFieldVisibility()
+
+                    with(sharedPref.edit()) {
+                        putString("systemType", systemType.name)
+                        apply()
+                        commit()
+                    }
+                }, {
+                    showMessage(getString(R.string.nao_encontrou_configuracoes))
+                }, {
+                    hideProgress()
+                }))
+            }
+        } else {
+            viewModel.systemType = ESystemType.valueOf(type)
+            setCodeFieldVisibility()
+        }
+    }
+
+    private fun setCodeFieldVisibility() {
+        if (viewModel.systemType == ESystemType.O)
+             product_form_code_layout.visibility = View.VISIBLE
+        else product_form_code_layout.visibility = View.GONE
     }
 
     private fun edit(productToEdit: Product) {
-        product_form_progressbar.show()
-        viewModel.concat(productToEdit)
-        viewModel.fetchAllColors()
-        viewModel.productColorResponse.observe(this, observerHandler({
-            viewModel.addAllProductColors(it)
-            configureList()
-        }, {
-            showMessage(product_form, it, getString(R.string.nao_encontrou_cores))
-        }, {
-            product_form_progressbar.hide()
-        }))
+        showProgress()
+        with (viewModel) {
+            concat(productToEdit)
+            fetchAllColors()
+            productColorResponse.observe(this@ProductFormActivity, observerHandler({
+                addAllProductColors(it)
+                configureList()
+            }, {
+                showMessage(it, R.string.nao_encontrou_cores)
+            }, {
+                hideProgress()
+            }))
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -220,77 +340,33 @@ class ProductFormActivity : FormActivity() {
         hideKeyboard()
     }
 
-    override fun onPostResume() {
-        super.onPostResume()
-        product_form_btn_confirm.showFromBottom()
-    }
-
-    private fun saveColors() {
-        if (viewModel.newProductColors.isNotEmpty()) {
-            viewModel.insertColors()
-            viewModel.productColorInsertResponse.observe(this, observerHandler({
-                viewModel.newProductColors.clear()
-                deleteColors()
-            }, {
-                product_form_progressbar.hide()
-                showMessage(product_form, it, getString(R.string.falha_inserir_cores))
-            }))
-        } else {
-            deleteColors()
-        }
-    }
-
-    private fun deleteColors() {
-        if (viewModel.removedColors.isNotEmpty()) {
-            product_form_progressbar.show()
-            viewModel.deleteColors()
-            viewModel.productColorDeleteResponse.observe(this, observerHandler({
-                viewModel.removedColors.removeAt(0)
-                deleteColors()
-            }, {
-                showMessage(product_form, it, getString(R.string.falha_remover_cores))
-            }))
-        } else {
-            product_form_progressbar.hide()
-            created(viewModel.product.value!!)
-        }
-    }
-
-    private fun created(product: Product) {
-        val data = Intent()
-        data.putExtra("product_response", product)
-
-        setResult(Activity.RESULT_OK, data)
-        finish()
-    }
-
     private fun calculateSalePrice(text: String, isFinanced: Boolean, isPercentual: Boolean) {
-        var percentual: Double
-        var purchasePrice: Double
+        val percentual: Double
+        val purchasePrice: Double
 
         if (isPercentual) {
-            percentual = getTypedValue(text)
+            percentual = text.toDoubleValue()
             purchasePrice = getPurchaseValue(isFinanced)
         } else {
             percentual = if (isFinanced)
-                 getDoubleValueFrom(product_form_sale_perc_price_financed)
-            else getDoubleValueFrom(product_form_sale_perc_price)
-            purchasePrice = getTypedValue(text)
+                 product_form_sale_perc_price_financed.toDoubleValue()
+            else product_form_sale_perc_price.toDoubleValue()
+            purchasePrice = text.toDoubleValue()
         }
 
         val salePrice = (purchasePrice * percentual / 100) + purchasePrice
 
         if (salePrice != purchasePrice) {
             if (isFinanced) {
-                setTextRemovingListener(product_form_sale_price_financed, salePrice)
+                product_form_sale_price_financed.setTextSafely(salePrice)
             } else {
-                setTextRemovingListener(product_form_sale_price, salePrice)
+                product_form_sale_price.setTextSafely(salePrice)
             }
         }
     }
 
     private fun calculatePercentual(text: String, isFinanced: Boolean) {
-        val saleValue = getTypedValue(text)
+        val saleValue = text.toDoubleValue()
         val purchaseValue = getPurchaseValue(isFinanced)
         val value = saleValue - purchaseValue
         val percentual = value * 100 / purchaseValue
@@ -298,33 +374,15 @@ class ProductFormActivity : FormActivity() {
         if (!percentual.isNaN()) {
             val total = if (percentual < 0) 0.0 else (percentual * 10.0).roundToLong() / 10.0
             if (isFinanced)
-                 setTextRemovingListener(product_form_sale_perc_price_financed, total)
-            else setTextRemovingListener(product_form_sale_perc_price, total)
+                 product_form_sale_perc_price_financed.setTextSafely(total)
+            else product_form_sale_perc_price.setTextSafely(total)
         }
-    }
-
-    private fun getTypedValue(text: String): Double {
-        var value = 0.0
-        if (text.isNotEmpty())
-            value = getDoubleValueFrom(text)
-        return value
     }
 
     private fun getPurchaseValue(isFinanced: Boolean) : Double {
         return if (isFinanced)
-             getDoubleValueFrom(product_form_buy_price_financed)
-        else getDoubleValueFrom(product_form_buy_price)
-    }
-
-    private fun setTextRemovingListener(editText: EditText, value: Double) {
-        with (editText) {
-            val watcher = getTag(R.id.textWatcher)
-            if (watcher != null) {
-                removeTextChangedListener(watcher as TextWatcher)
-                setText(value.toString())
-                addTextChangedListener(watcher)
-            }
-        }
+             product_form_buy_price_financed.toDoubleValue()
+        else product_form_buy_price.toDoubleValue()
     }
 
 }

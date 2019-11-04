@@ -15,16 +15,22 @@
               android:icon="@drawable/ic_cart"
               android:title="@string/vendas" />
 
+        <item android:id="@+id/menu_product"
+                android:title="@string/produtos" />
+
         <item android:id="@+id/menu_color"
                 android:icon="@drawable/ic_color"
                 android:title="@string/cores" />
 
-        <item android:id="@+id/menu_product"
-              android:title="@string/produtos" />
+        <item android:id="@+id/menu_order"
+                android:title="@string/pedidos" />
 
         <item android:id="@+id/menu_model"
                 android:icon="@drawable/ic_model"
                 android:title="@string/modelos" />
+
+        <item android:id="@+id/menu_crm"
+            android:title="@string/crm" />
 
         <item android:id="@+id/menu_financial"
             android:icon="@drawable/ic_credit_card"
@@ -62,6 +68,18 @@
                   <!--android:title="@string/sincronizar" />-->
         <!--</menu>-->
     <!--</item>-->
+
+    <item android:title="@string/configuracoes">
+        <menu>
+            <item android:id="@+id/menu_config"
+                  android:icon="@drawable/ic_settings"
+                  android:title="@string/configuracoes" />
+
+<!--            <item android:id="@+id/menu_privacy"-->
+<!--                  android:icon="@drawable/ic_lock"-->
+<!--                  android:title="@string/politica_privacidade" />-->
+        </menu>
+    </item>
 
     <item android:title="@string/logout">
         <menu>

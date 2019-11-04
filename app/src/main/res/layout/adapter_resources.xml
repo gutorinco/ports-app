@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:clipToPadding="false"
         android:gravity="center"
         android:orientation="vertical"
@@ -11,11 +11,12 @@
         android:paddingRight="@dimen/tiny_margin"
         android:paddingTop="@dimen/small_margin">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/elevation"
-            app:cardCornerRadius="@dimen/small_margin">
+            app:cardCornerRadius="@dimen/default_padding"
+            app:cardElevation="@dimen/progress_bar_height"
+            style="@style/Card">
 
 
         <LinearLayout android:layout_width="match_parent"
@@ -42,6 +43,6 @@
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>

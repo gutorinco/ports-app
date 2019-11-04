@@ -1,15 +1,10 @@
 package br.com.suitesistemas.portsmobile.view.adapter
 
-import android.Manifest
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.entity.Customer
@@ -19,10 +14,10 @@ import br.com.suitesistemas.portsmobile.view.dialog.CustomerPhonesDialog
 class CustomerAdapter(context: Context,
      private val activity: FragmentActivity,
      customers: MutableList<Customer>,
-     private val startActivity: (intent: Intent) -> Unit,
-     private val failure: (stringId: Int) -> Unit,
      private val delete: (position: Int) -> Unit,
-     private val edit: (position: Int) -> Unit
+     private val edit: (position: Int) -> Unit,
+     private val startActivity: (request: String, param: String) -> Unit,
+     private val failure: (stringId: Int) -> Unit
 ) : BaseAdapter<Customer, CustomerViewHolder>(context, customers) {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): CustomerViewHolder {
@@ -52,14 +47,14 @@ class CustomerAdapter(context: Context,
                             val phone1 = getCompletePhone(customer.dsc_ddd_01!!, customer.dsc_fone_01!!)
                             val phone2 = getCompletePhone(customer.dsc_ddd_celular_01!!, customer.dsc_celular_01!!)
                             CustomerPhonesDialog.newInstance(arrayListOf(phone1, phone2)) { phoneSelected ->
-                                makeCall(phoneSelected)
+                                startActivity("call", phoneSelected)
                             }.show(activity.supportFragmentManager)
                         } else if (!customer.dsc_fone_01.isNullOrEmpty()) {
                             val phone = getCompletePhone(customer.dsc_ddd_01!!, customer.dsc_fone_01!!)
-                            makeCall(phone)
+                            startActivity("call", phone)
                         } else if (!customer.dsc_celular_01.isNullOrEmpty()) {
                             val phone = getCompletePhone(customer.dsc_ddd_celular_01!!, customer.dsc_celular_01!!)
-                            makeCall(phone)
+                            startActivity("call", phone)
                         }
                         true
                     }
@@ -67,7 +62,7 @@ class CustomerAdapter(context: Context,
                         if (customer.dsc_email.isNullOrEmpty()) {
                             failure(R.string.nenhum_email)
                         } else {
-                            sendEmail(customer.dsc_email!!)
+                            startActivity("email", customer.dsc_email!!)
                         }
                         true
                     }
@@ -93,36 +88,6 @@ class CustomerAdapter(context: Context,
 
     private fun getCompletePhone(ddd: String, phone: String): String {
         return ddd.replace("(", "").replace(")", "") + phone.replace("-", "").replace(" ", "")
-    }
-
-    private fun makeCall(phone: String) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.CALL_PHONE), 0)
-        } else {
-            dial(phone)
-        }
-    }
-
-    private fun dial(phone: String) {
-        val uri = Uri.parse("tel:$phone")
-        val intent = Intent(Intent.ACTION_DIAL, uri)
-        if (intent.resolveActivity(activity.packageManager!!) != null)
-            startActivity(intent)
-        else
-            failure(R.string.acao_nao_suportada)
-    }
-
-    private fun sendEmail(email: String) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.CALL_PHONE), 0)
-        } else {
-            val uri = Uri.parse("mailto:$email")
-            val intent = Intent(Intent.ACTION_SENDTO, uri)
-            if (intent.resolveActivity(activity.packageManager!!) != null)
-                startActivity(Intent.createChooser(intent, "Enviar email..."))
-            else
-                failure(R.string.acao_nao_suportada)
-        }
     }
 
 }

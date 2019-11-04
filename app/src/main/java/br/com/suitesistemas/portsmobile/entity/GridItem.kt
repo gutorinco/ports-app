@@ -1,5 +1,6 @@
 package br.com.suitesistemas.portsmobile.entity
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import br.com.suitesistemas.portsmobile.entity.key.GridItemKey
@@ -37,8 +38,9 @@ class GridItem() : Parcelable {
         parcel.writeDouble(dbl_percentual)
     }
 
+    @SuppressLint("WrongConstant")
     override fun describeContents(): Int {
-        return 0
+        return 8
     }
 
     companion object CREATOR : Parcelable.Creator<GridItem> {

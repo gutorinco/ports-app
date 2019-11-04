@@ -25,8 +25,8 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
     private val removedItems: MutableList<SaleItem> = mutableListOf()
     private val productsColors: MutableList<ProductColor> = mutableListOf()
     private val productsSelected: MutableList<Product> = mutableListOf()
-    private val conditions: MutableList<PaymentConditions> = mutableListOf()
     private var userId: Int? = null
+    val conditions: MutableList<PaymentCondition> = mutableListOf()
     private lateinit var userRepository: UserRepository
     private lateinit var saleRepository: SaleRepository
     private lateinit var saleItemRepository: SaleItemRepository
@@ -38,8 +38,8 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
     var itemResponse = MutableLiveData<ApiResponse<MutableList<SaleItem>?>>()
     var itemInsertResponse = MutableLiveData<ApiResponse<MutableList<SaleItem>?>>()
     var itemUpdateResponse = MutableLiveData<ApiResponse<Any?>>()
-    var itemDeleteResponse = MutableLiveData<ApiResponse<Any?>>()
-    var paymentConditionResponse = MutableLiveData<ApiResponse<MutableList<PaymentConditions>?>>()
+    var itemDeleteResponse = MutableLiveData<ApiResponse<Boolean?>>()
+    var paymentConditionResponse = MutableLiveData<ApiResponse<MutableList<PaymentCondition>?>>()
 
     init {
         sale.value = Sale()
@@ -75,18 +75,20 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
         }
     }
 
-    fun getPaymentConditionIndexBySale(): Int {
-        val paymentCondition = conditions.find {
-            it.cod_condicao_pagamento == sale.value?.fky_condicao_pagamento?.cod_condicao_pagamento
-        }
-        paymentCondition?.let {
-            val conditionIndex = conditions.indexOf(it)
-            return if (conditionIndex >= 0) conditionIndex else 0
-        }
-        return 0
+    override fun getCompanyIndex() = companies.indexOfFirst { company ->
+        company.cod_empresa == sale.value?.fky_empresa?.cod_empresa
     }
 
-    fun addAllPaymentConditions(conditions: MutableList<PaymentConditions>) {
+    fun getConditionsNames() = conditions.map { condition -> condition.dsc_condicao_pagamento }
+
+    fun getPaymentConditionIndexBySale(): Int = conditions.indexOfFirst { condition ->
+        val conditionId = sale.value?.fky_condicao_pagamento?.cod_condicao_pagamento!!
+        if (conditionId > 0)
+            condition.cod_condicao_pagamento = conditionId
+        condition.flg_a_vista == EYesNo.S
+    }
+
+    fun addAllPaymentConditions(conditions: MutableList<PaymentCondition>) {
         this.conditions.addAll(conditions)
     }
 
@@ -106,7 +108,7 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
     fun clearRemovedItem() = removedItems.clear()
     fun clearSelectedProducts() = productsSelected.clear()
 
-    fun validateForm(conditionPosition: Int, companyPosition: Int) {
+    fun validateForm() {
         val sale = Sale(this.sale.value!!)
 
         if (sale.fky_cliente.dsc_nome_pessoa.isEmpty()) {
@@ -119,11 +121,8 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
             throw InvalidValueException("Empresa", getStringRes(R.string.nenhuma_empresa))
         }
 
-        if (sale.num_codigo_online.isNullOrEmpty())
+        if (sale.num_codigo_online.isEmpty())
             sale.dat_emissao = Date()
-        sale.fky_empresa = companies[companyPosition]
-        sale.fky_condicao_pagamento = conditions[conditionPosition]
-
         buildItemsList(sale)
 
         this.sale.value = Sale(sale)
@@ -165,10 +164,12 @@ class SaleFormViewModel(application: Application) : FormViewModel<Sale>(applicat
         initRemovedItemsList(itemsBeforeClear)
     }
 
-    fun save(firebaseToken: String) {
-        if (sale.value?.num_codigo_online.isNullOrEmpty())
-             insertResponse = saleRepository.insert(getJsonRequest("venda", sale.value!!, firebaseToken))
-        else updateResponse = saleRepository.update(getJsonRequest("venda", sale.value!!, firebaseToken))
+    fun insert(firebaseToken: String) {
+        insertResponse = saleRepository.insert(getJsonRequest("venda", sale.value!!, firebaseToken))
+    }
+
+    fun update(firebaseToken: String) {
+        updateResponse = saleRepository.update(getJsonRequest("venda", sale.value!!, firebaseToken))
     }
 
     fun insertItems() {

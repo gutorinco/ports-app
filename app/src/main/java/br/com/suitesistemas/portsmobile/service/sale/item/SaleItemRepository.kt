@@ -1,8 +1,8 @@
 package br.com.suitesistemas.portsmobile.service.sale.item
 
 import androidx.lifecycle.MutableLiveData
+import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.custom.retrofit.responseHandle
 import br.com.suitesistemas.portsmobile.entity.SaleItem
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 
@@ -42,12 +42,12 @@ class SaleItemRepository(private val companyName: String) {
 
     }
 
-    fun delete(items: MutableList<SaleItem>): MutableLiveData<ApiResponse<Any?>> {
-        val apiResponse = MutableLiveData<ApiResponse<Any?>>()
+    fun delete(items: MutableList<SaleItem>): MutableLiveData<ApiResponse<Boolean?>> {
+        val apiResponse = MutableLiveData<ApiResponse<Boolean?>>()
         val call = RetrofitConfig().saleItemService().delete(companyName, items)
 
         call.responseHandle(204) {
-            apiResponse.value = it
+            apiResponse.value = ApiResponse(true)
         }
 
         return apiResponse

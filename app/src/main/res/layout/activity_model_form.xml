@@ -5,7 +5,9 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="android.text.InputType"/>
+        <variable
+                name="doubleUtils"
+                type="br.com.suitesistemas.portsmobile.utils.DoubleUtils"/>
         <variable
                 name="viewModel"
                 type="br.com.suitesistemas.portsmobile.viewModel.form.ModelFormViewModel" />
@@ -15,7 +17,11 @@
             android:id="@+id/model_form"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             tools:context=".view.activity.form.SaleFormActivity">
+
+        <requestFocus/>
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -34,25 +40,27 @@
 
             </FrameLayout>
 
-            <ScrollView
+            <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/white_opaque">
+                    android:background="@color/white_opaque"
+                    android:fillViewport="true"
+                    android:scrollbars="none">
 
                 <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:orientation="vertical">
 
                     <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:padding="@dimen/default_padding"
                             android:orientation="vertical">
 
                         <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:baselineAligned="false"
                                 android:orientation="horizontal">
 
@@ -71,7 +79,6 @@
                                         android:focusable="true"
                                         android:hint="@string/referencia"
                                         android:imeOptions="actionNext"
-                                        android:inputType="@{InputType.TYPE_NULL}"
                                         android:text="@={viewModel.model.dsc_referencia}"
                                         android:textSize="@dimen/medium_font"/>
 
@@ -92,7 +99,6 @@
                                         android:focusable="true"
                                         android:hint="@string/descricao"
                                         android:imeOptions="actionNext"
-                                        android:inputType="@{InputType.TYPE_NULL}"
                                         android:text="@={viewModel.model.dsc_modelo}"
                                         android:textSize="@dimen/medium_font"/>
 
@@ -152,15 +158,15 @@
 
                         </LinearLayout>
 
-                        <androidx.cardview.widget.CardView
+                        <com.google.android.material.card.MaterialCardView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/small_margin"
                                 android:layout_marginLeft="@dimen/large_margin"
                                 android:layout_marginRight="@dimen/large_margin"
                                 android:layout_marginTop="@dimen/small_margin"
-                                android:elevation="@dimen/elevation"
-                                app:cardCornerRadius="@dimen/small_margin">
+                                app:cardCornerRadius="@dimen/small_margin"
+                                style="@style/Card">
 
                             <LinearLayout
                                     android:layout_width="match_parent"
@@ -171,7 +177,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_margin="@dimen/tiny_margin"
-                                        android:text="@string/preco_compra"
+                                        android:text="@string/preco_venda"
                                         android:textSize="@dimen/medium_font"
                                         android:textStyle="bold"/>
 
@@ -187,8 +193,8 @@
                                             android:autofillHints="@string/a_vista"
                                             android:hint="@string/a_vista"
                                             android:imeOptions="actionDone"
-                                            android:inputType="numberDecimal"
-                                            android:text="@{Double.toString(viewModel.model.dbl_preco_unit_vista)}"
+                                            android:inputType="phone"
+                                            android:text="@{doubleUtils.toStringFormat(viewModel.model.dbl_preco_unit_vista)}"
                                             android:textSize="@dimen/medium_font"/>
 
                                 </com.google.android.material.textfield.TextInputLayout>
@@ -204,29 +210,25 @@
                                             android:autofillHints="@string/a_prazo"
                                             android:hint="@string/a_prazo"
                                             android:imeOptions="actionDone"
-                                            android:inputType="numberDecimal"
-                                            android:text="@{Double.toString(viewModel.model.dbl_preco_unit_prazo)}"
+                                            android:inputType="phone"
+                                            android:text="@{doubleUtils.toStringFormat(viewModel.model.dbl_preco_unit_prazo)}"
                                             android:textSize="@dimen/medium_font"/>
 
                                 </com.google.android.material.textfield.TextInputLayout>
 
                             </LinearLayout>
 
-                        </androidx.cardview.widget.CardView>
+                        </com.google.android.material.card.MaterialCardView>
 
                     </LinearLayout>
 
-                    <com.google.android.material.button.MaterialButton
-                            android:id="@+id/model_form_btn_combination"
+                    <TextView android:id="@+id/model_form_empty_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/small_margin"
-                            android:layout_marginEnd="@dimen/small_margin"
-                            android:layout_marginStart="@dimen/small_margin"
-                            android:backgroundTint="@color/colorSecondary"
-                            android:elevation="@dimen/elevation"
-                            android:text="@string/adicionar_combinacoes"
-                            app:cornerRadius="@dimen/large_margin"/>
+                            android:gravity="center"
+                            android:text="@string/nenhuma_combinacao_selecionada"
+                            android:textSize="@dimen/medium_font"
+                            android:visibility="gone"/>
 
                     <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/model_form_combinations"
@@ -237,7 +239,7 @@
 
                 </LinearLayout>
 
-            </ScrollView>
+            </androidx.core.widget.NestedScrollView>
 
         </LinearLayout>
 

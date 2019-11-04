@@ -1,5 +1,6 @@
 package br.com.suitesistemas.portsmobile.entity
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import br.com.suitesistemas.portsmobile.model.enums.EYesNo
@@ -58,8 +59,9 @@ class SaleItem() : Parcelable {
         parcel.writeValue(version)
     }
 
+    @SuppressLint("WrongConstant")
     override fun describeContents(): Int {
-        return 0
+        return 20
     }
 
     companion object CREATOR : Parcelable.Creator<SaleItem> {
