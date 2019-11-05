@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.viewModel.list
 
-import br.com.suitesistemas.portsmobile.entity.FinancialRelease
+import br.com.suitesistemas.portsmobile.model.entity.FinancialRelease
 import br.com.suitesistemas.portsmobile.service.financial_release.FinancialReleaseRepository
 import br.com.suitesistemas.portsmobile.viewModel.completeList.ListViewModel
 

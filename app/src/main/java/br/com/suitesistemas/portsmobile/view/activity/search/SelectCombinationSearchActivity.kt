@@ -13,8 +13,8 @@ import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.databinding.ActivitySelectCombinationSearchBinding
-import br.com.suitesistemas.portsmobile.entity.Combination
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.Combination
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.adapter.SelectCombinationAdapter
 import br.com.suitesistemas.portsmobile.viewModel.search.CombinationSearchViewModel

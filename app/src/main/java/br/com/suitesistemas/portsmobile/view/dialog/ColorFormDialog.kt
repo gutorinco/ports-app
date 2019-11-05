@@ -11,7 +11,7 @@ import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.extensions.actionDoneClicked
 import br.com.suitesistemas.portsmobile.custom.extensions.hideProgressSpinner
 import br.com.suitesistemas.portsmobile.custom.extensions.showProgressSpinner
-import br.com.suitesistemas.portsmobile.entity.Color
+import br.com.suitesistemas.portsmobile.model.entity.Color
 import com.github.razir.progressbutton.attachTextChangeAnimator
 import com.github.razir.progressbutton.bindProgressButton
 import kotlinx.android.synthetic.main.dialog_color_form.*

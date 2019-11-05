@@ -3,10 +3,10 @@ package br.com.suitesistemas.portsmobile.service.product
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.entity.Product
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.CodeResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.model.entity.Product
 import br.com.suitesistemas.portsmobile.service.ListService
 
 class ProductRepository(private val companyName: String) : ListService<Product> {

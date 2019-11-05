@@ -10,8 +10,8 @@ import br.com.suitesistemas.portsmobile.custom.extensions.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.extensions.hideKeyboard
 import br.com.suitesistemas.portsmobile.custom.extensions.showMessageError
 import br.com.suitesistemas.portsmobile.databinding.ActivityFinancialReleaseSearchBinding
-import br.com.suitesistemas.portsmobile.entity.FinancialRelease
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.FinancialRelease
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.adapter.FinancialReleaseAdapter
 import br.com.suitesistemas.portsmobile.viewModel.search.FinancialReleaseSearchViewModel

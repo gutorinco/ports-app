@@ -1,8 +1,8 @@
 package br.com.suitesistemas.portsmobile.service.product
 
-import br.com.suitesistemas.portsmobile.entity.Product
 import br.com.suitesistemas.portsmobile.model.CodeResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.model.entity.Product
 import retrofit2.Call
 import retrofit2.http.*
 

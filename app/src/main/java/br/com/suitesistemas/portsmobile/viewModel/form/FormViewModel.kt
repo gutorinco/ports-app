@@ -3,9 +3,9 @@ package br.com.suitesistemas.portsmobile.viewModel.form
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import br.com.suitesistemas.portsmobile.entity.Company
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.model.entity.Company
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
 import br.com.suitesistemas.portsmobile.service.company.CompanyRepository
 

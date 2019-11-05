@@ -19,6 +19,7 @@ import br.com.suitesistemas.portsmobile.service.auth.AuthRepository
 import com.github.razir.progressbutton.attachTextChangeAnimator
 import com.github.razir.progressbutton.bindProgressButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
@@ -78,12 +79,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun signInIfExistsSession() {
         sharedPref?.let {
-            val user = UserResponse()
-            user.codigo = it.getInt("codigo", 0)
-            user.empresa = it.getString("empresa", "")!!
-            user.usuario = it.getString("usuario", "")!!
-            user.area = it.getString("area", "")!!
-
+            val user = UserResponse(it)
             if (user.empresa.isNotEmpty() && user.usuario.isNotEmpty() && user.area.isNotEmpty() &&
                 user.codigo > 0 && user.area == "/app")
                     startMainActivity()
@@ -114,11 +110,16 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun saveSession(userResponse: UserResponse) {
         sharedPref?.let {
+            val gson = Gson()
+            val pessoa = gson.toJson(userResponse.pessoa)
+            val permissoes = gson.toJson(userResponse.permissoes)
             with (it.edit()) {
                 putInt("codigo", userResponse.codigo)
                 putString("empresa", userResponse.empresa)
                 putString("usuario", userResponse.usuario)
                 putString("area", userResponse.area)
+                putString("pessoa", pessoa)
+                putString("permissoes", permissoes)
                 apply()
                 commit()
             }

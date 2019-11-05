@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.model.UserResponse
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
 import com.google.android.material.snackbar.Snackbar
 import pub.devrel.easypermissions.EasyPermissions
@@ -130,4 +131,12 @@ private fun sendEmail(email: String, view: View, activity: Activity) {
         activity.startActivity(Intent.createChooser(intent, "Enviar email..."))
     else
         showMessage(view, R.string.acao_nao_suportada)
+}
+
+fun Fragment.getLoggedUser(): UserResponse {
+    return UserResponse(activity!!.getSharedPreferences("userResponse", Context.MODE_PRIVATE))
+}
+
+fun Activity.getLoggedUser(): UserResponse {
+    return UserResponse(getSharedPreferences("userResponse", Context.MODE_PRIVATE))
 }

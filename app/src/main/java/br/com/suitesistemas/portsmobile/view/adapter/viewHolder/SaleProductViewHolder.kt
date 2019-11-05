@@ -2,8 +2,8 @@ package br.com.suitesistemas.portsmobile.view.adapter.viewHolder
 
 import android.view.View
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.Color
-import br.com.suitesistemas.portsmobile.entity.Product
+import br.com.suitesistemas.portsmobile.model.entity.Color
+import br.com.suitesistemas.portsmobile.model.entity.Product
 import br.com.suitesistemas.portsmobile.utils.DoubleUtils
 import kotlinx.android.synthetic.main.adapter_sale_product.view.*
 

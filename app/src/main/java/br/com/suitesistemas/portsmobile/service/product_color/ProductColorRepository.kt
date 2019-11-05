@@ -3,8 +3,8 @@ package br.com.suitesistemas.portsmobile.service.product_color
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.entity.ProductColor
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.ProductColor
 
 class ProductColorRepository(private val companyName: String) {
 

@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
-import br.com.suitesistemas.portsmobile.entity.Model
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.Model
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.activity.form.ModelFormActivity

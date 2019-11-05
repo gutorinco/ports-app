@@ -11,9 +11,10 @@ import androidx.lifecycle.ViewModelProviders
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
-import br.com.suitesistemas.portsmobile.entity.Sale
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.Sale
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
+import br.com.suitesistemas.portsmobile.model.enums.EYesNo
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.activity.form.SaleFormActivity
@@ -30,7 +31,14 @@ class SaleFragment : BasicFragment<Sale, SaleAdapter>(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val loggedUser = getLoggedUser()
+
         viewModel = ViewModelProviders.of(this).get(SaleViewModel::class.java)
+        with (viewModel) {
+            onlyCurrentUser = loggedUser.permissoes.flg_visualizar_venda == EYesNo.S
+            currentUser = loggedUser.pessoa
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

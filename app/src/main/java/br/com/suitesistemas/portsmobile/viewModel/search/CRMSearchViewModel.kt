@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.viewModel.search
 
-import br.com.suitesistemas.portsmobile.entity.CRM
+import br.com.suitesistemas.portsmobile.model.entity.CRM
 import br.com.suitesistemas.portsmobile.service.crm.CRMRepository
 
 class CRMSearchViewModel : SelectSearchViewModel<CRM>() {

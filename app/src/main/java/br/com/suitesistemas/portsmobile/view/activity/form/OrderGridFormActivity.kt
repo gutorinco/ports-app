@@ -10,9 +10,9 @@ import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
 import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.databinding.ActivityOrderGridFormBinding
-import br.com.suitesistemas.portsmobile.entity.Combination
-import br.com.suitesistemas.portsmobile.entity.OrderGridItem
-import br.com.suitesistemas.portsmobile.entity.OrderItem
+import br.com.suitesistemas.portsmobile.model.entity.Combination
+import br.com.suitesistemas.portsmobile.model.entity.OrderGridItem
+import br.com.suitesistemas.portsmobile.model.entity.OrderItem
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.adapter.OrderGridAdapter
 import br.com.suitesistemas.portsmobile.viewModel.form.OrderGridFormViewModel

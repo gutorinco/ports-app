@@ -3,9 +3,9 @@ package br.com.suitesistemas.portsmobile.service.sale
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.entity.Sale
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.model.entity.Sale
 import br.com.suitesistemas.portsmobile.service.ListService
 
 class SaleRepository(private val companyName: String) : ListService<Sale> {
@@ -21,9 +21,31 @@ class SaleRepository(private val companyName: String) : ListService<Sale> {
         return apiResponse
     }
 
+    fun findAllBy(salesmanId: String): MutableLiveData<ApiResponse<MutableList<Sale>?>> {
+        val apiResponse: MutableLiveData<ApiResponse<MutableList<Sale>?>> = MutableLiveData()
+        val call = RetrofitConfig().saleService().findAll(companyName, salesmanId)
+
+        call.responseHandle(200) {
+            apiResponse.value = it
+        }
+
+        return apiResponse
+    }
+
     override fun search(search: String): MutableLiveData<ApiResponse<MutableList<Sale>?>> {
         val apiResponse: MutableLiveData<ApiResponse<MutableList<Sale>?>> = MutableLiveData()
         val call = RetrofitConfig().saleService().search(companyName, search)
+
+        call.responseHandle(200) {
+            apiResponse.value = it
+        }
+
+        return apiResponse
+    }
+
+    fun searchBy(vendedor: String, search: String): MutableLiveData<ApiResponse<MutableList<Sale>?>> {
+        val apiResponse: MutableLiveData<ApiResponse<MutableList<Sale>?>> = MutableLiveData()
+        val call = RetrofitConfig().saleService().search(companyName, search, "Data", vendedor)
 
         call.responseHandle(200) {
             apiResponse.value = it

@@ -1,7 +1,7 @@
 package br.com.suitesistemas.portsmobile.service.color
 
-import br.com.suitesistemas.portsmobile.entity.Color
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.model.entity.Color
 import retrofit2.Call
 import retrofit2.http.*
 

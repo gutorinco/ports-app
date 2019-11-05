@@ -5,7 +5,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.extensions.toStringFormat
-import br.com.suitesistemas.portsmobile.entity.CRM
+import br.com.suitesistemas.portsmobile.model.entity.CRM
 import kotlinx.android.synthetic.main.adapter_crm.view.*
 
 class CRMViewHolder(private val adapterView: View) : RecyclerView.ViewHolder(adapterView) {

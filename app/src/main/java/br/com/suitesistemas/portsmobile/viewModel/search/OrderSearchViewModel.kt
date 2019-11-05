@@ -1,10 +1,10 @@
 package br.com.suitesistemas.portsmobile.viewModel.search
 
 import androidx.lifecycle.MutableLiveData
-import br.com.suitesistemas.portsmobile.entity.Order
-import br.com.suitesistemas.portsmobile.entity.OrderGridItem
-import br.com.suitesistemas.portsmobile.entity.OrderItem
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.Order
+import br.com.suitesistemas.portsmobile.model.entity.OrderGridItem
+import br.com.suitesistemas.portsmobile.model.entity.OrderItem
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
 import br.com.suitesistemas.portsmobile.service.order.OrderRepository
 import br.com.suitesistemas.portsmobile.service.order.gridItem.OrderGridItemRepository

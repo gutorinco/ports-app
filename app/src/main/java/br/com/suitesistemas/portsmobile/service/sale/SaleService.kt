@@ -1,19 +1,22 @@
 package br.com.suitesistemas.portsmobile.service.sale
 
-import br.com.suitesistemas.portsmobile.entity.Sale
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.model.entity.Sale
 import retrofit2.Call
 import retrofit2.http.*
 
 interface SaleService {
 
     @GET("venda/{apelido}")
-    fun findAll(@Path("apelido") apelido: String, @Query("limite") limit: Int = 100): Call<MutableList<Sale>>
+    fun findAll(@Path("apelido") apelido: String,
+                @Query("vendedor") vendedorId: String? = null,
+                @Query("limite") limit: Int = 100): Call<MutableList<Sale>>
 
     @GET("venda/{apelido}")
     fun search(@Path("apelido") apelido: String,
                @Query("search") search: String,
                @Query("field")  field: String = "Data",
+               @Query("vendedor") vendedor: String? = null,
                @Query("limite") limit: Int = 100): Call<MutableList<Sale>>
 
     @POST("venda/{apelido}")

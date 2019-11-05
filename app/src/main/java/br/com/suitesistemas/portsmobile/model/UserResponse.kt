@@ -1,7 +1,11 @@
 package br.com.suitesistemas.portsmobile.model
 
+import android.content.SharedPreferences
+import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import br.com.suitesistemas.portsmobile.model.entity.Customer
+import com.google.gson.Gson
 
 class UserResponse() : Parcelable {
 
@@ -9,19 +13,45 @@ class UserResponse() : Parcelable {
     var usuario: String = ""
     var empresa: String = ""
     var area: String = ""
+    var pessoa = Customer()
+    var permissoes = Permissions()
+
+    constructor(sharedPreferences: SharedPreferences): this() {
+        val gson = Gson()
+        codigo = sharedPreferences.getInt("codigo", 0)
+        empresa = sharedPreferences.getString("empresa", "")!!
+        usuario = sharedPreferences.getString("usuario", "")!!
+        area = sharedPreferences.getString("area", "")!!
+
+        val pessoaJson = sharedPreferences.getString("pessoa", "")
+        if (!pessoaJson.isNullOrEmpty())
+            pessoa = gson.fromJson(pessoaJson, Customer::class.java)
+
+        val permissoesJson = sharedPreferences.getString("permissoes", "")
+        if (!permissoesJson.isNullOrEmpty())
+            permissoes = gson.fromJson(permissoesJson, Permissions::class.java)
+    }
 
     constructor(parcel: Parcel) : this() {
-        codigo = parcel.readInt()
-        usuario = parcel.readString() ?: ""
-        empresa = parcel.readString() ?: ""
-        area = parcel.readString() ?: ""
+        with (parcel.readBundle(javaClass.classLoader)!!) {
+            codigo = getInt("codigo")
+            usuario = getString("usuario") ?: ""
+            empresa = getString("empresa") ?: ""
+            area = getString("area") ?: ""
+            pessoa = getParcelable("pessoa") ?: Customer()
+            permissoes = getParcelable("permissoes") ?: Permissions()
+        }
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(codigo)
-        parcel.writeString(usuario)
-        parcel.writeString(empresa)
-        parcel.writeString(area)
+        with (Bundle()) {
+            putInt("codigo", codigo)
+            putString("usuario", usuario)
+            putString("empresa", empresa)
+            putString("area", area)
+            putParcelable("pessoa", pessoa)
+            putParcelable("permissoes", permissoes)
+        }
     }
 
     override fun describeContents(): Int {

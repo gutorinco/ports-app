@@ -8,7 +8,7 @@ import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
 import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.databinding.ActivityCustomerFormBinding
-import br.com.suitesistemas.portsmobile.entity.Customer
+import br.com.suitesistemas.portsmobile.model.entity.Customer
 import br.com.suitesistemas.portsmobile.model.enums.ECustomerSituation
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils

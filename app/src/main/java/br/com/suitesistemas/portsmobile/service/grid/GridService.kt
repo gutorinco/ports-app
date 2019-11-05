@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.service.grid
 
-import br.com.suitesistemas.portsmobile.entity.Grid
+import br.com.suitesistemas.portsmobile.model.entity.Grid
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

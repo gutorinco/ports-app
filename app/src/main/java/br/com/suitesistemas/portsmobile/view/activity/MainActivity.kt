@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.extensions.getLoggedUser
+import br.com.suitesistemas.portsmobile.model.enums.EYesNo
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.IconUtils
 import br.com.suitesistemas.portsmobile.view.fragment.*
@@ -27,12 +29,15 @@ import kotlinx.android.synthetic.main.toolbar.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ResourcesFragment.Delegate {
 
+    private var showFinancialRelease: Boolean = false
     private var doubleBackToExit: Boolean = false
     private var selectedMenuId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        showFinancialRelease = getLoggedUser().permissoes.flg_visualizar_financeiro == EYesNo.S
 
         configureToolbar()
         configureNavigationView()
@@ -90,6 +95,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         configureCustomIcon(R.id.menu_product, R.string.fa_boxes_solid)
         configureCustomIcon(R.id.menu_order, R.string.fa_dolly_solid)
         configureCustomIcon(R.id.menu_crm, R.string.fa_handshake_solid)
+        if (!showFinancialRelease) {
+            val financialItem = nav_view.menu.findItem(R.id.menu_financial)
+            financialItem.isVisible = false
+        }
     }
 
     private fun configureCustomIcon(itemId: Int, iconId: Int) {

@@ -12,11 +12,11 @@ import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
 import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.databinding.ActivitySaleFormBinding
-import br.com.suitesistemas.portsmobile.entity.Customer
-import br.com.suitesistemas.portsmobile.entity.Product
-import br.com.suitesistemas.portsmobile.entity.ProductColor
-import br.com.suitesistemas.portsmobile.entity.Sale
 import br.com.suitesistemas.portsmobile.model.ProductDetail
+import br.com.suitesistemas.portsmobile.model.entity.Customer
+import br.com.suitesistemas.portsmobile.model.entity.Product
+import br.com.suitesistemas.portsmobile.model.entity.ProductColor
+import br.com.suitesistemas.portsmobile.model.entity.Sale
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.activity.search.PeopleSearchActivity

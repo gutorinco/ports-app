@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.Sale
+import br.com.suitesistemas.portsmobile.model.entity.Sale
 import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.SaleViewHolder
 
 class SaleAdapter(context: Context,

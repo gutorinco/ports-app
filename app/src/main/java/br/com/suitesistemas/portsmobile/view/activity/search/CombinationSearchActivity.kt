@@ -11,8 +11,8 @@ import br.com.suitesistemas.portsmobile.custom.extensions.addOnItemClickListener
 import br.com.suitesistemas.portsmobile.custom.extensions.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.extensions.hideKeyboard
 import br.com.suitesistemas.portsmobile.databinding.ActivityCombinationSearchBinding
-import br.com.suitesistemas.portsmobile.entity.Combination
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.Combination
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.adapter.CombinationAdapter
 import br.com.suitesistemas.portsmobile.viewModel.search.CombinationSearchViewModel

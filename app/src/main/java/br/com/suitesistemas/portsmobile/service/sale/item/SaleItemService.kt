@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.service.sale.item
 
-import br.com.suitesistemas.portsmobile.entity.SaleItem
+import br.com.suitesistemas.portsmobile.model.entity.SaleItem
 import retrofit2.Call
 import retrofit2.http.*
 

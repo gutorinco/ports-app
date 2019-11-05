@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.viewModel.search
 
-import br.com.suitesistemas.portsmobile.entity.Color
+import br.com.suitesistemas.portsmobile.model.entity.Color
 import br.com.suitesistemas.portsmobile.service.color.ColorRepository
 
 class ColorSearchViewModel : SelectSearchViewModel<Color>() {

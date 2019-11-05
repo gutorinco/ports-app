@@ -3,8 +3,8 @@ package br.com.suitesistemas.portsmobile.view.adapter.viewHolder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.Combination
-import br.com.suitesistemas.portsmobile.entity.OrderGridItem
+import br.com.suitesistemas.portsmobile.model.entity.Combination
+import br.com.suitesistemas.portsmobile.model.entity.OrderGridItem
 import kotlinx.android.synthetic.main.adapter_order_grid.view.*
 
 class OrderGridViewHolder(private val adapterView: View) : RecyclerView.ViewHolder(adapterView) {

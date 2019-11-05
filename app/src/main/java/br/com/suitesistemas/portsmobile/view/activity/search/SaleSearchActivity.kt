@@ -11,9 +11,10 @@ import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.extensions.*
 import br.com.suitesistemas.portsmobile.custom.recycler_view.SwipeToDeleteCallback
 import br.com.suitesistemas.portsmobile.databinding.ActivitySaleSearchBinding
-import br.com.suitesistemas.portsmobile.entity.Sale
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.Sale
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
+import br.com.suitesistemas.portsmobile.model.enums.EYesNo
 import br.com.suitesistemas.portsmobile.utils.FirebaseUtils
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.adapter.SaleAdapter
@@ -43,9 +44,14 @@ class SaleSearchActivity : SearchActivity(),
     private fun initViewModel() {
         val companyName = SharedPreferencesUtils.getCompanyName(this)
         val isGetMethod = intent.getBooleanExtra("get", false)
+        val loggedUser = getLoggedUser()
 
         viewModel = ViewModelProviders.of(this).get(SaleSearchViewModel::class.java)
-        viewModel.initRepository(companyName, isGetMethod)
+        with (viewModel) {
+            initRepository(companyName, isGetMethod)
+            onlyCurrentUser = loggedUser.permissoes.flg_visualizar_venda == EYesNo.S
+            currentUser = loggedUser.pessoa
+        }
     }
 
     private fun configureDataBinding() {
@@ -122,9 +128,13 @@ class SaleSearchActivity : SearchActivity(),
 
     private fun delete(position: Int) {
         val firebaseToken = FirebaseUtils.getToken(this)
-        viewModel.searching.value = true
-        viewModel.findAllItemsBySale(position)
-        viewModel.itemResponse.observe(this, Observer { viewModel.deleteSale(position, it.data!!, firebaseToken) })
+        with (viewModel) {
+            searching.value = true
+            findAllItemsBySale(position)
+            itemResponse.observe(this@SaleSearchActivity, Observer {
+                deleteSale(position, it.data!!, firebaseToken)
+            })
+        }
     }
 
     override fun deleteRollback() {

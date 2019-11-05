@@ -3,9 +3,9 @@ package br.com.suitesistemas.portsmobile.service.color
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.entity.Color
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.model.entity.Color
 import br.com.suitesistemas.portsmobile.service.ListService
 
 class ColorRepository(private val companyName: String) : ListService<Color> {

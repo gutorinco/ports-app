@@ -2,7 +2,7 @@ package br.com.suitesistemas.portsmobile.view.adapter.viewHolder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import br.com.suitesistemas.portsmobile.entity.Color
+import br.com.suitesistemas.portsmobile.model.entity.Color
 import kotlinx.android.synthetic.main.adapter_color.view.*
 
 class ColorViewHolder(adapterView: View) : RecyclerView.ViewHolder(adapterView) {

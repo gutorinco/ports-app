@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.service.financial_release
 
-import br.com.suitesistemas.portsmobile.entity.FinancialRelease
+import br.com.suitesistemas.portsmobile.model.entity.FinancialRelease
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

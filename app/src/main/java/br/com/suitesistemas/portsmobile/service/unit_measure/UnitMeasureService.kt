@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.service.unit_measure
 
-import br.com.suitesistemas.portsmobile.entity.UnitMeasure
+import br.com.suitesistemas.portsmobile.model.entity.UnitMeasure
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

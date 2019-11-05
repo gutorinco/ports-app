@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.service.user
 
-import br.com.suitesistemas.portsmobile.entity.User
+import br.com.suitesistemas.portsmobile.model.entity.User
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

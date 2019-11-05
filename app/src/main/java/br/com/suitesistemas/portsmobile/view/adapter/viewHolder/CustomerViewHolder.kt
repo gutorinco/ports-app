@@ -3,7 +3,7 @@ package br.com.suitesistemas.portsmobile.view.adapter.viewHolder
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import br.com.suitesistemas.portsmobile.entity.Customer
+import br.com.suitesistemas.portsmobile.model.entity.Customer
 import kotlinx.android.synthetic.main.adapter_customer.view.*
 
 class CustomerViewHolder(adapterView: View) : ViewHolder(adapterView) {

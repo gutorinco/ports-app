@@ -7,7 +7,7 @@ import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
 import br.com.suitesistemas.portsmobile.custom.extensions.getPhoneNumber
 import br.com.suitesistemas.portsmobile.custom.extensions.numbersOnly
-import br.com.suitesistemas.portsmobile.entity.Customer
+import br.com.suitesistemas.portsmobile.model.entity.Customer
 import br.com.suitesistemas.portsmobile.service.company.CompanyRepository
 import br.com.suitesistemas.portsmobile.service.customer.CustomerRepository
 

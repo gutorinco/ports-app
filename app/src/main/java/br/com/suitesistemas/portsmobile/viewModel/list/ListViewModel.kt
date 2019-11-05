@@ -2,9 +2,9 @@ package br.com.suitesistemas.portsmobile.viewModel.completeList
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import br.com.suitesistemas.portsmobile.entity.ChangeableModel
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.model.entity.ChangeableModel
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
 import br.com.suitesistemas.portsmobile.service.ListService
 
@@ -23,7 +23,7 @@ abstract class ListViewModel<T : ChangeableModel<T>, K : ListService<T>>(private
 
     abstract fun initRepositories(company: String)
 
-    fun fetchAll() {
+    open fun fetchAll() {
         response = repository.findAll()
     }
 

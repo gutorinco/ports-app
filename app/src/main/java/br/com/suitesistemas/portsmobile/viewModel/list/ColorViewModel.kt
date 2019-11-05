@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.viewModel.list
 
-import br.com.suitesistemas.portsmobile.entity.Color
+import br.com.suitesistemas.portsmobile.model.entity.Color
 import br.com.suitesistemas.portsmobile.service.color.ColorRepository
 import br.com.suitesistemas.portsmobile.viewModel.completeList.ListViewModel
 

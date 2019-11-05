@@ -3,8 +3,8 @@ package br.com.suitesistemas.portsmobile.service.model_grid_combination
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.entity.ModelGridCombination
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.ModelGridCombination
 
 class ModelGridCombinationRepository(private val companyName: String) {
 

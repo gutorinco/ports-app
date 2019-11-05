@@ -3,8 +3,8 @@ package br.com.suitesistemas.portsmobile.service.sale.item
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.entity.SaleItem
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.SaleItem
 
 class SaleItemRepository(private val companyName: String) {
 

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.Product
+import br.com.suitesistemas.portsmobile.model.entity.Product
 import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.SelectProductViewHolder
 
 class SelectProductAdapter(private val context: Context,

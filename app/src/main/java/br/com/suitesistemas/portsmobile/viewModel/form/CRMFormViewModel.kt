@@ -5,7 +5,7 @@ import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
-import br.com.suitesistemas.portsmobile.entity.CRM
+import br.com.suitesistemas.portsmobile.model.entity.CRM
 import br.com.suitesistemas.portsmobile.service.crm.CRMRepository
 import java.util.*
 

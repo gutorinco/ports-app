@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.viewModel.search
 
-import br.com.suitesistemas.portsmobile.entity.Customer
+import br.com.suitesistemas.portsmobile.model.entity.Customer
 import br.com.suitesistemas.portsmobile.service.customer.CustomerRepository
 
 class PeopleSearchViewModel : SearchViewModel<Customer>() {

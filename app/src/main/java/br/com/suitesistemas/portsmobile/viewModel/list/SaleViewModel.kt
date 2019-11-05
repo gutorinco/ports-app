@@ -1,9 +1,10 @@
 package br.com.suitesistemas.portsmobile.viewModel.list
 
 import androidx.lifecycle.MutableLiveData
-import br.com.suitesistemas.portsmobile.entity.Sale
-import br.com.suitesistemas.portsmobile.entity.SaleItem
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.Customer
+import br.com.suitesistemas.portsmobile.model.entity.Sale
+import br.com.suitesistemas.portsmobile.model.entity.SaleItem
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
 import br.com.suitesistemas.portsmobile.service.sale.SaleRepository
 import br.com.suitesistemas.portsmobile.service.sale.item.SaleItemRepository
@@ -15,11 +16,19 @@ class SaleViewModel : ListViewModel<Sale, SaleRepository>("venda") {
     private val items: MutableList<SaleItem> = mutableListOf()
     var itemResponse = MutableLiveData<ApiResponse<MutableList<SaleItem>?>>()
     var itemRollbackResponse = MutableLiveData<ApiResponse<MutableList<SaleItem>?>>()
+    var onlyCurrentUser: Boolean = false
+    var currentUser = Customer()
 
     override fun initRepositories(company: String) {
         companyName = company
         repository = SaleRepository(company)
         saleItemRepository = SaleItemRepository(company)
+    }
+
+    override fun fetchAll() {
+        response = if (onlyCurrentUser)
+             repository.findAllBy(currentUser.num_codigo_online)
+        else repository.findAll()
     }
 
     fun findAllItemsBySale(position: Int) {

@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.Color
+import br.com.suitesistemas.portsmobile.model.entity.Color
 import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.ColorViewHolder
 
 class ColorAdapter(context: Context, colors: MutableList<Color>) : BaseAdapter<Color, ColorViewHolder>(context, colors) {

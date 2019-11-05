@@ -4,7 +4,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.extensions.toStringFormat
-import br.com.suitesistemas.portsmobile.entity.FinancialRelease
+import br.com.suitesistemas.portsmobile.model.entity.FinancialRelease
 import kotlinx.android.synthetic.main.adapter_financial.view.*
 import java.util.*
 

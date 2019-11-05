@@ -9,9 +9,9 @@ import android.widget.BaseAdapter
 import android.widget.EditText
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.extensions.onItemSelected
-import br.com.suitesistemas.portsmobile.entity.Product
-import br.com.suitesistemas.portsmobile.entity.ProductColor
 import br.com.suitesistemas.portsmobile.model.ProductDetail
+import br.com.suitesistemas.portsmobile.model.entity.Product
+import br.com.suitesistemas.portsmobile.model.entity.ProductColor
 import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.ProductQuantityViewHolder
 
 class ProductQuantityAdapter(private val context: Context,

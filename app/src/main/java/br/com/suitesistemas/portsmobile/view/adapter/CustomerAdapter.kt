@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.fragment.app.FragmentActivity
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.Customer
+import br.com.suitesistemas.portsmobile.model.entity.Customer
 import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.CustomerViewHolder
 import br.com.suitesistemas.portsmobile.view.dialog.CustomerPhonesDialog
 

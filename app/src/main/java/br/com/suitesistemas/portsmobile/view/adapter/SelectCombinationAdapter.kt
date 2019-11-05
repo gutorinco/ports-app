@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.Combination
+import br.com.suitesistemas.portsmobile.model.entity.Combination
 import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.BaseSelectViewHolder
 
 class SelectCombinationAdapter(context: Context,

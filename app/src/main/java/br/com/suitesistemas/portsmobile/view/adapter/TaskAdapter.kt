@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.Task
+import br.com.suitesistemas.portsmobile.model.entity.Task
 import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.TaskViewHolder
 
 class TaskAdapter(context: Context,

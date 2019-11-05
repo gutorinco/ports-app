@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.Model
+import br.com.suitesistemas.portsmobile.model.entity.Model
 import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.ModelViewHolder
 
 class ModelAdapter(context: Context,

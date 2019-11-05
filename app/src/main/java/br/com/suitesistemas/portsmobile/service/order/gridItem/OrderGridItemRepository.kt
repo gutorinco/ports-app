@@ -3,8 +3,8 @@ package br.com.suitesistemas.portsmobile.service.order.gridItem
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.entity.OrderGridItem
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.OrderGridItem
 
 class OrderGridItemRepository(private val companyName: String) {
 

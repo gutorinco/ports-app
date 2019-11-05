@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.service.payment_condition
 
-import br.com.suitesistemas.portsmobile.entity.PaymentCondition
+import br.com.suitesistemas.portsmobile.model.entity.PaymentCondition
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

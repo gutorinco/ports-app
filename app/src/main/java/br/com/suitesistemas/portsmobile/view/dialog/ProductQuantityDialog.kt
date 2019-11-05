@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.Product
-import br.com.suitesistemas.portsmobile.entity.ProductColor
 import br.com.suitesistemas.portsmobile.model.ProductDetail
+import br.com.suitesistemas.portsmobile.model.entity.Product
+import br.com.suitesistemas.portsmobile.model.entity.ProductColor
 import br.com.suitesistemas.portsmobile.view.adapter.ProductQuantityAdapter
 import kotlinx.android.synthetic.main.dialog_product_quantity.*
 

@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.service.model_grid_combination
 
-import br.com.suitesistemas.portsmobile.entity.ModelGridCombination
+import br.com.suitesistemas.portsmobile.model.entity.ModelGridCombination
 import retrofit2.Call
 import retrofit2.http.*
 

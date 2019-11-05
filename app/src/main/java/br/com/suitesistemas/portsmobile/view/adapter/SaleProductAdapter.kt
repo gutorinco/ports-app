@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.Color
-import br.com.suitesistemas.portsmobile.entity.Product
 import br.com.suitesistemas.portsmobile.model.ProductDetail
+import br.com.suitesistemas.portsmobile.model.entity.Color
+import br.com.suitesistemas.portsmobile.model.entity.Product
 import br.com.suitesistemas.portsmobile.utils.PopupMenuUtils
 import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.SaleProductViewHolder
 

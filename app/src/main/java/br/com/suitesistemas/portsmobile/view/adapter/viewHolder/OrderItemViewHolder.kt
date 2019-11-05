@@ -3,7 +3,7 @@ package br.com.suitesistemas.portsmobile.view.adapter.viewHolder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.OrderItem
+import br.com.suitesistemas.portsmobile.model.entity.OrderItem
 import br.com.suitesistemas.portsmobile.utils.DoubleUtils
 import kotlinx.android.synthetic.main.adapter_order_item.view.*
 

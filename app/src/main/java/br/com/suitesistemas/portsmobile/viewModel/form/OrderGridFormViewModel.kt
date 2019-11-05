@@ -5,8 +5,8 @@ import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.exception.InvalidValueException
-import br.com.suitesistemas.portsmobile.entity.*
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.*
 import br.com.suitesistemas.portsmobile.model.enums.EYesNo
 import br.com.suitesistemas.portsmobile.service.grid.item.GridItemRepository
 import kotlin.math.roundToLong

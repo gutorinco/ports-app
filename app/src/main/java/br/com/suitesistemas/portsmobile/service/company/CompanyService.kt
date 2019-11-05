@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.service.company
 
-import br.com.suitesistemas.portsmobile.entity.Company
+import br.com.suitesistemas.portsmobile.model.entity.Company
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

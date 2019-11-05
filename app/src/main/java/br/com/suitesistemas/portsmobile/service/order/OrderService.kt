@@ -1,7 +1,7 @@
 package br.com.suitesistemas.portsmobile.service.order
 
-import br.com.suitesistemas.portsmobile.entity.Order
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.model.entity.Order
 import retrofit2.Call
 import retrofit2.http.*
 

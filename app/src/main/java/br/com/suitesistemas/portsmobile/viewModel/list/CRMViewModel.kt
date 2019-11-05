@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.viewModel.list
 
-import br.com.suitesistemas.portsmobile.entity.CRM
+import br.com.suitesistemas.portsmobile.model.entity.CRM
 import br.com.suitesistemas.portsmobile.service.crm.CRMRepository
 import br.com.suitesistemas.portsmobile.viewModel.completeList.ListViewModel
 

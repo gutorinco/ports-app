@@ -13,8 +13,8 @@ import br.com.suitesistemas.portsmobile.custom.extensions.executeAfterLoaded
 import br.com.suitesistemas.portsmobile.custom.extensions.hide
 import br.com.suitesistemas.portsmobile.custom.extensions.setTitle
 import br.com.suitesistemas.portsmobile.custom.extensions.show
-import br.com.suitesistemas.portsmobile.entity.FinancialRelease
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.FinancialRelease
 import br.com.suitesistemas.portsmobile.utils.SharedPreferencesUtils
 import br.com.suitesistemas.portsmobile.view.activity.search.FinancialReleaseSearchActivity
 import br.com.suitesistemas.portsmobile.view.adapter.FinancialReleaseAdapter

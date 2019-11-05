@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.service.product_color
 
-import br.com.suitesistemas.portsmobile.entity.ProductColor
+import br.com.suitesistemas.portsmobile.model.entity.ProductColor
 import retrofit2.Call
 import retrofit2.http.*
 

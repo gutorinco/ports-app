@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.Order
+import br.com.suitesistemas.portsmobile.model.entity.Order
 import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.OrderViewHolder
 
 class OrderAdapter(context: Context,

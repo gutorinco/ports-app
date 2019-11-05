@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import br.com.suitesistemas.portsmobile.R
-import br.com.suitesistemas.portsmobile.entity.OrderGridItem
-import br.com.suitesistemas.portsmobile.entity.OrderItem
+import br.com.suitesistemas.portsmobile.model.entity.OrderGridItem
+import br.com.suitesistemas.portsmobile.model.entity.OrderItem
 import br.com.suitesistemas.portsmobile.view.adapter.viewHolder.OrderItemViewHolder
 
 class OrderItemAdapter(context: Context,

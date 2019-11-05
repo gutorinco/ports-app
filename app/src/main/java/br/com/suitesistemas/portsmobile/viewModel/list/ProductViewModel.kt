@@ -1,10 +1,10 @@
 package br.com.suitesistemas.portsmobile.viewModel.list
 
 import androidx.lifecycle.MutableLiveData
-import br.com.suitesistemas.portsmobile.entity.Configuration
-import br.com.suitesistemas.portsmobile.entity.Product
-import br.com.suitesistemas.portsmobile.entity.ProductColor
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.Configuration
+import br.com.suitesistemas.portsmobile.model.entity.Product
+import br.com.suitesistemas.portsmobile.model.entity.ProductColor
 import br.com.suitesistemas.portsmobile.model.enums.ESystemType
 import br.com.suitesistemas.portsmobile.service.configuration.ConfigurationRepository
 import br.com.suitesistemas.portsmobile.service.product.ProductRepository

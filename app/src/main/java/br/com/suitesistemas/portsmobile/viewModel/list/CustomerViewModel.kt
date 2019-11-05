@@ -1,6 +1,6 @@
 package br.com.suitesistemas.portsmobile.viewModel.list
 
-import br.com.suitesistemas.portsmobile.entity.Customer
+import br.com.suitesistemas.portsmobile.model.entity.Customer
 import br.com.suitesistemas.portsmobile.service.customer.CustomerRepository
 import br.com.suitesistemas.portsmobile.viewModel.completeList.ListViewModel
 

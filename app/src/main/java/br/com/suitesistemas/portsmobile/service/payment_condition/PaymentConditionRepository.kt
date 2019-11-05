@@ -3,8 +3,8 @@ package br.com.suitesistemas.portsmobile.service.payment_condition
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.entity.PaymentCondition
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.PaymentCondition
 
 class PaymentConditionRepository(private val companyName: String) {
 

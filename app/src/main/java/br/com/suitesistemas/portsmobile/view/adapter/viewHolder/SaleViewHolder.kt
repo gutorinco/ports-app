@@ -3,7 +3,7 @@ package br.com.suitesistemas.portsmobile.view.adapter.viewHolder
 import android.view.View
 import br.com.suitesistemas.portsmobile.R
 import br.com.suitesistemas.portsmobile.custom.extensions.toStringFormat
-import br.com.suitesistemas.portsmobile.entity.Sale
+import br.com.suitesistemas.portsmobile.model.entity.Sale
 import br.com.suitesistemas.portsmobile.utils.DoubleUtils
 import kotlinx.android.synthetic.main.adapter_sale.view.*
 

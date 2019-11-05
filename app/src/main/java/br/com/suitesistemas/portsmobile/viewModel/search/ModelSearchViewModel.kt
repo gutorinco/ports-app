@@ -1,10 +1,10 @@
 package br.com.suitesistemas.portsmobile.viewModel.search
 
 import androidx.lifecycle.MutableLiveData
-import br.com.suitesistemas.portsmobile.entity.Model
-import br.com.suitesistemas.portsmobile.entity.ModelCombination
-import br.com.suitesistemas.portsmobile.entity.ModelGridCombination
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.Model
+import br.com.suitesistemas.portsmobile.model.entity.ModelCombination
+import br.com.suitesistemas.portsmobile.model.entity.ModelGridCombination
 import br.com.suitesistemas.portsmobile.service.model.ModelRepository
 import br.com.suitesistemas.portsmobile.service.model_combination.ModelCombinationRepository
 import br.com.suitesistemas.portsmobile.service.model_grid_combination.ModelGridCombinationRepository

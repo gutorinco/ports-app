@@ -1,9 +1,10 @@
 package br.com.suitesistemas.portsmobile.viewModel.search
 
 import androidx.lifecycle.MutableLiveData
-import br.com.suitesistemas.portsmobile.entity.Sale
-import br.com.suitesistemas.portsmobile.entity.SaleItem
 import br.com.suitesistemas.portsmobile.model.ApiResponse
+import br.com.suitesistemas.portsmobile.model.entity.Customer
+import br.com.suitesistemas.portsmobile.model.entity.Sale
+import br.com.suitesistemas.portsmobile.model.entity.SaleItem
 import br.com.suitesistemas.portsmobile.model.enums.EHttpOperation
 import br.com.suitesistemas.portsmobile.service.sale.SaleRepository
 import br.com.suitesistemas.portsmobile.service.sale.item.SaleItemRepository
@@ -15,6 +16,8 @@ class SaleSearchViewModel : SearchViewModel<Sale>() {
     var itemRollbackResponse = MutableLiveData<ApiResponse<MutableList<SaleItem>?>>()
     private lateinit var saleItemRepository: SaleItemRepository
     private val items: MutableList<SaleItem> = mutableListOf()
+    var onlyCurrentUser: Boolean = false
+    var currentUser = Customer()
 
     override fun initRepository(company: String) {
         TODO("Not implemented!")
@@ -31,7 +34,9 @@ class SaleSearchViewModel : SearchViewModel<Sale>() {
         completeList.clear()
         searching.value = true
         wasSearched.value = true
-        response = repository.search(search)
+        response = if (onlyCurrentUser)
+            (repository as SaleRepository).searchBy(currentUser.num_codigo_online, search)
+        else repository.search(search)
     }
 
     fun existItems() = items.isNotEmpty()

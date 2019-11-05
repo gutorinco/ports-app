@@ -3,7 +3,7 @@ package br.com.suitesistemas.portsmobile.view.adapter.viewHolder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import br.com.suitesistemas.portsmobile.custom.extensions.toStringFormat
-import br.com.suitesistemas.portsmobile.entity.Task
+import br.com.suitesistemas.portsmobile.model.entity.Task
 import kotlinx.android.synthetic.main.adapter_task.view.*
 import java.util.*
 

@@ -3,9 +3,9 @@ package br.com.suitesistemas.portsmobile.service.model
 import androidx.lifecycle.MutableLiveData
 import br.com.suitesistemas.portsmobile.custom.extensions.responseHandle
 import br.com.suitesistemas.portsmobile.custom.retrofit.RetrofitConfig
-import br.com.suitesistemas.portsmobile.entity.Model
 import br.com.suitesistemas.portsmobile.model.ApiResponse
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.model.entity.Model
 import br.com.suitesistemas.portsmobile.service.ListService
 
 class ModelRepository(private val companyName: String) : ListService<Model> {

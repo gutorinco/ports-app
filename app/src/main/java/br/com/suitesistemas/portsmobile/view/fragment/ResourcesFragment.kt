@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import br.com.suitesistemas.portsmobile.R
+import br.com.suitesistemas.portsmobile.custom.extensions.getLoggedUser
+import br.com.suitesistemas.portsmobile.model.enums.EYesNo
 import br.com.suitesistemas.portsmobile.utils.IconUtils
 import kotlinx.android.synthetic.main.adapter_resources.view.*
 import kotlinx.android.synthetic.main.fragment_resources.*
@@ -16,9 +18,10 @@ import kotlinx.android.synthetic.main.fragment_resources.*
 class ResourcesFragment : Fragment() {
 
     private lateinit var delegate: Delegate
+    private var showFinancialRelease: Boolean = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        showFinancialRelease = getLoggedUser().permissoes.flg_visualizar_financeiro == EYesNo.S
         return inflater.inflate(R.layout.fragment_resources, container, false)
     }
 
@@ -78,9 +81,13 @@ class ResourcesFragment : Fragment() {
             setOnClickListener { delegate.onResourceSelected(6) }
         }
         with (fragment_res_financial_release) {
-            main_resources_img.setImageDrawable(getDrawableBy(R.drawable.ic_credit_card_accent))
-            main_resources_title.text = getString(R.string.lancamentos)
-            setOnClickListener { delegate.onResourceSelected(7) }
+            if (showFinancialRelease) {
+                main_resources_img.setImageDrawable(getDrawableBy(R.drawable.ic_credit_card_accent))
+                main_resources_title.text = getString(R.string.lancamentos)
+                setOnClickListener { delegate.onResourceSelected(7) }
+            } else {
+                visibility = View.INVISIBLE
+            }
         }
     }
 

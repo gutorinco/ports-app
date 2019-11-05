@@ -1,7 +1,7 @@
 package br.com.suitesistemas.portsmobile.service.model
 
-import br.com.suitesistemas.portsmobile.entity.Model
 import br.com.suitesistemas.portsmobile.model.VersionResponse
+import br.com.suitesistemas.portsmobile.model.entity.Model
 import retrofit2.Call
 import retrofit2.http.*
 
